@@ -1,0 +1,61 @@
+{
+    "indexes": [
+        {
+            "collectionGroup": "rewards",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "userId",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "timestamp",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "scores",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "points",
+                    "order": "DESCENDING"
+                },
+                {
+                    "fieldPath": "lastUpdated",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "scores",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "points",
+                    "order": "DESCENDING"
+                },
+                {
+                    "fieldPath": "tasksCompleted",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
+            "collectionGroup": "scores",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "points",
+                    "order": "DESCENDING"
+                },
+                {
+                    "fieldPath": "multiplier",
+                    "order": "DESCENDING"
+                }
+            ]
+        }
+    ],
+    "fieldOverrides": []
+}

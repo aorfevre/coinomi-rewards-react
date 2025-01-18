@@ -1,0 +1,43 @@
+{
+    "name": "coinomi-rewards-react",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "cra-template": "1.2.0",
+        "prettier": "^3.4.2",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-scripts": "5.0.1",
+        "web-vitals": "^4.2.4"
+    },
+    "scripts": {
+        "start": "BROWSER=none  react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test",
+        "lint": "eslint 'src/**/*.{js,jsx,ts,tsx}'",
+        "lint:fix": "eslint 'src/**/*.{js,jsx,ts,tsx}' --fix",
+        "format": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
+        "emulators": "firebase emulators:start",
+        "emulators:export": "firebase emulators:export ./emulator-data",
+        "emulators:import": "firebase emulators:start --import=./emulator-data",
+        "eject": "react-scripts eject"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    }
+}
