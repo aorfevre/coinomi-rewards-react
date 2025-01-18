@@ -3,8 +3,17 @@ import * as dotenv from 'dotenv';
 
 // Load environment variables
 dotenv.config();
+
 // Initialize the Firebase Admin SDK
-const app = admin.initializeApp();
+let app: admin.app.App;
+
+if (process.env.NODE_ENV === 'test') {
+    app = admin.initializeApp({
+        projectId: 'demo-project',
+    });
+} else {
+    app = admin.initializeApp();
+}
 
 // Get Firestore instance
 const db = admin.firestore(app);
