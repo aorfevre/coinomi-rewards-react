@@ -9,4 +9,9 @@ export default {
     transform: {
         '^.+\\.tsx?$': 'ts-jest',
     },
+    setupFilesAfterEnv: ['<rootDir>/src/__tests__/setupTests.js'],
+    testTimeout: 10000,
+    verbose: true,
+    clearMocks: true,
+    restoreMocks: true,
 };
