@@ -2,26 +2,8 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // User profile document
-    match /users/{userId} {
-      allow read: if request.auth != null && request.auth.uid == userId;
-      allow write: if request.auth != null && request.auth.uid == userId;
-      
-      
-    }
-    
-    // Global leaderboard collection
-    match /leaderboard/{entry} {
-      allow read: if request.auth != null;
-      allow write: if false; // Only backend can write to leaderboard
-    }
-    match /rewards/{rewardId} {
-      allow read: if request.auth != null;
-      allow write: if false; // TODO Only backend can write to rewards
-    }
-    match /scores/{userId} {
-      allow read: if request.auth != null;
-      allow write: if false; // Only backend can write to scores
+    match /{document=**} {
+      allow read, write: if request.auth != null;
     }
   }
 } 
