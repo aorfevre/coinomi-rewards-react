@@ -1,5 +1,5 @@
-import { admin } from './config/firebase';
 import * as functions from 'firebase-functions';
+import { admin } from './config/firebase';
 
 interface UserScore {
     points: number;
@@ -29,16 +29,19 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
             const lastClaim = lastClaimQuery.docs[0].data();
             const lastClaimTime = new Date(lastClaim.timestamp);
             const now = new Date();
-            const hoursSinceLastClaim =
-                (now.getTime() - lastClaimTime.getTime()) / (1000 * 60 * 60);
+            const secondsSinceLastClaim =
+                (now.getTime() - lastClaimTime.getTime()) / 1000;
 
-            if (hoursSinceLastClaim < 24) {
+            // Get claim cooldown from environment variable, default to 24 hours (86400 seconds) if not set
+            const claimCooldownSeconds = Number(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS) || 86400;
+
+            if (secondsSinceLastClaim < claimCooldownSeconds) {
                 throw new functions.https.HttpsError(
                     'failed-precondition',
                     'Daily reward already claimed',
                     {
                         nextClaimTime: new Date(
-                            lastClaimTime.getTime() + 24 * 60 * 60 * 1000
+                            lastClaimTime.getTime() + claimCooldownSeconds * 1000
                         ).toISOString(),
                     }
                 );

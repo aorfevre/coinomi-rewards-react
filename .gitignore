@@ -28,3 +28,5 @@ firestore-debug.log
 
 functions/node_modules
 functions/lib
+
+.env

@@ -1,26 +1,28 @@
 import { Box, Button, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { CLAIM_COOLDOWN_MS } from '../config/env';
 import { useRewards } from '../hooks/useRewards';
 import { useScore } from '../hooks/useScore';
 import { Countdown } from './Countdown';
+import { RankDisplay } from './RankDisplay';
 
 export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
     const { claimDailyReward, loading: claimLoading } = useRewards();
     const { scoreDoc } = useScore(userId);
     const [canClaim, setCanClaim] = useState(false);
 
-    const getNextClaimTime = () => {
+    const getNextClaimTime = useCallback(() => {
         const lastClaimTime = new Date(scoreDoc?.lastTaskTimestamp || 0);
-        return new Date(lastClaimTime.getTime() + 24 * 60 * 60 * 1000);
-    };
+        return new Date(lastClaimTime.getTime() + CLAIM_COOLDOWN_MS);
+    }, [scoreDoc]);
 
     useEffect(() => {
         if (scoreDoc?.lastTaskTimestamp) {
             const nextClaimTime = getNextClaimTime();
             setCanClaim(new Date() >= nextClaimTime);
         }
-    }, [scoreDoc]);
+    }, [scoreDoc, getNextClaimTime]);
 
     const handleCountdownComplete = () => {
         setCanClaim(true);
@@ -132,17 +134,7 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                     </Button>
                 </Box>
 
-                {rank && totalPlayers && (
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            color: 'text.secondary',
-                            textAlign: 'center',
-                        }}
-                    >
-                        Rank: {rank} / {totalPlayers}
-                    </Typography>
-                )}
+                {rank && totalPlayers && <RankDisplay rank={rank} totalPlayers={totalPlayers} />}
             </Box>
         </Box>
     );

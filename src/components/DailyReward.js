@@ -1,9 +1,10 @@
-import { useState, useEffect } from 'react';
-import { calculateTimeLeft, formatTime } from '../utils/time';
-import { useRewards } from '../hooks/useRewards';
+import { useEffect, useState } from 'react';
+import { CLAIM_COOLDOWN_MS } from '../config/env';
 import { useAuth } from '../hooks/useAuth';
+import { useRewards } from '../hooks/useRewards';
+import { calculateTimeLeft, formatTime } from '../utils/time';
 
-const CLAIM_COOLDOWN = 24 * 60 * 60; // 24 hours in seconds
+const CLAIM_COOLDOWN = CLAIM_COOLDOWN_MS;
 
 export function DailyReward() {
     const { user } = useAuth();

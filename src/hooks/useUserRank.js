@@ -1,4 +1,4 @@
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 
@@ -9,46 +9,50 @@ export const useUserRank = userId => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log('useUserRank - Starting subscription for userId:', userId);
         if (!userId) {
             console.log('useUserRank - No userId provided');
             setLoading(false);
             return;
         }
 
-        const usersRef = collection(db, 'users');
-        const q = query(usersRef, orderBy('points', 'desc'));
-        console.log('useUserRank - Setting up real-time listener');
+        console.log('useUserRank - Starting rank calculation for userId:', userId);
+        setLoading(true);
+
+        // Query all scores ordered by points in descending order
+        const scoresRef = collection(db, 'scores');
+        const q = query(scoresRef);
 
         const unsubscribe = onSnapshot(
             q,
             snapshot => {
-                console.log('useUserRank - Received users snapshot');
-                const users = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data(),
-                }));
+                try {
+                    const scores = snapshot.docs.map(doc => ({
+                        userId: doc.data().userId,
+                        points: doc.data().points || 0,
+                    }));
 
-                console.log('useUserRank - Total users:', users.length);
-                setTotalPlayers(users.length);
+                    // Sort by points in descending order
+                    scores.sort((a, b) => b.points - a.points);
 
-                // Find user's rank (1-based index)
-                const userIndex = users.findIndex(user => user.id === userId);
-                console.log('useUserRank - User index in leaderboard:', userIndex);
+                    // Find user's rank (1-based index)
+                    const userRank = scores.findIndex(score => score.userId === userId) + 1;
 
-                if (userIndex !== -1) {
-                    const userRank = userIndex + 1;
-                    console.log('useUserRank - Setting user rank:', userRank);
-                    setRank(userRank);
-                } else {
-                    console.log('useUserRank - User not found in leaderboard');
-                    setRank(users.length + 1); // Place at bottom if not found
+                    setRank(userRank || null);
+                    setTotalPlayers(scores.length);
+                    setLoading(false);
+                    console.log('useUserRank - Rank calculated:', {
+                        userRank,
+                        totalPlayers: scores.length,
+                    });
+                } catch (err) {
+                    console.error('useUserRank - Error calculating rank:', err);
+                    setError(err);
+                    setLoading(false);
                 }
-                setLoading(false);
             },
-            err => {
-                console.error('useUserRank - Error calculating rank:', err);
-                setError(err);
+            error => {
+                console.error('useUserRank - Error:', error);
+                setError(error);
                 setLoading(false);
             }
         );
@@ -59,5 +63,10 @@ export const useUserRank = userId => {
         };
     }, [userId]);
 
-    return { rank, totalPlayers, loading, error };
+    return {
+        rank,
+        totalPlayers,
+        loading,
+        error,
+    };
 };
