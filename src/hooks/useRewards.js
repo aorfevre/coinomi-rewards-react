@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
+import { useEffect, useState } from 'react';
 import { db, functions } from '../config/firebase';
 
 export const useRewards = userId => {
@@ -58,6 +58,7 @@ export const useRewards = userId => {
             if (!querySnapshot.empty) {
                 throw new Error('Daily reward already claimed today');
             }
+            console.log('🎁 Claiming daily reward for user:', userId);
 
             const claimReward = httpsCallable(functions, 'claimDailyReward');
             const result = await claimReward({ userId });

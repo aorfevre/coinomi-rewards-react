@@ -1,41 +1,58 @@
-import { doc, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 
 export const useScore = userId => {
     const [score, setScore] = useState(0);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [scoreDoc, setScoreDoc] = useState(null);
 
     useEffect(() => {
-        console.log('useScore - Subscribing to score updates for userId:', userId);
         if (!userId) {
-            console.log('useScore - No userId provided');
-            setLoading(false);
+            console.log('useScore - Waiting for authentication');
             return;
         }
 
-        const userRef = doc(db, 'users', userId);
+        console.log('useScore - Starting subscription for userId:', userId);
+        setLoading(true);
+
+        // Query scores collection where userId matches
+        const scoresRef = collection(db, 'scores');
+        const q = query(scoresRef, where('userId', '==', userId));
+
         const unsubscribe = onSnapshot(
-            userRef,
-            doc => {
-                const userData = doc.data();
-                console.log('useScore - Received user data:', userData);
-                setScore(userData?.points || 0);
+            q,
+            snapshot => {
+                if (snapshot.empty) {
+                    console.log('useScore - No score found for user');
+                    setScore(0);
+                    setScoreDoc(null);
+                } else {
+                    const doc = snapshot.docs[0].data();
+                    console.log('useScore - Received score data:', doc);
+                    setScore(doc.points || 0);
+                    setScoreDoc(doc);
+                }
                 setLoading(false);
             },
-            err => {
-                console.error('useScore - Error fetching score:', err);
-                setError(err);
+            error => {
+                console.error('useScore - Error:', error);
+                setError(error);
                 setLoading(false);
             }
         );
 
         return () => {
-            console.log('useScore - Unsubscribing from score updates');
+            console.log('useScore - Cleaning up subscription');
             unsubscribe();
         };
     }, [userId]);
 
-    return { score, loading, error };
+    return {
+        score: userId ? score : 0,
+        loading,
+        error,
+        scoreDoc,
+    };
 };

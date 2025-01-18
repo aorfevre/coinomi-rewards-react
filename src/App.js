@@ -1,4 +1,4 @@
-import { Box, CssBaseline, ThemeProvider, Typography, useMediaQuery } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, Typography } from '@mui/material';
 import React from 'react';
 import { Leaderboard } from './components/Leaderboard';
 import { PointsDisplay } from './components/PointsDisplay';
@@ -9,11 +9,8 @@ import { useUserRank } from './hooks/useUserRank';
 import { getTheme } from './theme';
 
 function App() {
-    const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
-    const theme = React.useMemo(
-        () => getTheme(prefersDarkMode ? 'dark' : 'light'),
-        [prefersDarkMode]
-    );
+    const [mode, setMode] = React.useState('dark');
+    const theme = React.useMemo(() => getTheme(mode), [mode]);
 
     // Get token from query params
     const params = new URLSearchParams(window.location.search);
@@ -22,13 +19,17 @@ function App() {
     console.log('App - Token from URL:', token);
 
     const { user, loading: authLoading, error: authError } = useAuth(token);
-    const { score, loading: scoreLoading } = useScore(user?.uid);
+    const { score } = useScore(user?.uid);
     const { rank, totalPlayers, loading: rankLoading } = useUserRank(user?.uid);
 
     console.log('App - Authenticated user:', user?.uid);
     console.log('App - Current score:', score);
     console.log('App - Current rank:', rank);
     console.log('App - Total players:', totalPlayers);
+
+    const handleThemeToggle = () => {
+        setMode(prevMode => (prevMode === 'dark' ? 'light' : 'dark'));
+    };
 
     if (!token) {
         return (
@@ -95,13 +96,13 @@ function App() {
                     color: 'text.primary',
                 }}
             >
-                <WalletInfo address={token} />
+                <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
                 <Box className="container mx-auto px-4 py-8">
                     <PointsDisplay
-                        points={scoreLoading ? 0 : score}
+                        points={authLoading ? 0 : score}
                         rank={rankLoading ? 1 : rank}
                         totalPlayers={rankLoading ? 1 : totalPlayers}
-                        timeLeft="23h 50m 24s"
+                        userId={user?.uid}
                     />
                     <Leaderboard />
                 </Box>

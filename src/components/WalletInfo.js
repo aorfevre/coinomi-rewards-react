@@ -1,47 +1,40 @@
-import React from 'react';
+import { Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
-import { Typography, Button } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import React from 'react';
+import { ThemeToggle } from './ThemeToggle';
 
-const StyledWalletButton = styled(Button)({
-    position: 'absolute',
-    top: '1rem',
-    right: '1rem',
-    background: 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(10px)',
-    color: 'rgba(255, 255, 255, 0.7)',
-    padding: '8px 16px',
-    borderRadius: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    '&:hover': {
-        background: 'rgba(255, 255, 255, 0.15)',
-    },
-});
+export const WalletInfo = ({ address, onThemeToggle }) => {
+    const shortenAddress = addr => {
+        if (!addr) return '';
+        return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
+    };
 
-const truncateAddress = address => {
-    if (!address) return '';
-    return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
-};
-
-export const WalletInfo = ({ address }) => {
     return (
-        <StyledWalletButton>
-            <AccountBalanceWalletIcon />
+        <Box
+            sx={{
+                position: 'absolute',
+                top: 16,
+                right: 16,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 2,
+            }}
+        >
             <Typography
+                variant="body2"
                 sx={{
                     fontFamily: 'monospace',
                     fontSize: '0.9rem',
                 }}
             >
-                {truncateAddress(address)}
+                {shortenAddress(address)}
             </Typography>
-        </StyledWalletButton>
+            <ThemeToggle onToggle={onThemeToggle} />
+        </Box>
     );
 };
 
 WalletInfo.propTypes = {
     address: PropTypes.string.isRequired,
+    onThemeToggle: PropTypes.func.isRequired,
 };

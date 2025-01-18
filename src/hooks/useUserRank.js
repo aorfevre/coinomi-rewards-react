@@ -9,7 +9,7 @@ export const useUserRank = userId => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        console.log('useUserRank - Starting rank calculation for userId:', userId);
+        console.log('useUserRank - Starting subscription for userId:', userId);
         if (!userId) {
             console.log('useUserRank - No userId provided');
             setLoading(false);
@@ -18,6 +18,7 @@ export const useUserRank = userId => {
 
         const usersRef = collection(db, 'users');
         const q = query(usersRef, orderBy('points', 'desc'));
+        console.log('useUserRank - Setting up real-time listener');
 
         const unsubscribe = onSnapshot(
             q,
@@ -27,17 +28,21 @@ export const useUserRank = userId => {
                     id: doc.id,
                     ...doc.data(),
                 }));
+
                 console.log('useUserRank - Total users:', users.length);
                 setTotalPlayers(users.length);
 
+                // Find user's rank (1-based index)
                 const userIndex = users.findIndex(user => user.id === userId);
                 console.log('useUserRank - User index in leaderboard:', userIndex);
 
                 if (userIndex !== -1) {
-                    setRank(userIndex + 1);
+                    const userRank = userIndex + 1;
+                    console.log('useUserRank - Setting user rank:', userRank);
+                    setRank(userRank);
                 } else {
                     console.log('useUserRank - User not found in leaderboard');
-                    setRank(null);
+                    setRank(users.length + 1); // Place at bottom if not found
                 }
                 setLoading(false);
             },
@@ -49,7 +54,7 @@ export const useUserRank = userId => {
         );
 
         return () => {
-            console.log('useUserRank - Unsubscribing from users updates');
+            console.log('useUserRank - Cleaning up subscription');
             unsubscribe();
         };
     }, [userId]);
