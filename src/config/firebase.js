@@ -17,7 +17,7 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export const functions = getFunctions(app);
 
-console.log('Environment: ', process.env.NODE_ENV);
+console.log('Environment: ', firebaseConfig, process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
     connectAuthEmulator(auth, 'http://localhost:9099');
     connectFirestoreEmulator(db, 'localhost', 8080);
