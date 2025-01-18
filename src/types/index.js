@@ -25,4 +25,4 @@
  * @property {string} userId - The user ID
  * @property {string} timestamp - Timestamp of the reward
  * @property {string} type - Type of reward (e.g., 'daily')
- */ 
+ */

@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5001/coinomi-rewards/us-central1';
+const API_URL =
+    process.env.REACT_APP_API_URL || 'http://localhost:5001/coinomi-rewards/us-central1';
 
-export const useRewards = (userId) => {
+export const useRewards = userId => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [lastClaim, setLastClaim] = useState(null);
@@ -36,7 +37,7 @@ export const useRewards = (userId) => {
         fetchLastClaim();
     }, [userId]);
 
-    const claimDailyReward = async (userId) => {
+    const claimDailyReward = async userId => {
         try {
             console.log('Claiming daily reward for user:', userId);
             setLoading(true);
@@ -95,4 +96,4 @@ export const useRewards = (userId) => {
         claimDailyReward,
         lastClaim,
     };
-}; 
+};

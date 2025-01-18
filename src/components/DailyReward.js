@@ -39,4 +39,4 @@ export function DailyReward() {
             {error && <div className="error-message">{error.message}</div>}
         </div>
     );
-} 
+}

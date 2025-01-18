@@ -3,7 +3,14 @@
     "version": "0.1.0",
     "private": true,
     "dependencies": {
+        "@firebase/app": "^0.10.18",
+        "@firebase/auth": "^1.8.2",
+        "@firebase/firestore": "^4.7.6",
+        "@firebase/functions": "^0.12.1",
+        "@firebase/storage": "^0.13.5",
         "cra-template": "1.2.0",
+        "ethers": "^6.13.5",
+        "firebase": "^11.2.0",
         "prettier": "^3.4.2",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
@@ -26,6 +33,9 @@
         "extends": [
             "react-app",
             "react-app/jest"
+        ],
+        "ignorePatterns": [
+            "**/node_modules/**"
         ]
     },
     "browserslist": {
@@ -39,5 +49,11 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "devDependencies": {
+        "eslint-config-prettier": "^10.0.1",
+        "eslint-plugin-prettier": "^5.2.2",
+        "eslint-plugin-react": "^7.37.4",
+        "eslint-plugin-react-hooks": "^5.1.0"
     }
 }

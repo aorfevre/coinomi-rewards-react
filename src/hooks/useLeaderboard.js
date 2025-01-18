@@ -34,4 +34,4 @@ export function useLeaderboard() {
     }, []);
 
     return { leaders, loading, error };
-} 
+}

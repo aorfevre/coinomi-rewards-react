@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
-export const useScore = (userId) => {
+export const useScore = userId => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [score, setScore] = useState(0);
@@ -34,4 +34,4 @@ export const useScore = (userId) => {
     }, [userId]);
 
     return { score, loading, error };
-}; 
+};

@@ -72,4 +72,4 @@ export function useUserRank(userId) {
     }, [userId]);
 
     return rankData;
-} 
+}
