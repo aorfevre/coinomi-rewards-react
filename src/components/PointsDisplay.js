@@ -6,6 +6,7 @@ import { useRewards } from '../hooks/useRewards';
 import { useScore } from '../hooks/useScore';
 import { Countdown } from './Countdown';
 import { RankDisplay } from './RankDisplay';
+import { TabPanel } from './TabPanel';
 
 export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
     const { claimDailyReward, loading: claimLoading } = useRewards();
@@ -40,12 +41,11 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center',
-                minHeight: '60vh',
                 width: '100%',
                 maxWidth: '800px',
                 margin: '0 auto',
                 px: 2,
+                py: 4,
             }}
         >
             <Box
@@ -135,6 +135,8 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                 </Box>
 
                 {rank && totalPlayers && <RankDisplay rank={rank} totalPlayers={totalPlayers} />}
+
+                <TabPanel userId={userId} />
             </Box>
         </Box>
     );

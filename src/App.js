@@ -1,6 +1,5 @@
 import { Box, CssBaseline, ThemeProvider, Typography } from '@mui/material';
 import React from 'react';
-import { Leaderboard } from './components/Leaderboard';
 import { PointsDisplay } from './components/PointsDisplay';
 import { WalletInfo } from './components/WalletInfo';
 import { useAuth } from './hooks/useAuth';
@@ -104,7 +103,6 @@ function App() {
                         totalPlayers={rankLoading ? 1 : totalPlayers}
                         userId={user?.uid}
                     />
-                    <Leaderboard />
                 </Box>
             </Box>
         </ThemeProvider>
