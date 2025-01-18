@@ -14,5 +14,6 @@
         "types": ["jest", "node"]
     },
     "compileOnSave": true,
-    "include": ["src", "src/__tests__/**/*", "jest.config.ts"]
+    "include": ["src"],
+    "exclude": ["src/**/*.test.ts", "src/__tests__/**/*"]
 }
