@@ -27,7 +27,18 @@ export const useAuth = walletAddress => {
                 const getCustomToken = httpsCallable(functions, 'getCustomToken');
                 console.log('📤 useAuth - Calling getCustomToken function');
 
-                const result = await getCustomToken({ walletAddress });
+                const result = await getCustomToken({ walletAddress }).catch(error => {
+                    console.error('🚨 getCustomToken error:', {
+                        code: error.code,
+                        message: error.message,
+                        details: error.details,
+                        functionName: 'getCustomToken',
+                        region: error.region,
+                        requestUrl: error.requestUrl,
+                    });
+                    throw error;
+                });
+
                 console.log('📥 useAuth - Received response:', {
                     hasCustomToken: !!result.data.customToken,
                     uid: result.data.uid,
