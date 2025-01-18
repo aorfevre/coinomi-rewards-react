@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { collection, query, where, orderBy, limit, getDocs } from 'firebase/firestore';
-import { db } from '../config/firebase';
-
-const API_URL =
-    process.env.REACT_APP_API_URL || 'http://localhost:5001/coinomi-rewards/us-central1';
+import { httpsCallable } from 'firebase/functions';
+import { db, functions } from '../config/firebase';
 
 export const useRewards = userId => {
     const [loading, setLoading] = useState(false);
@@ -30,7 +28,7 @@ export const useRewards = userId => {
                     setLastClaim(new Date(lastClaimData.timestamp));
                 }
             } catch (err) {
-                console.error('Error fetching last claim:', err);
+                console.error('❌ Error fetching last claim:', err);
             }
         };
 
@@ -39,7 +37,7 @@ export const useRewards = userId => {
 
     const claimDailyReward = async userId => {
         try {
-            console.log('Claiming daily reward for user:', userId);
+            console.log('🎁 Claiming daily reward for user:', userId);
             setLoading(true);
             setError(null);
 
@@ -61,30 +59,20 @@ export const useRewards = userId => {
                 throw new Error('Daily reward already claimed today');
             }
 
-            const response = await fetch(`${API_URL}/claimDailyReward`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ userId }),
-            });
+            const claimReward = httpsCallable(functions, 'claimDailyReward');
+            const result = await claimReward({ userId });
+            const data = result.data;
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || 'Failed to claim daily reward');
-            }
-
-            const data = await response.json();
             await setLastClaim(new Date(data.timestamp));
-            console.log('Daily reward claimed successfully:', data);
+            console.log('✅ Daily reward claimed successfully:', data);
 
             return data;
         } catch (err) {
-            console.error('Error claiming daily reward:', err);
+            console.error('❌ Error claiming daily reward:', err);
             setError(err instanceof Error ? err : new Error('Failed to claim reward'));
             throw err;
         } finally {
-            console.log('Setting loading to false');
+            console.log('⏳ Setting loading to false');
             await new Promise(resolve => setTimeout(resolve, 1000));
             setLoading(false);
         }

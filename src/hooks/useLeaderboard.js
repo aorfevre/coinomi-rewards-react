@@ -1,37 +1,30 @@
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, limit, onSnapshot } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '../config/firebase';
 
-export function useLeaderboard() {
+export const useLeaderboard = (limit = 10) => {
+    const [leaderboard, setLeaderboard] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [leaders, setLeaders] = useState([]);
 
     useEffect(() => {
-        const scoresRef = collection(db, 'scores');
-        const leaderboardQuery = query(scoresRef, orderBy('points', 'desc'), limit(10));
-
-        // Set up real-time listener
-        const unsubscribe = onSnapshot(
-            leaderboardQuery,
-            snapshot => {
-                const leaderboardData = snapshot.docs.map(doc => ({
-                    ...doc.data(),
-                    userId: doc.id,
-                }));
-                setLeaders(leaderboardData);
-                setLoading(false);
-            },
-            err => {
-                console.error('Error fetching leaderboard:', err);
-                setError(err instanceof Error ? err : new Error('Failed to fetch leaderboard'));
+        const fetchLeaderboard = async () => {
+            try {
+                const getLeaderboard = httpsCallable(functions, 'getLeaderboard');
+                const result = await getLeaderboard({ limit });
+                console.log('Leaderboard data:', result.data); // Debug log
+                setLeaderboard(result.data.leaderboard || []);
+            } catch (err) {
+                console.error('❌ Error fetching leaderboard:', err);
+                setError(err);
+                setLeaderboard([]); // Set empty array on error
+            } finally {
                 setLoading(false);
             }
-        );
+        };
 
-        // Cleanup subscription on unmount
-        return () => unsubscribe();
-    }, []);
+        fetchLeaderboard();
+    }, [limit]);
 
-    return { leaders, loading, error };
-}
+    return { leaderboard, loading, error };
+};

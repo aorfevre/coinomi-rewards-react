@@ -1,49 +1,99 @@
+import React from 'react';
+import { Box, Typography, Paper } from '@mui/material';
+import { styled } from '@mui/material/styles';
+import StarIcon from '@mui/icons-material/Star';
+import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 
-export function Leaderboard() {
-    const { leaders, loading, error } = useLeaderboard();
+const LeaderboardItem = styled(Paper)(({ rank }) => ({
+    display: 'flex',
+    alignItems: 'center',
+    padding: '1rem 1.5rem',
+    background:
+        rank === 0
+            ? 'linear-gradient(to right, rgba(255, 196, 0, 0.2), rgba(255, 196, 0, 0.1))'
+            : rank === 1
+              ? 'linear-gradient(to right, rgba(192, 192, 192, 0.2), rgba(192, 192, 192, 0.1))'
+              : 'linear-gradient(to right, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05))',
+    borderRadius: '8px',
+    marginBottom: '0.5rem',
+}));
 
-    if (loading) {
-        return (
-            <div className="leaderboard-container">
-                <div className="loading-spinner">Loading leaderboard...</div>
-            </div>
-        );
-    }
+export const Leaderboard = () => {
+    const { leaderboard, loading, error } = useLeaderboard(10);
 
-    if (error) {
+    if (loading) return <Box sx={{ textAlign: 'center', p: 4 }}>Loading leaderboard...</Box>;
+
+    if (error)
         return (
-            <div className="leaderboard-container">
-                <div className="error-message">Error: {error.message}</div>
-            </div>
+            <Box sx={{ textAlign: 'center', p: 4, color: 'error.main' }}>
+                Error loading leaderboard
+            </Box>
         );
-    }
+
+    if (!leaderboard?.length)
+        return <Box sx={{ textAlign: 'center', p: 4 }}>No entries in leaderboard yet</Box>;
 
     return (
-        <div className="leaderboard-container">
-            <h2 className="leaderboard-title">Top Players</h2>
-            <div className="leaderboard-list">
-                {leaders.map((entry, index) => (
-                    <div
-                        key={entry.userId}
-                        className={`leaderboard-entry ${index < 3 ? `top-${index + 1}` : ''}`}
-                    >
-                        <div className="rank-container">
-                            <div className="rank">{index + 1}</div>
-                        </div>
-                        <div className="player-info">
-                            <div className="wallet-address">
-                                {entry.userId.slice(0, 6)}...{entry.userId.slice(-4)}
-                            </div>
-                            <div className="stats">
-                                <span className="tasks">🎯 {entry.tasksCompleted}</span>
-                                <span className="multiplier">✨ {entry.multiplier}x</span>
-                            </div>
-                        </div>
-                        <div className="points">{entry.points.toLocaleString()}</div>
-                    </div>
-                ))}
-            </div>
-        </div>
+        <Box sx={{ maxWidth: 800, mx: 'auto', p: 4 }}>
+            <Typography
+                variant="h2"
+                sx={{
+                    textAlign: 'center',
+                    mb: 4,
+                    color: '#5bb4ff',
+                    fontSize: '2rem',
+                    fontWeight: 500,
+                }}
+            >
+                Top Players
+            </Typography>
+
+            {leaderboard.map((entry, index) => (
+                <LeaderboardItem key={entry.userId} rank={index}>
+                    <Typography sx={{ width: 40, color: 'white' }}>{index + 1}</Typography>
+
+                    <Box sx={{ flex: 1 }}>
+                        <Typography
+                            sx={{
+                                fontFamily: 'monospace',
+                                color: 'rgba(255, 255, 255, 0.7)',
+                            }}
+                        >
+                            {entry.walletAddress.substring(0, 6)}...
+                            {entry.walletAddress.substring(entry.walletAddress.length - 4)}
+                        </Typography>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+                        <Typography sx={{ color: '#5bb4ff', fontWeight: 500 }}>
+                            {entry.points}
+                        </Typography>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5,
+                                color: 'rgba(255, 255, 255, 0.6)',
+                            }}
+                        >
+                            <StarIcon fontSize="small" />
+                            <span>{entry.multiplier}x</span>
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 0.5,
+                                color: 'rgba(255, 255, 255, 0.6)',
+                            }}
+                        >
+                            <GpsFixedIcon fontSize="small" />
+                            <span>{entry.tasksCompleted}</span>
+                        </Box>
+                    </Box>
+                </LeaderboardItem>
+            ))}
+        </Box>
     );
-}
+};

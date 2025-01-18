@@ -20,16 +20,7 @@
   },
   "plugins": ["react", "prettier"],
   "rules": {
-    "prettier/prettier": [
-      "error",
-      {
-        "tabWidth": 4,
-        "singleQuote": true,
-        "trailingComma": "es5",
-        "printWidth": 100,
-        "endOfLine": "lf"
-      }
-    ],
+    "prettier/prettier": "error",
     "react/react-in-jsx-scope": "off"
   },
   "settings": {

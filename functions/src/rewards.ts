@@ -13,7 +13,7 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
             throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
         }
 
-        const userId = context.auth.uid;
+        const userId = data.userId;
         functions.logger.info('Processing daily reward claim for user:', { userId });
 
         // Check last claim
