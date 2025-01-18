@@ -35,9 +35,12 @@ export const useRewards = userId => {
         fetchLastClaim();
     }, [userId]);
 
-    const claimDailyReward = async userId => {
+    const claimDailyReward = async () => {
+        if (!userId) {
+            throw new Error('User ID is required to claim reward');
+        }
+
         try {
-            console.log('🎁 Claiming daily reward for user:', userId);
             setLoading(true);
             setError(null);
 
@@ -58,14 +61,12 @@ export const useRewards = userId => {
             if (!querySnapshot.empty) {
                 throw new Error('Daily reward already claimed today');
             }
-            console.log('🎁 Claiming daily reward for user:', userId);
 
             const claimReward = httpsCallable(functions, 'claimDailyReward');
             const result = await claimReward({ userId });
             const data = result.data;
 
             await setLastClaim(new Date(data.timestamp));
-            console.log('✅ Daily reward claimed successfully:', data);
 
             return data;
         } catch (err) {

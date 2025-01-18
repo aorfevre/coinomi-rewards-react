@@ -6,6 +6,7 @@ import { useAuth } from './hooks/useAuth';
 import { useScore } from './hooks/useScore';
 import { useUserRank } from './hooks/useUserRank';
 import { getTheme } from './theme';
+import { FireworksButton } from './components/FireworksButton';
 
 function App() {
     const [mode, setMode] = React.useState('dark');
@@ -105,6 +106,7 @@ function App() {
                     />
                 </Box>
             </Box>
+            <FireworksButton />
         </ThemeProvider>
     );
 }

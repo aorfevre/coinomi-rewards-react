@@ -7,11 +7,13 @@ import { useScore } from '../hooks/useScore';
 import { Countdown } from './Countdown';
 import { RankDisplay } from './RankDisplay';
 import { TabPanel } from './TabPanel';
+import { Fireworks } from './Fireworks';
 
 export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
-    const { claimDailyReward, loading: claimLoading } = useRewards();
+    const { claimDailyReward, loading: claimLoading } = useRewards(userId);
     const { scoreDoc } = useScore(userId);
     const [canClaim, setCanClaim] = useState(false);
+    const [showFireworks, setShowFireworks] = useState(false);
 
     const getNextClaimTime = useCallback(() => {
         const lastClaimTime = new Date(scoreDoc?.lastTaskTimestamp || 0);
@@ -30,115 +32,126 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
     };
 
     const handleClaim = async () => {
-        if (!canClaim) return;
-        await claimDailyReward(userId);
-        setCanClaim(false);
+        try {
+            await claimDailyReward(userId);
+            setShowFireworks(true);
+            setTimeout(() => setShowFireworks(false), 5000);
+        } catch (error) {
+            console.error('Failed to claim reward:', error);
+        }
     };
 
     return (
-        <Box
-            sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                width: '100%',
-                maxWidth: '800px',
-                margin: '0 auto',
-                px: 2,
-                py: 4,
-            }}
-        >
+        <>
+            <Fireworks show={showFireworks} />
             <Box
                 sx={{
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    gap: 6,
                     width: '100%',
+                    maxWidth: '800px',
+                    margin: '0 auto',
+                    px: 2,
+                    py: 4,
                 }}
             >
-                <Typography
-                    variant="h1"
-                    sx={{
-                        fontSize: { xs: '3rem', sm: '4rem' },
-                        fontWeight: 'bold',
-                        textAlign: 'center',
-                    }}
-                >
-                    Your Points: {points}
-                </Typography>
-
                 <Box
                     sx={{
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        gap: 2,
+                        gap: 6,
                         width: '100%',
-                        maxWidth: '400px',
                     }}
                 >
-                    {canClaim ? (
-                        <Typography
-                            variant="h4"
-                            sx={{
-                                color: 'primary.main',
-                                fontSize: { xs: '1.25rem', sm: '1.5rem' },
-                                fontWeight: 'bold',
-                                textAlign: 'center',
-                            }}
-                        >
-                            Daily Reward Available!
-                        </Typography>
-                    ) : (
-                        <>
+                    <Typography
+                        variant="h1"
+                        sx={{
+                            fontSize: { xs: '3rem', sm: '4rem' },
+                            fontWeight: 'bold',
+                            textAlign: 'center',
+                        }}
+                    >
+                        Your Points: {points}
+                    </Typography>
+
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 2,
+                            width: '100%',
+                            maxWidth: '400px',
+                        }}
+                    >
+                        {canClaim ? (
                             <Typography
                                 variant="h4"
                                 sx={{
-                                    color: 'text.secondary',
+                                    color: 'primary.main',
                                     fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                                    fontWeight: 'bold',
                                     textAlign: 'center',
                                 }}
                             >
-                                Next Claim Available In:
+                                Daily Reward Available!
                             </Typography>
-                            <Countdown
-                                targetDate={getNextClaimTime()}
-                                onComplete={handleCountdownComplete}
-                                variant="h3"
-                                color="text.primary"
-                            />
-                        </>
+                        ) : (
+                            <>
+                                <Typography
+                                    variant="h4"
+                                    sx={{
+                                        color: 'text.secondary',
+                                        fontSize: { xs: '1.25rem', sm: '1.5rem' },
+                                        textAlign: 'center',
+                                    }}
+                                >
+                                    Next Claim Available In:
+                                </Typography>
+                                <Countdown
+                                    targetDate={getNextClaimTime()}
+                                    onComplete={handleCountdownComplete}
+                                    variant="h3"
+                                    color="text.primary"
+                                />
+                            </>
+                        )}
+
+                        <Button
+                            variant="contained"
+                            size="large"
+                            onClick={handleClaim}
+                            disabled={!canClaim || claimLoading}
+                            sx={{
+                                bgcolor: canClaim ? 'primary.main' : 'action.disabledBackground',
+                                color: 'white',
+                                padding: '12px 32px',
+                                fontSize: { xs: '1rem', sm: '1.2rem' },
+                                width: '100%',
+                                maxWidth: '300px',
+                                mt: 2,
+                                '&:hover': {
+                                    bgcolor: canClaim
+                                        ? 'primary.dark'
+                                        : 'action.disabledBackground',
+                                },
+                                opacity: canClaim ? 1 : 0.7,
+                            }}
+                        >
+                            {claimLoading ? 'Claiming...' : 'Claim Daily Reward'}
+                        </Button>
+                    </Box>
+
+                    {rank && totalPlayers && (
+                        <RankDisplay rank={rank} totalPlayers={totalPlayers} />
                     )}
 
-                    <Button
-                        variant="contained"
-                        size="large"
-                        onClick={handleClaim}
-                        disabled={claimLoading || !canClaim}
-                        sx={{
-                            bgcolor: canClaim ? 'primary.main' : 'action.disabledBackground',
-                            color: 'white',
-                            padding: '12px 32px',
-                            fontSize: { xs: '1rem', sm: '1.2rem' },
-                            width: '100%',
-                            maxWidth: '300px',
-                            mt: 2,
-                            '&:hover': {
-                                bgcolor: canClaim ? 'primary.dark' : 'action.disabledBackground',
-                            },
-                            opacity: canClaim ? 1 : 0.7,
-                        }}
-                    >
-                        {claimLoading ? 'Claiming...' : 'Claim Daily Reward'}
-                    </Button>
+                    <TabPanel userId={userId} />
                 </Box>
-
-                {rank && totalPlayers && <RankDisplay rank={rank} totalPlayers={totalPlayers} />}
-
-                <TabPanel userId={userId} />
             </Box>
-        </Box>
+        </>
     );
 };
 
