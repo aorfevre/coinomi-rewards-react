@@ -134,10 +134,18 @@ jobs:
         steps:
             - uses: actions/checkout@v3
 
-            - name: Deploy Firestore Rules and Indexes
+            - name: Deploy Firestore Rules
               uses: w9jds/firebase-action@master
               with:
-                  args: deploy --only firestore:rules,firestore:indexes
+                  args: deploy --only firestore:rules
+              env:
+                  GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+                  PROJECT_ID: ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}
+
+            - name: Deploy Firestore Indexes
+              uses: w9jds/firebase-action@master
+              with:
+                  args: deploy --only firestore:indexes
               env:
                   GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
                   PROJECT_ID: ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}
