@@ -27,7 +27,7 @@ export const getCustomToken = functions.https.onCall(async data => {
         }
 
         const customToken = await auth.createCustomToken(uid);
-        
+
         // Add detailed token logging
         functions.logger.info('🎫 Generated custom token:', {
             tokenLength: customToken.length,
@@ -38,7 +38,7 @@ export const getCustomToken = functions.https.onCall(async data => {
             metadata: {
                 creationTime: userRecord.metadata.creationTime,
                 lastSignInTime: userRecord.metadata.lastSignInTime,
-            }
+            },
         });
 
         return {
@@ -47,10 +47,10 @@ export const getCustomToken = functions.https.onCall(async data => {
             displayName: userRecord.displayName,
         };
     } catch (error) {
-        functions.logger.error('❌ Error occurred:', { 
+        functions.logger.error('❌ Error occurred:', {
             error,
             errorMessage: error instanceof Error ? error.message : 'Unknown error',
-            errorStack: error instanceof Error ? error.stack : undefined
+            errorStack: error instanceof Error ? error.stack : undefined,
         });
         throw new functions.https.HttpsError(
             'internal',
