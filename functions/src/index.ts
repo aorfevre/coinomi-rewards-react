@@ -1,6 +1,6 @@
 import { getCustomToken } from './auth';
 import { claimDailyReward, onRewardCreated } from './rewards';
-import { getUserRank, getLeaderboard } from './scores';
+import { getLeaderboard, getUserRank } from './scores';
 
 // Export the functions
-export { getCustomToken, claimDailyReward, onRewardCreated, getUserRank, getLeaderboard }; 
+export { claimDailyReward, getCustomToken, getLeaderboard, getUserRank, onRewardCreated };

@@ -1,9 +1,9 @@
-import { useEffect, useState } from 'react';
-import { auth, db, functions } from '../config/firebase';
+import { ethers } from 'ethers';
 import { signInWithCustomToken } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { ethers } from 'ethers';
 import { httpsCallable } from 'firebase/functions';
+import { useEffect, useState } from 'react';
+import { auth, db, functions } from '../config/firebase';
 
 export const useAuth = walletAddress => {
     const [loading, setLoading] = useState(true);
@@ -11,41 +11,49 @@ export const useAuth = walletAddress => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(user => {
-            console.log(user ? 'User is signed in:' : 'User is signed out', user);
-            setUser(user);
-            setLoading(false);
-        });
+        console.log('🔄 useAuth - Effect triggered with wallet:', walletAddress);
 
-        return () => unsubscribe();
-    }, []);
-
-    useEffect(() => {
         if (!walletAddress || !ethers.isAddress(walletAddress)) {
+            console.log('⚠️ useAuth - Invalid wallet address:', walletAddress);
+            setLoading(false);
             return;
         }
 
         const signIn = async () => {
             try {
-                console.log('🔑 Getting custom token for wallet:', walletAddress);
+                console.log('🔑 useAuth - Getting custom token for wallet:', walletAddress);
 
                 // Use httpsCallable instead of fetch
                 const getCustomToken = httpsCallable(functions, 'getCustomToken');
+                console.log('📤 useAuth - Calling getCustomToken function');
+
                 const result = await getCustomToken({ walletAddress });
+                console.log('📥 useAuth - Received response:', {
+                    hasCustomToken: !!result.data.customToken,
+                    uid: result.data.uid,
+                    displayName: result.data.displayName,
+                });
+
                 const { customToken } = result.data;
-
-                console.log('✅ Received token response');
-
                 if (!customToken) {
                     throw new Error('No token received from server');
                 }
 
                 // Sign in with the custom token
+                console.log('🔓 useAuth - Signing in with custom token');
                 const userCredential = await signInWithCustomToken(auth, customToken);
-                console.log('👤 Sign in successful:', userCredential);
+                console.log('✅ useAuth - Sign in successful:', {
+                    uid: userCredential.user.uid,
+                    email: userCredential.user.email,
+                    displayName: userCredential.user.displayName,
+                });
+
+                setUser(userCredential.user);
 
                 // Store user data in Firestore
                 const userRef = doc(db, 'users', userCredential.user.uid);
+                console.log('💾 useAuth - Storing user data in Firestore');
+
                 await setDoc(
                     userRef,
                     {
@@ -54,16 +62,33 @@ export const useAuth = walletAddress => {
                     },
                     { merge: true }
                 );
-                console.log('💾 User data stored in Firestore');
+                console.log('✨ useAuth - User data stored successfully');
             } catch (err) {
-                console.error('❌ Auth error:', err);
+                console.error('❌ useAuth - Authentication error:', {
+                    message: err.message,
+                    code: err.code,
+                    stack: err.stack,
+                    details: err.details,
+                });
                 setError(err instanceof Error ? err : new Error('Authentication failed'));
+            } finally {
+                console.log('🏁 useAuth - Authentication process completed');
                 setLoading(false);
             }
         };
 
         signIn();
     }, [walletAddress]);
+
+    // Log state changes
+    useEffect(() => {
+        console.log('📊 useAuth - State updated:', {
+            isLoading: loading,
+            hasError: !!error,
+            isAuthenticated: !!user,
+            userId: user?.uid,
+        });
+    }, [loading, error, user]);
 
     return { loading, error, user };
 };

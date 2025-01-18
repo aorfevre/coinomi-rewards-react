@@ -1,5 +1,5 @@
 import * as functions from 'firebase-functions';
-import { admin } from './config/firebase';
+import { auth } from './config/firebase';
 
 export const getCustomToken = functions.https.onCall(async data => {
     try {
@@ -16,17 +16,17 @@ export const getCustomToken = functions.https.onCall(async data => {
 
         let userRecord;
         try {
-            userRecord = await admin.auth().getUser(uid);
+            userRecord = await auth.getUser(uid);
             functions.logger.info('👤 Found existing user:', { uid });
         } catch (error) {
-            userRecord = await admin.auth().createUser({
+            userRecord = await auth.createUser({
                 uid,
                 displayName: walletAddress,
             });
             functions.logger.info('✨ Created new user:', { uid });
         }
 
-        const customToken = await admin.auth().createCustomToken(uid);
+        const customToken = await auth.createCustomToken(uid);
         
         // Add detailed token logging
         functions.logger.info('🎫 Generated custom token:', {

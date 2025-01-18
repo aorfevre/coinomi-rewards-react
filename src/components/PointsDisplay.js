@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { Box, Button, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { Fireworks } from './Fireworks';
 
 const StyledButton = styled(Button)({
     background: 'rgba(255, 255, 255, 0.1)',
@@ -32,49 +33,65 @@ const RankBadge = styled(Box)({
 });
 
 export const PointsDisplay = ({ points, rank, totalPlayers, timeLeft }) => {
+    const [showFireworks, setShowFireworks] = useState(false);
+
+    const handleClaim = async () => {
+        try {
+            setShowFireworks(true);
+            setTimeout(() => setShowFireworks(false), 3000);
+        } catch (error) {
+            console.error('Failed to claim reward:', error);
+        }
+    };
+
     return (
-        <Box sx={{ textAlign: 'center', py: 4, mb: 6 }}>
-            <Typography
-                variant="h1"
-                sx={{
-                    fontSize: '4rem',
-                    fontWeight: 700,
-                    mb: 4,
-                    color: 'white',
-                }}
-            >
-                Your Points: {points}
-            </Typography>
+        <>
+            <Fireworks show={showFireworks} />
+            <Box sx={{ textAlign: 'center', py: 4, mb: 6 }}>
+                <Typography
+                    variant="h1"
+                    sx={{
+                        fontSize: '4rem',
+                        fontWeight: 700,
+                        mb: 4,
+                        color: 'white',
+                    }}
+                >
+                    Your Points: {points}
+                </Typography>
 
-            <Box sx={{ mb: 3 }}>
-                <RankBadge>
-                    <Typography
-                        variant="h2"
-                        sx={{
-                            fontSize: '2rem',
-                            fontWeight: 500,
-                        }}
-                    >
-                        Rank: #{rank} of {totalPlayers}
-                    </Typography>
-                </RankBadge>
+                <Box sx={{ mb: 3 }}>
+                    <RankBadge>
+                        <Typography
+                            variant="h2"
+                            sx={{
+                                fontSize: '2rem',
+                                fontWeight: 500,
+                            }}
+                        >
+                            Rank: #{rank} of {totalPlayers}
+                        </Typography>
+                    </RankBadge>
+                </Box>
+
+                <Typography
+                    variant="h2"
+                    sx={{
+                        fontSize: '3.5rem',
+                        color: 'white',
+                        fontFamily: 'monospace',
+                        mb: 4,
+                        opacity: 0.9,
+                    }}
+                >
+                    {timeLeft}
+                </Typography>
+
+                <StyledButton variant="contained" onClick={handleClaim}>
+                    Claim Daily Reward
+                </StyledButton>
             </Box>
-
-            <Typography
-                variant="h2"
-                sx={{
-                    fontSize: '3.5rem',
-                    color: 'white',
-                    fontFamily: 'monospace',
-                    mb: 4,
-                    opacity: 0.9,
-                }}
-            >
-                {timeLeft}
-            </Typography>
-
-            <StyledButton variant="contained">Claim Daily Reward</StyledButton>
-        </Box>
+        </>
     );
 };
 
