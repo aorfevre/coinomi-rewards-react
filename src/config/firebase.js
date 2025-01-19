@@ -17,10 +17,10 @@ console.log('🔥 Initializing Firebase with config:', {
     apiKey: '***',
 });
 
-export const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const functions = getFunctions(app);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const functions = getFunctions(app);
 
 console.log('Environment: ', firebaseConfig, process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
@@ -28,3 +28,5 @@ if (process.env.NODE_ENV === 'development') {
     connectFirestoreEmulator(db, 'localhost', 8080);
     connectFunctionsEmulator(functions, 'localhost', 5001);
 }
+
+export { app, db, auth, functions };

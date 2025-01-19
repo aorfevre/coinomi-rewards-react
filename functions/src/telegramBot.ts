@@ -5,9 +5,14 @@ import { db } from './config/firebase';
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || '');
 
-interface StartCommandContext extends Context<Update> {
+interface StartCommandContext extends Context {
     message: Update.New & Update.NonChannel & Message.TextMessage;
-    from: NonNullable<Context['from']>;
+    from?: {
+        id: number;
+        first_name: string;
+        username?: string;
+        language_code?: string;
+    };
 }
 
 // Handle /start command with userId parameter
@@ -23,10 +28,10 @@ bot.command('start', async (ctx: StartCommandContext) => {
             fullMessage: message,
             userId,
             from: ctx.from,
-            message: ctx.message,
         });
 
-        if (!userId || !ctx.from) {
+        // Check if we have both userId and from data
+        if (!userId || !ctx.from?.id) {
             await ctx.reply(
                 '❌ Invalid authentication request. Please try again through the website.'
             );
@@ -43,18 +48,22 @@ bot.command('start', async (ctx: StartCommandContext) => {
         });
 
         // Check if this Telegram ID is already linked
-        const existingUser: any = await db
+        const existingUsersQuery = await db
             .collection('users')
             .where('telegramId', '==', telegramId)
             .get();
 
-        functions.logger.info('Existing user:', existingUser.docs[0].id);
-        if (!existingUser.empty && existingUser.docs[0].id !== userId) {
-            await ctx.reply('❌ This Telegram account is already linked to another user.');
-            return;
-        } else if (!existingUser.empty && existingUser.docs[0].id === userId) {
-            await ctx.reply('❌ This Telegram account is already linked to this user.');
-            return;
+        if (!existingUsersQuery.empty) {
+            const existingUser = existingUsersQuery.docs[0];
+            functions.logger.info('Existing user:', existingUser);
+
+            if (existingUser.id !== userId) {
+                await ctx.reply('❌ This Telegram account is already linked to another user.');
+                return;
+            } else {
+                await ctx.reply('❌ This Telegram account is already linked to this user.');
+                return;
+            }
         }
 
         // Update user document with Telegram data
@@ -62,7 +71,6 @@ bot.command('start', async (ctx: StartCommandContext) => {
         const userDoc = await userRef.get();
 
         if (!userDoc.exists) {
-            // Create the user document if it doesn't exist
             await userRef.set({
                 userId,
                 createdAt: new Date().toISOString(),
@@ -70,7 +78,7 @@ bot.command('start', async (ctx: StartCommandContext) => {
             });
         }
 
-        // Now update with Telegram data
+        // Update with Telegram data
         await userRef.update({
             telegramId: telegramId,
             telegramUsername: username,
