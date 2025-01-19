@@ -83,6 +83,9 @@ jobs:
                   REACT_APP_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID }}
                   REACT_APP_FIREBASE_APP_ID: ${{ secrets.REACT_APP_FIREBASE_APP_ID }}
                   REACT_APP_CLAIM_COOLDOWN_SECONDS: ${{ secrets.REACT_APP_CLAIM_COOLDOWN_SECONDS }}
+                  REACT_APP_TELEGRAM_BOT_USERNAME: ${{ secrets.REACT_APP_TELEGRAM_BOT_USERNAME }}
+                  REACT_APP_TELEGRAM_BOT_ID: ${{ secrets.REACT_APP_TELEGRAM_BOT_ID }}
+                  
 
             - name: Deploy to Firebase
               uses: FirebaseExtended/action-hosting-deploy@v0
@@ -113,6 +116,19 @@ jobs:
             - name: Install Functions Dependencies
               run: cd functions && npm ci
 
+            - name: Create .env file
+              run: |
+                cd functions
+                echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" > .env
+                echo "FUNCTION_URL=${{ secrets.FUNCTION_URL }}" >> .env
+                echo "REACT_APP_CLAIM_COOLDOWN_SECONDS=${{ secrets.REACT_APP_CLAIM_COOLDOWN_SECONDS }}" >> .env
+                echo "REACT_APP_TELEGRAM_BOT_ID=${{ secrets.REACT_APP_TELEGRAM_BOT_ID }}" >> .env
+              env:
+                TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+                FUNCTION_URL: ${{ secrets.FUNCTION_URL }}
+                REACT_APP_CLAIM_COOLDOWN_SECONDS: ${{ secrets.REACT_APP_CLAIM_COOLDOWN_SECONDS }}
+                REACT_APP_TELEGRAM_BOT_ID: ${{ secrets.REACT_APP_TELEGRAM_BOT_ID }}
+
             - name: Build Functions
               run: |
                   cd functions
@@ -127,6 +143,10 @@ jobs:
               env:
                   GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
                   PROJECT_ID: ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}
+                  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+                  FUNCTION_URL: ${{ secrets.FUNCTION_URL }}
+                  REACT_APP_CLAIM_COOLDOWN_SECONDS: ${{ secrets.REACT_APP_CLAIM_COOLDOWN_SECONDS }}
+                  REACT_APP_TELEGRAM_BOT_ID: ${{ secrets.REACT_APP_TELEGRAM_BOT_ID }}
 
     deploy_firestore:
         runs-on: ubuntu-latest

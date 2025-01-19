@@ -78,7 +78,9 @@ export const Tasks = ({ userId }) => {
                                             {format(new Date(reward.timestamp), 'PPp')}
                                         </Typography>
                                     </Box>
-                                    <Typography variant="subtitle1">+100 points</Typography>
+                                    <Typography variant="subtitle1">
+                                        +{reward.points} points
+                                    </Typography>
                                 </Box>
                             ))}
                         </Box>
