@@ -53,15 +53,13 @@ export const getLeaderboard = functions.https.onCall(async (data, context) => {
         const leaderboard = await Promise.all(
             snapshot.docs.map(async doc => {
                 const scoreData = doc.data();
-                const userDoc = await admin.firestore().collection('users').doc(doc.id).get();
-                const userData = userDoc.data() || {};
 
                 return {
                     userId: doc.id,
                     points: scoreData.points,
                     tasksCompleted: scoreData.tasksCompleted,
-                    displayName: userData.displayName || 'Anonymous',
-                    walletAddress: userData.walletAddress || '',
+                    displayName: doc.id || 'Anonymous',
+                    walletAddress: doc.id || '',
                 };
             })
         );
