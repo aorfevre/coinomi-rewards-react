@@ -20,14 +20,17 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
     functions.logger.info('Processing daily reward claim for user:', { userId });
 
     try {
-        // Check last claim
-        const lastClaimQuery = await db
-            .collection('rewards')
-            .where('userId', '==', userId)
-            .where('type', '==', 'daily')
-            .orderBy('timestamp', 'desc')
-            .limit(1)
-            .get();
+        // Run these queries in parallel
+        const [lastClaimQuery, userDoc] = await Promise.all([
+            db
+                .collection('rewards')
+                .where('userId', '==', userId)
+                .where('type', '==', 'daily')
+                .orderBy('timestamp', 'desc')
+                .limit(1)
+                .get(),
+            db.collection('users').doc(userId).get(),
+        ]);
 
         if (!lastClaimQuery.empty) {
             const lastClaim = lastClaimQuery.docs[0].data();
@@ -47,13 +50,14 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
         }
 
         // Get user data to check for Telegram bonus
-        const userDoc = await db.collection('users').doc(userId).get();
         const userData = userDoc.data();
 
         // Calculate bonus multiplier
         const telegramBonus = userData?.telegramConnected ? 1.1 : 1.0; // 10% bonus
         const basePoints = 100;
         const totalPoints = Math.floor(basePoints * telegramBonus);
+
+        const userScoreRef = db.collection('scores').doc(userId);
 
         // Add reward document
         const rewardRef = await db.collection('rewards').add({
@@ -63,32 +67,6 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
             telegramBonus: userData?.telegramConnected ? 0.1 : 0,
             timestamp: new Date().toISOString(),
             type: 'daily',
-        });
-
-        // Update user score
-        const userScoreRef = db.collection('scores').doc(userId);
-        await db.runTransaction(async transaction => {
-            const scoreDoc = await transaction.get(userScoreRef);
-            const currentData = scoreDoc.exists
-                ? (scoreDoc.data() as UserScore)
-                : {
-                      points: 0,
-                      tasksCompleted: 0,
-                      multiplier: 1,
-                  };
-
-            transaction.set(
-                userScoreRef,
-                {
-                    userId,
-                    points: (currentData?.points || 0) + totalPoints,
-                    tasksCompleted: (currentData?.tasksCompleted || 0) + 1,
-                    multiplier: currentData?.multiplier || 1,
-                    lastTaskTimestamp: new Date().toISOString(),
-                    lastUpdated: new Date().toISOString(),
-                },
-                { merge: true }
-            );
         });
 
         functions.logger.info('Daily reward claimed successfully', {
