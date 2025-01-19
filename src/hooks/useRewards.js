@@ -62,8 +62,8 @@ export const useRewards = userId => {
                 throw new Error('Daily reward already claimed today');
             }
 
-            const claimReward = httpsCallable(functions, 'claimDailyReward');
-            const result = await claimReward({ userId });
+            const claimDailyReward = httpsCallable(functions, 'claimDailyReward');
+            const result = await claimDailyReward({ userId });
             const data = result.data;
 
             await setLastClaim(new Date(data.timestamp));

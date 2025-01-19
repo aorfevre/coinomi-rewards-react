@@ -11,20 +11,18 @@ export const getUserRank = functions.https.onCall(async (data, context) => {
         functions.logger.info('📊 Getting rank for user:', { userId });
 
         const scoresRef = admin.firestore().collection('scores');
-        
+
         // Get all scores ordered by points
-        const allScores = await scoresRef
-            .orderBy('points', 'desc')
-            .get();
+        const allScores = await scoresRef.orderBy('points', 'desc').get();
 
         // Find user's position
         const userPosition = allScores.docs.findIndex(doc => doc.id === userId) + 1;
         const totalPlayers = allScores.size;
 
-        functions.logger.info('✅ Rank calculated:', { 
+        functions.logger.info('✅ Rank calculated:', {
             userId,
             rank: userPosition,
-            totalPlayers 
+            totalPlayers,
         });
 
         return {
@@ -50,13 +48,10 @@ export const getLeaderboard = functions.https.onCall(async (data, context) => {
         functions.logger.info('📊 Getting leaderboard:', { limit });
 
         const scoresRef = admin.firestore().collection('scores');
-        const snapshot = await scoresRef
-            .orderBy('points', 'desc')
-            .limit(limit)
-            .get();
+        const snapshot = await scoresRef.orderBy('points', 'desc').limit(limit).get();
 
         const leaderboard = await Promise.all(
-            snapshot.docs.map(async (doc) => {
+            snapshot.docs.map(async doc => {
                 const scoreData = doc.data();
                 const userDoc = await admin.firestore().collection('users').doc(doc.id).get();
                 const userData = userDoc.data() || {};
@@ -71,8 +66,8 @@ export const getLeaderboard = functions.https.onCall(async (data, context) => {
             })
         );
 
-        functions.logger.info('✅ Leaderboard fetched:', { 
-            entries: leaderboard.length 
+        functions.logger.info('✅ Leaderboard fetched:', {
+            entries: leaderboard.length,
         });
 
         return { leaderboard };
@@ -83,4 +78,4 @@ export const getLeaderboard = functions.https.onCall(async (data, context) => {
             error instanceof Error ? error.message : 'Internal server error'
         );
     }
-}); 
+});

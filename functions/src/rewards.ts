@@ -10,6 +10,7 @@ interface UserScore {
 }
 
 export const claimDailyReward = functions.https.onCall(async (data, context) => {
+    console.log('🔥 claimDailyReward - data:', data);
     // Check authentication
     if (!context.auth) {
         throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
