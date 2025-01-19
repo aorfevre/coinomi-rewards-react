@@ -57,8 +57,6 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
         const basePoints = 100;
         const totalPoints = Math.floor(basePoints * telegramBonus);
 
-        const userScoreRef = db.collection('scores').doc(userId);
-
         // Add reward document
         const rewardRef = await db.collection('rewards').add({
             userId,
