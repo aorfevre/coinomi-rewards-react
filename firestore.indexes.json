@@ -19,6 +19,20 @@
             ]
         },
         {
+            "collectionGroup": "rewards",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "userId",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "timestamp",
+                    "order": "DESCENDING"
+                }
+            ]
+        },
+        {
             "collectionGroup": "scores",
             "queryScope": "COLLECTION",
             "fields": [
