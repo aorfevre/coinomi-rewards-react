@@ -8,6 +8,7 @@ import { Countdown } from './Countdown';
 import { RankDisplay } from './RankDisplay';
 import { TabPanel } from './TabPanel';
 import { Fireworks } from './Fireworks';
+import { Challenges } from './Challenges';
 
 export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
     const { claimDailyReward, loading: claimLoading } = useRewards(userId);
@@ -147,6 +148,8 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                     {rank && totalPlayers && (
                         <RankDisplay rank={rank} totalPlayers={totalPlayers} />
                     )}
+
+                    <Challenges userId={userId} />
 
                     <TabPanel userId={userId} />
                 </Box>

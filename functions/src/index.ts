@@ -2,6 +2,7 @@ import { getCustomToken } from './auth';
 import { claimDailyReward, onRewardCreated } from './rewards';
 import { getLeaderboard, getUserRank } from './scores';
 import { fireworks } from './fireworks';
+import { telegramWebhook } from './telegramBot';
 
 // Export the functions
 export {
@@ -11,4 +12,5 @@ export {
     getUserRank,
     onRewardCreated,
     fireworks,
+    telegramWebhook,
 };
