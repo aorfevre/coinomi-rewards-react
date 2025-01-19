@@ -116,11 +116,11 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
 
 export const onRewardCreated = functions.firestore
     .document('rewards/{rewardId}')
-    .onCreate(async (snapshot, context) => {
+    .onCreate(async snapshot => {
         try {
             const rewardData = snapshot.data();
             console.log('🔥 onRewardCreated - rewardData:', rewardData);
-            const { userId, type, timestamp, points, multiplier } = rewardData;
+            const { userId, type, timestamp, points } = rewardData;
 
             if (!userId) {
                 functions.logger.error('No userId found in reward document');

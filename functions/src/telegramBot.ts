@@ -7,8 +7,9 @@ const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || '');
 
 interface StartCommandContext extends Context {
     message: Update.New & Update.NonChannel & Message.TextMessage;
-    from?: {
+    from: {
         id: number;
+        is_bot: boolean;
         first_name: string;
         username?: string;
         language_code?: string;
