@@ -119,7 +119,8 @@ export const onRewardCreated = functions.firestore
     .onCreate(async (snapshot, context) => {
         try {
             const rewardData = snapshot.data();
-            const { userId, type, timestamp } = rewardData;
+            console.log('🔥 onRewardCreated - rewardData:', rewardData);
+            const { userId, type, timestamp, points, multiplier } = rewardData;
 
             if (!userId) {
                 functions.logger.error('No userId found in reward document');
@@ -139,8 +140,9 @@ export const onRewardCreated = functions.firestore
                 const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
 
                 // Calculate new points with multiplier
-                const pointsToAdd = 100 * currentData.multiplier;
+                const pointsToAdd = points;
 
+                console.log('🔥 onRewardCreated - pointsToAdd:', pointsToAdd);
                 await userScoreRef.set(
                     {
                         userId,
