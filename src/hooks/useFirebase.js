@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { app, db, auth, functions } from '../config/firebase';
-import { doc, getDoc, collection } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 
 export const useFirebase = () => {
     const [isReady, setIsReady] = useState(false);
@@ -12,9 +12,7 @@ export const useFirebase = () => {
     useEffect(() => {
         const checkFirebase = async () => {
             try {
-                // Check if all Firebase services are initialized
                 if (app && db && auth && functions) {
-                    // Check Telegram connection status from user data if authenticated
                     if (auth.currentUser) {
                         const userDocRef = doc(db, 'users', auth.currentUser.uid);
                         const userDoc = await getDoc(userDocRef);
@@ -27,7 +25,6 @@ export const useFirebase = () => {
                             });
                         }
                     }
-
                     setIsReady(true);
                 }
             } catch (error) {
@@ -41,7 +38,6 @@ export const useFirebase = () => {
 
         checkFirebase();
 
-        // Listen for auth state changes to update Telegram status
         const unsubscribe = auth.onAuthStateChanged(async user => {
             if (user) {
                 try {
@@ -70,7 +66,9 @@ export const useFirebase = () => {
             }
         });
 
-        return () => unsubscribe();
+        return () => {
+            if (unsubscribe) unsubscribe();
+        };
     }, []);
 
     return {
