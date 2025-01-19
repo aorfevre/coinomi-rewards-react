@@ -121,6 +121,9 @@ if (process.env.NODE_ENV === 'development') {
 export const telegramWebhook = functions.https.onRequest(async (request, response) => {
     try {
         if (process.env.NODE_ENV === 'production') {
+            // Start the bot before handling updates
+            await bot.launch();
+
             // Set webhook only in production
             const webhookInfo = await bot.telegram.getWebhookInfo();
             if (!webhookInfo.url) {
@@ -128,7 +131,11 @@ export const telegramWebhook = functions.https.onRequest(async (request, respons
                 await bot.telegram.setWebhook(webhookUrl);
                 functions.logger.info('Webhook set to:', webhookUrl);
             }
+
             await bot.handleUpdate(request.body);
+
+            // Stop the bot after handling the update
+            await bot.stop();
         }
         response.sendStatus(200);
     } catch (error) {
@@ -136,7 +143,3 @@ export const telegramWebhook = functions.https.onRequest(async (request, respons
         response.sendStatus(500);
     }
 });
-
-// Cleanup on process exit
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
