@@ -2,6 +2,7 @@ import { Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { ThemeToggle } from './ThemeToggle';
+import { APP_CONFIG } from '../config/app';
 
 export const WalletInfo = ({ address, onThemeToggle }) => {
     const shortenAddress = addr => {
@@ -30,6 +31,7 @@ export const WalletInfo = ({ address, onThemeToggle }) => {
                 {shortenAddress(address)}
             </Typography>
             <ThemeToggle onToggle={onThemeToggle} />
+            <Typography variant="h6">{APP_CONFIG.name}</Typography>
         </Box>
     );
 };
