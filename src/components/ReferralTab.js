@@ -1,17 +1,29 @@
 import React from 'react';
-import { Box, Typography, Paper, TextField, Tooltip, IconButton, Snackbar } from '@mui/material';
+import {
+    Box,
+    Typography,
+    Paper,
+    TextField,
+    Tooltip,
+    IconButton,
+    Snackbar,
+    CircularProgress,
+} from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
+import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import { useReferral } from '../hooks/useReferral';
+import { EditReferralDialog } from './EditReferralDialog';
 
-export const ReferralTab = ({ userId, affiliatesCount = 0, userData }) => {
+export const ReferralTab = ({ userId }) => {
     const { t } = useTranslation();
     const [showCopied, setShowCopied] = React.useState(false);
+    const [editDialogOpen, setEditDialogOpen] = React.useState(false);
+    const { referralCode, referralCount, loading, error, refresh } = useReferral(userId);
 
-    // Use referral code if available, otherwise use userId as fallback
-    const referralCode = userData?.referralCode;
-    const referralLink = `${window.location.origin}?ref=${referralCode || userId}`;
+    const referralLink = `${window.location.origin}?ref=${referralCode}`;
 
     const handleCopy = async () => {
         try {
@@ -21,6 +33,27 @@ export const ReferralTab = ({ userId, affiliatesCount = 0, userData }) => {
             console.error('Failed to copy:', err);
         }
     };
+
+    const handleEditSuccess = () => {
+        refresh();
+        setShowCopied(true);
+    };
+
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    if (error) {
+        return (
+            <Box sx={{ p: 4, textAlign: 'center' }}>
+                <Typography color="error">{t('errorLoading')}</Typography>
+            </Box>
+        );
+    }
 
     return (
         <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
@@ -67,6 +100,11 @@ export const ReferralTab = ({ userId, affiliatesCount = 0, userData }) => {
                                 <ContentCopyIcon />
                             </IconButton>
                         </Tooltip>
+                        <Tooltip title={t('editReferralCode')} placement="top">
+                            <IconButton onClick={() => setEditDialogOpen(true)} color="primary">
+                                <EditIcon />
+                            </IconButton>
+                        </Tooltip>
                     </Box>
                 </Box>
 
@@ -83,7 +121,7 @@ export const ReferralTab = ({ userId, affiliatesCount = 0, userData }) => {
                     <PeopleAltIcon sx={{ fontSize: 40, color: 'primary.main' }} />
                     <Box>
                         <Typography variant="h6" color="primary">
-                            {affiliatesCount}
+                            {referralCount}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                             {t('totalReferrals')}
@@ -112,12 +150,17 @@ export const ReferralTab = ({ userId, affiliatesCount = 0, userData }) => {
                 message={t('linkCopied')}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             />
+
+            <EditReferralDialog
+                open={editDialogOpen}
+                onClose={() => setEditDialogOpen(false)}
+                userId={userId}
+                onSuccess={handleEditSuccess}
+            />
         </Box>
     );
 };
 
 ReferralTab.propTypes = {
     userId: PropTypes.string.isRequired,
-    affiliatesCount: PropTypes.number,
-    userData: PropTypes.object,
 };

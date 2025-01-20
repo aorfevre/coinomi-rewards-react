@@ -222,13 +222,7 @@ function App() {
                 {currentTab === 'leaderboard' && <Leaderboard />}
                 {currentTab === 'tasks' && <Tasks />}
                 {currentTab === 'profile' && <Profile userId={user?.uid} />}
-                {currentTab === 'referrals' && (
-                    <ReferralTab
-                        userId={user?.uid}
-                        affiliatesCount={user?.affiliatesCount || 0}
-                        userData={user}
-                    />
-                )}
+                {currentTab === 'referrals' && <ReferralTab userId={user?.uid} />}
 
                 <FireworksButton />
             </Container>

@@ -130,6 +130,14 @@ export const resources = {
             ],
             yourReferralCode: 'Your Referral Code',
             referralCodeCopied: 'Referral code copied!',
+            editReferralCode: 'Edit Referral Code',
+            editReferralCodeInstructions:
+                'Choose a new referral code. It must be at least 5 characters long and can contain letters and numbers.',
+            newReferralCode: 'New Referral Code',
+            referralCodeRequirements: 'Minimum 5 characters, letters and numbers only',
+            updating: 'Updating...',
+            update: 'Update',
+            referralCodeTaken: 'This referral code is already taken',
         },
     },
     pt: {
