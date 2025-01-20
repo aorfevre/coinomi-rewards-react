@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Typography, Paper } from '@mui/material';
+import { Box, Typography, Paper, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import StarIcon from '@mui/icons-material/Star';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 
 const LeaderboardItem = styled(Paper)(({ rank }) => ({
@@ -36,18 +37,33 @@ export const Leaderboard = () => {
 
     return (
         <Box sx={{ maxWidth: 800, mx: 'auto', p: 4 }}>
-            <Typography
-                variant="h2"
-                sx={{
-                    textAlign: 'center',
-                    mb: 4,
-                    color: '#5bb4ff',
-                    fontSize: '2rem',
-                    fontWeight: 500,
-                }}
-            >
-                Top Players
-            </Typography>
+            <Box sx={{ textAlign: 'center', mb: 4 }}>
+                <Typography
+                    variant="h2"
+                    sx={{
+                        color: '#5bb4ff',
+                        fontSize: '2rem',
+                        fontWeight: 500,
+                    }}
+                >
+                    Weekly Top Players
+                </Typography>
+                <Tooltip title="Rankings reset every Sunday at midnight UTC">
+                    <Typography
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: 1,
+                            color: 'rgba(255, 255, 255, 0.6)',
+                            mt: 1,
+                        }}
+                    >
+                        <CalendarTodayIcon fontSize="small" />
+                        This Week's Leaderboard
+                    </Typography>
+                </Tooltip>
+            </Box>
 
             {leaderboard.map((entry, index) => (
                 <LeaderboardItem key={entry.userId} rank={index}>

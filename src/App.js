@@ -7,6 +7,7 @@ import { useScore } from './hooks/useScore';
 import { useUserRank } from './hooks/useUserRank';
 import { getTheme } from './theme';
 import { FireworksButton } from './components/FireworksButton';
+import { WeeklyCountdown } from './components/WeeklyCountdown';
 
 function App() {
     const [mode, setMode] = React.useState('dark');
@@ -96,6 +97,7 @@ function App() {
                     color: 'text.primary',
                 }}
             >
+                <WeeklyCountdown />
                 <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
                 <Box className="container mx-auto px-4 py-8">
                     <PointsDisplay
