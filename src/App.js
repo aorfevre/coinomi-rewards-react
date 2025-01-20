@@ -1,4 +1,4 @@
-import { Box, CssBaseline, ThemeProvider, Typography } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, Typography, CircularProgress } from '@mui/material';
 import React from 'react';
 import { PointsDisplay } from './components/PointsDisplay';
 import { WalletInfo } from './components/WalletInfo';
@@ -8,6 +8,7 @@ import { useUserRank } from './hooks/useUserRank';
 import { getTheme } from './theme';
 import { FireworksButton } from './components/FireworksButton';
 import { WeeklyCountdown } from './components/WeeklyCountdown';
+import LogoDevIcon from '@mui/icons-material/LogoDev';
 
 function App() {
     const [mode, setMode] = React.useState('dark');
@@ -56,13 +57,73 @@ function App() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <Box
-                    className="min-h-screen flex items-center justify-center"
                     sx={{
+                        minHeight: '100vh',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         bgcolor: 'background.default',
-                        color: 'text.primary',
+                        gap: 3,
                     }}
                 >
-                    <Typography>Authenticating...</Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 2,
+                        }}
+                    >
+                        <LogoDevIcon
+                            sx={{
+                                fontSize: 48,
+                                color: '#5bb4ff',
+                                animation: 'pulse 2s infinite',
+                                '@keyframes pulse': {
+                                    '0%': {
+                                        opacity: 1,
+                                        transform: 'scale(1)',
+                                    },
+                                    '50%': {
+                                        opacity: 0.7,
+                                        transform: 'scale(0.95)',
+                                    },
+                                    '100%': {
+                                        opacity: 1,
+                                        transform: 'scale(1)',
+                                    },
+                                },
+                            }}
+                        />
+                        <Typography
+                            variant="h6"
+                            sx={{
+                                color: 'rgba(255, 255, 255, 0.9)',
+                                fontWeight: 500,
+                            }}
+                        >
+                            Authenticating
+                        </Typography>
+                    </Box>
+                    <CircularProgress
+                        size={24}
+                        thickness={4}
+                        sx={{
+                            color: '#5bb4ff',
+                        }}
+                    />
+                    <Typography
+                        variant="body2"
+                        sx={{
+                            color: 'rgba(255, 255, 255, 0.6)',
+                            textAlign: 'center',
+                            maxWidth: 300,
+                            mt: 2,
+                        }}
+                    >
+                        Please wait while we verify your wallet
+                    </Typography>
                 </Box>
             </ThemeProvider>
         );
