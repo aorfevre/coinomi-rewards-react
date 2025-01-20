@@ -1,12 +1,14 @@
 import { useState, useEffect, useCallback } from 'react';
 import { httpsCallable } from 'firebase/functions';
-import { functions } from '../config/firebase';
+import { functions, db } from '../config/firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export const useReferral = userId => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [referralCode, setReferralCode] = useState(null);
     const [referralCount, setReferralCount] = useState(0);
+    const [hasReferrer, setHasReferrer] = useState(false);
 
     const fetchReferralData = useCallback(async () => {
         if (!userId) {
@@ -17,6 +19,12 @@ export const useReferral = userId => {
         try {
             setLoading(true);
             setError(null);
+
+            // Get user data including referral info
+            const userDocRef = doc(db, 'users', userId);
+            const userDoc = await getDoc(userDocRef);
+            const userData = userDoc.data();
+            setHasReferrer(!!userData?.referredBy);
 
             // Get or create referral code
             const getUserReferralCode = httpsCallable(functions, 'getUserReferralCode');
@@ -46,5 +54,6 @@ export const useReferral = userId => {
         loading,
         error,
         refresh: fetchReferralData, // Expose refresh function
+        hasReferrer,
     };
 };

@@ -7,7 +7,6 @@ import { useRewards } from '../hooks/useRewards';
 import { useScore } from '../hooks/useScore';
 import { useUserData } from '../hooks/useUserData';
 import { Countdown } from './Countdown';
-import { TabPanel } from './TabPanel';
 import { Fireworks } from './Fireworks';
 import { Challenges } from './Challenges';
 import StarIcon from '@mui/icons-material/Star';
@@ -332,7 +331,7 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
 
                     <Challenges userId={userId} />
 
-                    <TabPanel userId={userId} />
+                    {/* <TabPanel userId={userId} /> */}
                 </Box>
             </Box>
         </>

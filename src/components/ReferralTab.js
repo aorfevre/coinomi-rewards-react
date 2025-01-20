@@ -8,6 +8,7 @@ import {
     IconButton,
     Snackbar,
     CircularProgress,
+    Button,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
@@ -16,12 +17,15 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { useReferral } from '../hooks/useReferral';
 import { EditReferralDialog } from './EditReferralDialog';
+import { EnterReferralDialog } from './EnterReferralDialog';
 
 export const ReferralTab = ({ userId }) => {
     const { t } = useTranslation();
     const [showCopied, setShowCopied] = React.useState(false);
     const [editDialogOpen, setEditDialogOpen] = React.useState(false);
-    const { referralCode, referralCount, loading, error, refresh } = useReferral(userId);
+    const [enterReferralOpen, setEnterReferralOpen] = React.useState(false);
+    const { referralCode, referralCount, loading, error, refresh, hasReferrer } =
+        useReferral(userId);
 
     const referralLink = `${window.location.origin}?ref=${referralCode}`;
 
@@ -60,6 +64,24 @@ export const ReferralTab = ({ userId }) => {
             <Typography variant="h5" sx={{ mb: 4, textAlign: 'center' }}>
                 {t('referralProgram')}
             </Typography>
+
+            {!hasReferrer && (
+                <Paper sx={{ p: 3, mb: 4, bgcolor: 'background.paper' }}>
+                    <Typography variant="h6" sx={{ mb: 2 }}>
+                        {t('haveReferralCode')}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        {t('enterReferralCodePrompt')}
+                    </Typography>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setEnterReferralOpen(true)}
+                    >
+                        {t('enterCode')}
+                    </Button>
+                </Paper>
+            )}
 
             <Paper
                 sx={{
@@ -130,18 +152,41 @@ export const ReferralTab = ({ userId }) => {
                 </Box>
             </Paper>
 
-            <Typography variant="body1" sx={{ mb: 2, fontWeight: 500 }}>
-                {t('howReferralWorks')}
-            </Typography>
-            <Typography variant="body2" color="text.secondary" component="div">
-                <ul>
+            <Paper sx={{ p: 3, mb: 4, bgcolor: 'background.paper' }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                    {t('howReferralWorks')}
+                </Typography>
+                <Box component="ul" sx={{ pl: 2, mb: 3 }}>
                     {t('referralSteps', { returnObjects: true }).map((step, index) => (
-                        <li key={index} style={{ marginBottom: '8px' }}>
+                        <Typography
+                            component="li"
+                            key={index}
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 1 }}
+                        >
                             {step}
-                        </li>
+                        </Typography>
                     ))}
-                </ul>
-            </Typography>
+                </Box>
+
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                    {t('referralRewards')}
+                </Typography>
+                <Box component="ul" sx={{ pl: 2 }}>
+                    {t('referralBonuses', { returnObjects: true }).map((bonus, index) => (
+                        <Typography
+                            component="li"
+                            key={index}
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 1 }}
+                        >
+                            {bonus}
+                        </Typography>
+                    ))}
+                </Box>
+            </Paper>
 
             <Snackbar
                 open={showCopied}
@@ -156,6 +201,13 @@ export const ReferralTab = ({ userId }) => {
                 onClose={() => setEditDialogOpen(false)}
                 userId={userId}
                 onSuccess={handleEditSuccess}
+            />
+
+            <EnterReferralDialog
+                open={enterReferralOpen}
+                onClose={() => setEnterReferralOpen(false)}
+                userId={userId}
+                onSuccess={refresh}
             />
         </Box>
     );

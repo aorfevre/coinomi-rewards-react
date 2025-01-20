@@ -7,6 +7,7 @@ import {
     getCountReferrals,
     processReferral,
     updateReferralCode,
+    onReferralUpdate,
 } from './referrals';
 
 // Export the functions
@@ -21,4 +22,5 @@ export {
     getCountReferrals,
     processReferral,
     updateReferralCode,
+    onReferralUpdate,
 };

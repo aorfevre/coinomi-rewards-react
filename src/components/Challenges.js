@@ -20,7 +20,6 @@ import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 import DialogContentText from '@mui/material/DialogContentText';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
-import { ClaimReward } from './ClaimReward';
 
 // Add styled components
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -101,13 +100,13 @@ export const Challenges = ({ userId }) => {
                 {t('challenges')}
             </Typography>
 
-            <Box sx={{ mb: 4 }}>
+            {/* <Box sx={{ mb: 4 }}>
                 <ClaimReward
                     userId={userId}
                     rewardAmount={100}
                     multiplier={userData?.multiplier || 1}
                 />
-            </Box>
+            </Box> */}
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Card

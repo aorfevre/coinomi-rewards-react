@@ -133,6 +133,22 @@ export const onRewardCreated = functions.firestore
                     },
                     { merge: true }
                 );
+            } else if (type === 'new-referral') {
+                const userScoreRef = db.collection('scores').doc(userId);
+                const scoreDoc = await userScoreRef.get();
+                const currentData = scoreDoc.data() as UserScore;
+                const pointsToAdd = 100;
+                await userScoreRef.set({
+                    points: currentData.points + pointsToAdd,
+                });
+            } else if (type === 'referral-bonus') {
+                const userScoreRef = db.collection('scores').doc(userId);
+                const scoreDoc = await userScoreRef.get();
+                const currentData = scoreDoc.data() as UserScore;
+                const pointsToAdd = points * 0.1;
+                await userScoreRef.set({
+                    points: currentData.points + pointsToAdd,
+                });
             }
         } catch (error) {
             functions.logger.error('Error updating user score:', { error });

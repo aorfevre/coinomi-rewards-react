@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import { db } from './config/firebase';
+import { Timestamp } from 'firebase-admin/firestore';
 
 // Generate a random 7-character code
 const generateReferralCode = (): string => {
@@ -190,3 +191,48 @@ export const updateReferralCode = functions.https.onCall(async (data, context) =
         );
     }
 });
+
+interface UserData {
+    referredBy?: string;
+}
+
+export const onReferralUpdate = functions.firestore
+    .document('users/{userId}')
+    .onWrite(async (change, context) => {
+        const newData = change.after.data() as UserData | undefined;
+        const previousData = change.before.data() as UserData | undefined;
+        const userId = context.params.userId;
+
+        // Check if this is a new referral
+        if (
+            newData?.referredBy && // Has referrer
+            (!previousData || !previousData.referredBy) && // Didn't have referrer before
+            newData.referredBy !== userId // Prevent self-referrals
+        ) {
+            try {
+                // Create reward document for the referrer
+                await db.collection('rewards').add({
+                    userId: newData.referredBy,
+                    basePoints: 100,
+                    points: 100, // basePoints * multiplier
+                    multiplier: 1,
+                    type: 'new-referral',
+                    referredUser: userId,
+                    timestamp: Timestamp.now(),
+                    processed: false,
+                });
+
+                functions.logger.info('Referral reward created', {
+                    referrer: newData.referredBy,
+                    referred: userId,
+                });
+            } catch (error) {
+                functions.logger.error('Error creating referral reward', {
+                    error,
+                    referrer: newData.referredBy,
+                    referred: userId,
+                });
+                throw error;
+            }
+        }
+    });
