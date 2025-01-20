@@ -10,6 +10,7 @@ import { FireworksButton } from './components/FireworksButton';
 import { WeeklyCountdown } from './components/WeeklyCountdown';
 import LogoDevIcon from '@mui/icons-material/LogoDev';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import './i18n/i18n';
 
 function App() {
     const [mode, setMode] = React.useState('dark');
