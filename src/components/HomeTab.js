@@ -3,13 +3,15 @@ import { Box } from '@mui/material';
 import { StreakBonus } from './StreakBonus';
 import { PointsDisplay } from './PointsDisplay';
 import PropTypes from 'prop-types';
+import { useScore } from '../hooks/useScore';
 
-export const HomeTab = ({ userId, userData, score, rank, totalPlayers }) => {
+export const HomeTab = ({ userId, score, rank, totalPlayers }) => {
+    const { scoreDoc } = useScore(userId);
     return (
         <Box>
             <StreakBonus
-                currentStreak={userData?.currentStreak || 0}
-                lastClaimDate={userData?.lastClaimTime}
+                currentStreak={scoreDoc?.currentStreak || 0}
+                lastClaimDate={scoreDoc?.lastTaskTimestamp}
             />
 
             <Box sx={{ my: 4 }}>

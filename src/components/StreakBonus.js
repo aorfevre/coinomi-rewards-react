@@ -11,13 +11,17 @@ export const StreakBonus = ({ currentStreak = 0, lastClaimDate }) => {
     const { t } = useTranslation();
     const maxDays = 5;
     const dailyBonus = 2;
-    const finalBonus = 10;
+    const finalBonus = 2;
 
     // Calculate if streak is still active (within 24 hours of last claim)
     const isStreakActive =
         lastClaimDate &&
-        new Date().getTime() - new Date(lastClaimDate).getTime() < 24 * 60 * 60 * 1000;
+        new Date().getTime() - new Date(lastClaimDate).getTime() <
+            2 * Number(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS) * 1000;
 
+    if (!isStreakActive) {
+        currentStreak = 0;
+    }
     // Calculate current bonus
     const getCurrentBonus = () => {
         if (!isStreakActive) return 0;

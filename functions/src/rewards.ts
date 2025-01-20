@@ -7,6 +7,7 @@ interface UserScore {
     multiplier: number;
     lastTaskTimestamp?: string;
     lastUpdated?: string;
+    currentStreak?: number;
 }
 
 export const claimDailyReward = functions.https.onCall(async (data, context) => {
@@ -56,7 +57,22 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
         const telegramBonus = userData?.telegramConnected ? 0.1 : 0; // 10% bonus
         const emailBonus = userData?.emailConnected ? 0.1 : 0; // 10% bonus
         const basePoints = 100;
-        const totalPoints = basePoints * (1 + telegramBonus + emailBonus);
+
+        // check if the user has a streak bonus
+        // get his score doc
+        const scoreDoc = await db.collection('scores').doc(userId).get();
+        // check if the streak is still valid
+        const lastClaimDate = new Date(scoreDoc.data()?.lastTaskTimestamp);
+        const now = new Date();
+        const isStreakActive =
+            lastClaimDate &&
+            now.getTime() - lastClaimDate.getTime() <
+                2 * Number(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS) * 1000;
+
+        const streakBonusValue = isStreakActive ? scoreDoc.data()?.currentStreak || 0 : 0;
+        const streakBonus = streakBonusValue * 0.02;
+
+        const totalPoints = Math.round(basePoints * (1 + telegramBonus + emailBonus + streakBonus));
 
         // Add reward document
         const rewardRef = await db.collection('rewards').add({
@@ -65,6 +81,7 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
             basePoints,
             telegramBonus: userData?.telegramConnected ? 0.1 : 0,
             emailBonus: userData?.emailConnected ? 0.1 : 0,
+            streakBonus: streakBonus,
             timestamp: new Date().toISOString(),
             type: 'daily',
         });
@@ -122,6 +139,18 @@ export const onRewardCreated = functions.firestore
                 const pointsToAdd = points;
 
                 console.log('🔥 onRewardCreated - pointsToAdd:', pointsToAdd);
+
+                const lastClaimDate = currentData.lastTaskTimestamp
+                    ? new Date(currentData.lastTaskTimestamp)
+                    : false;
+                const now = new Date();
+                const isStreakActive =
+                    lastClaimDate &&
+                    now.getTime() - lastClaimDate.getTime() <
+                        2 * Number(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS) * 1000;
+
+                console.log('🔥 onRewardCreated - isStreakActive:', isStreakActive);
+
                 await userScoreRef.set(
                     {
                         userId,
@@ -130,6 +159,10 @@ export const onRewardCreated = functions.firestore
                         multiplier: currentData.multiplier,
                         lastTaskTimestamp: timestamp || new Date().toISOString(),
                         lastUpdated: new Date().toISOString(),
+                        currentStreak:
+                            isStreakActive && currentData.currentStreak
+                                ? currentData.currentStreak + 1
+                                : 1,
                     },
                     { merge: true }
                 );
