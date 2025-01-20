@@ -49,25 +49,7 @@ export const getLeaderboard = functions.https.onCall(async (data, context) => {
 
         const scoresRef = admin.firestore().collection('scores');
         const snapshot = await scoresRef.orderBy('points', 'desc').limit(limit).get();
-
-        const leaderboard = await Promise.all(
-            snapshot.docs.map(async doc => {
-                const scoreData = doc.data();
-
-                return {
-                    userId: doc.id,
-                    points: scoreData.points,
-                    tasksCompleted: scoreData.tasksCompleted,
-                    displayName: doc.id || 'Anonymous',
-                    walletAddress: doc.id || '',
-                };
-            })
-        );
-
-        functions.logger.info('✅ Leaderboard fetched:', {
-            entries: leaderboard.length,
-        });
-
+        const leaderboard = snapshot.docs.map(doc => doc.data());
         return { leaderboard };
     } catch (error) {
         functions.logger.error('❌ Error getting leaderboard:', { error });

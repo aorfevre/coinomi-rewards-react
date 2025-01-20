@@ -1,13 +1,17 @@
 import * as functions from 'firebase-functions';
 import { db } from './config/firebase';
+import { getWeek, getYear } from 'date-fns';
 
 interface UserScore {
+    userId: string;
     points: number;
     tasksCompleted: number;
     multiplier: number;
     lastTaskTimestamp?: string;
     lastUpdated?: string;
     currentStreak?: number;
+    weekNumber?: number;
+    yearNumber?: number;
 }
 
 export const claimDailyReward = functions.https.onCall(async (data, context) => {
@@ -122,66 +126,65 @@ export const onRewardCreated = functions.firestore
                 functions.logger.error('No userId found in reward document');
                 return;
             }
+            const userScoreRef = db.collection('scores').doc(userId);
 
+            const scoreDoc = await userScoreRef.get();
+            const defaultData: UserScore = {
+                userId,
+                points: 0,
+                tasksCompleted: 0,
+                multiplier: 1,
+            };
+            const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
+
+            const lastClaimDate = currentData.lastTaskTimestamp
+                ? new Date(currentData.lastTaskTimestamp)
+                : false;
+            const now = new Date();
+            const isStreakActive =
+                lastClaimDate &&
+                now.getTime() - lastClaimDate.getTime() <
+                    2 * Number(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS) * 1000;
+
+            console.log('🔥 onRewardCreated - isStreakActive:', isStreakActive);
+
+            // Get current score or create new one
+
+            const insertScore: UserScore = {
+                userId,
+                points: 0,
+                tasksCompleted: 0,
+                multiplier: 1,
+                lastTaskTimestamp: timestamp || new Date().toISOString(),
+                lastUpdated: new Date().toISOString(),
+                currentStreak:
+                    isStreakActive && currentData.currentStreak ? currentData.currentStreak + 1 : 1,
+                weekNumber: getWeek(new Date()),
+                yearNumber: getYear(new Date()),
+            };
             if (type === 'daily') {
-                const userScoreRef = db.collection('scores').doc(userId);
-
-                // Get current score or create new one
-                const scoreDoc = await userScoreRef.get();
-                const defaultData: UserScore = {
-                    points: 0,
-                    tasksCompleted: 0,
-                    multiplier: 1,
-                };
-                const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
-
                 // Calculate new points with multiplier
                 const pointsToAdd = points;
 
-                console.log('🔥 onRewardCreated - pointsToAdd:', pointsToAdd);
+                insertScore.points = currentData.points + pointsToAdd || 0;
+                insertScore.tasksCompleted = currentData.tasksCompleted + 1 || 0;
+                insertScore.multiplier = currentData.multiplier || 1;
 
-                const lastClaimDate = currentData.lastTaskTimestamp
-                    ? new Date(currentData.lastTaskTimestamp)
-                    : false;
-                const now = new Date();
-                const isStreakActive =
-                    lastClaimDate &&
-                    now.getTime() - lastClaimDate.getTime() <
-                        2 * Number(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS) * 1000;
-
-                console.log('🔥 onRewardCreated - isStreakActive:', isStreakActive);
-
-                await userScoreRef.set(
-                    {
-                        userId,
-                        points: currentData.points + pointsToAdd,
-                        tasksCompleted: currentData.tasksCompleted + 1,
-                        multiplier: currentData.multiplier,
-                        lastTaskTimestamp: timestamp || new Date().toISOString(),
-                        lastUpdated: new Date().toISOString(),
-                        currentStreak:
-                            isStreakActive && currentData.currentStreak
-                                ? currentData.currentStreak + 1
-                                : 1,
-                    },
-                    { merge: true }
-                );
+                await userScoreRef.set(insertScore, { merge: true });
             } else if (type === 'new-referral') {
                 const userScoreRef = db.collection('scores').doc(userId);
                 const scoreDoc = await userScoreRef.get();
                 const currentData = scoreDoc.data() as UserScore;
                 const pointsToAdd = 100;
-                await userScoreRef.set({
-                    points: currentData.points + pointsToAdd,
-                });
+                insertScore.points = currentData.points + pointsToAdd || 0;
+                await userScoreRef.set(insertScore, { merge: true });
             } else if (type === 'referral-bonus') {
                 const userScoreRef = db.collection('scores').doc(userId);
                 const scoreDoc = await userScoreRef.get();
                 const currentData = scoreDoc.data() as UserScore;
                 const pointsToAdd = points * 0.1;
-                await userScoreRef.set({
-                    points: currentData.points + pointsToAdd,
-                });
+                insertScore.points = currentData.points + pointsToAdd || 0;
+                await userScoreRef.set(insertScore, { merge: true });
             }
         } catch (error) {
             functions.logger.error('Error updating user score:', { error });

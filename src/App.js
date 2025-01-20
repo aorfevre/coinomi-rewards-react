@@ -35,16 +35,9 @@ function App() {
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
 
-    console.log('App - Token from URL:', token);
-
     const { user, loading: authLoading, error: authError } = useAuth(token);
     const { score } = useScore(user?.uid);
     const { rank, totalPlayers, loading: rankLoading } = useUserRank(user?.uid);
-
-    console.log('App - Authenticated user:', user?.uid);
-    console.log('App - Current score:', score);
-    console.log('App - Current rank:', rank);
-    console.log('App - Total players:', totalPlayers);
 
     const handleThemeToggle = () => {
         setMode(prevMode => (prevMode === 'dark' ? 'light' : 'dark'));
