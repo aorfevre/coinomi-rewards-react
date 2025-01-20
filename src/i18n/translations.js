@@ -153,6 +153,13 @@ export const resources = {
             submitting: 'Submitting...',
             submit: 'Submit',
             enterCode: 'Enter Code',
+            // Error Page Messages
+            pleaseAddtoken: 'Please add a token parameter to the URL',
+            authenticationError: 'An error occurred during authentication',
+            noUserFound: 'No User Found',
+            userNotFoundMessage: 'Could not find user data',
+            backToHome: 'Back to Home',
+            retry: 'Retry',
         },
     },
     pt: {
@@ -279,6 +286,13 @@ export const resources = {
             submitting: 'Submitting...',
             submit: 'Submit',
             enterCode: 'Enter Code',
+            // Error Page Messages
+            pleaseAddtoken: 'Adicione um parâmetro de token à URL',
+            authenticationError: 'Ocorreu um erro durante a autenticação',
+            noUserFound: 'Usuário Não Encontrado',
+            userNotFoundMessage: 'Não foi possível encontrar dados do usuário',
+            backToHome: 'Voltar ao Início',
+            retry: 'Tentar Novamente',
         },
     },
     fr: {
@@ -406,6 +420,13 @@ export const resources = {
             submitting: 'Submitting...',
             submit: 'Submit',
             enterCode: 'Enter Code',
+            // Error Page Messages
+            pleaseAddtoken: "Veuillez ajouter un paramètre de token à l'URL",
+            authenticationError: "Une erreur s'est produite lors de l'authentification",
+            noUserFound: 'Utilisateur Non Trouvé',
+            userNotFoundMessage: "Impossible de trouver les données de l'utilisateur",
+            backToHome: "Retour à l'Accueil",
+            retry: 'Réessayer',
         },
     },
     tr: {
@@ -515,6 +536,13 @@ export const resources = {
             submitting: 'Submitting...',
             submit: 'Submit',
             enterCode: 'Enter Code',
+            // Error Page Messages
+            pleaseAddtoken: "URL'ye token parametresi ekleyin",
+            authenticationError: 'Kimlik doğrulama sırasında bir hata oluştu',
+            noUserFound: 'Kullanıcı Bulunamadı',
+            userNotFoundMessage: 'Kullanıcı verileri bulunamadı',
+            backToHome: 'Ana Sayfaya Dön',
+            retry: 'Tekrar Dene',
         },
     },
     zh: {
@@ -617,6 +645,13 @@ export const resources = {
             submitting: 'Submitting...',
             submit: 'Submit',
             enterCode: 'Enter Code',
+            // Error Page Messages
+            pleaseAddtoken: '请在URL中添加token参数',
+            authenticationError: '认证过程中发生错误',
+            noUserFound: '未找到用户',
+            userNotFoundMessage: '无法找到用户数据',
+            backToHome: '返回首页',
+            retry: '重试',
         },
     },
     vi: {
@@ -728,6 +763,13 @@ export const resources = {
             submitting: 'Submitting...',
             submit: 'Submit',
             enterCode: 'Enter Code',
+            // Error Page Messages
+            pleaseAddtoken: 'Vui lòng thêm tham số token vào URL',
+            authenticationError: 'Đã xảy ra lỗi trong quá trình xác thực',
+            noUserFound: 'Không Tìm Thấy Người Dùng',
+            userNotFoundMessage: 'Không thể tìm thấy dữ liệu người dùng',
+            backToHome: 'Trở Về Trang Chủ',
+            retry: 'Thử Lại',
         },
     },
     fil: {
@@ -839,6 +881,13 @@ export const resources = {
             submitting: 'Submitting...',
             submit: 'Submit',
             enterCode: 'Enter Code',
+            // Error Page Messages
+            pleaseAddtoken: 'Mangyaring magdagdag ng token parameter sa URL',
+            authenticationError: 'May naganap na error sa pagpapatunay',
+            noUserFound: 'Walang Nahanap na User',
+            userNotFoundMessage: 'Hindi mahanap ang data ng user',
+            backToHome: 'Bumalik sa Home',
+            retry: 'Subukan Muli',
         },
     },
 };

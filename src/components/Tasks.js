@@ -3,46 +3,18 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { useRewardHistory } from '../hooks/useRewardHistory';
 import { useScore } from '../hooks/useScore';
-import { useAuth } from '../hooks/useAuth';
+import PropTypes from 'prop-types';
 
-export const Tasks = () => {
+export const Tasks = ({ userId }) => {
     const { t } = useTranslation();
-    const { userId, loading: authLoading } = useAuth();
-
     const { scoreDoc } = useScore(userId);
-    const { rewards, loading: rewardsLoading, error } = useRewardHistory(userId);
-
-    // Show loading state while authentication is in progress
-    if (authLoading) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                <CircularProgress />
-            </Box>
-        );
-    }
-
-    // Show error if no userId is available after auth loading is complete
-    if (!userId) {
-        return (
-            <Typography color="error" sx={{ textAlign: 'center', py: 4 }}>
-                {t('authenticationRequired')}
-            </Typography>
-        );
-    }
+    const { rewards, loading: rewardsLoading } = useRewardHistory(userId);
 
     if (rewardsLoading) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
                 <CircularProgress />
             </Box>
-        );
-    }
-
-    if (error) {
-        return (
-            <Typography color="error" sx={{ textAlign: 'center', py: 4 }}>
-                {t('errorLoading')}
-            </Typography>
         );
     }
 
@@ -115,4 +87,8 @@ export const Tasks = () => {
             </Box>
         </Box>
     );
+};
+
+Tasks.propTypes = {
+    userId: PropTypes.string.isRequired,
 };

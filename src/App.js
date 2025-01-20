@@ -1,11 +1,4 @@
-import {
-    Box,
-    CssBaseline,
-    ThemeProvider,
-    Typography,
-    CircularProgress,
-    Container,
-} from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, CircularProgress, Container } from '@mui/material';
 import React from 'react';
 import { WalletInfo } from './components/WalletInfo';
 import { useAuth } from './hooks/useAuth';
@@ -24,6 +17,7 @@ import { HomeTab } from './components/HomeTab';
 import { Leaderboard } from './components/Leaderboard';
 import { Tasks } from './components/Tasks';
 import { ReferralTab } from './components/ReferralTab';
+import { ErrorPage } from './components/ErrorPage';
 
 function App() {
     const { t } = useTranslation();
@@ -43,151 +37,75 @@ function App() {
         setMode(prevMode => (prevMode === 'dark' ? 'light' : 'dark'));
     };
 
+    // Wrap error and loading states with ThemeProvider
+    const renderWithTheme = content => (
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {content}
+        </ThemeProvider>
+    );
+
     if (!token) {
-        return (
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <Box
-                    sx={{
-                        minHeight: '100vh',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        bgcolor: 'background.default',
-                        gap: 3,
-                        p: 3,
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: 2,
-                            textAlign: 'center',
-                        }}
-                    >
-                        <ErrorOutlineIcon
-                            sx={{
-                                fontSize: 64,
-                                color: 'error.main',
-                                animation: 'shake 0.5s ease-in-out',
-                                '@keyframes shake': {
-                                    '0%, 100%': { transform: 'translateX(0)' },
-                                    '20%, 60%': { transform: 'translateX(-5px)' },
-                                    '40%, 80%': { transform: 'translateX(5px)' },
-                                },
-                            }}
-                        />
-                        <Typography
-                            variant="h5"
-                            sx={{
-                                color: 'error.main',
-                                fontWeight: 500,
-                            }}
-                        >
-                            {t('authRequired')}
-                        </Typography>
-                    </Box>
-                </Box>
-            </ThemeProvider>
+        return renderWithTheme(
+            <ErrorPage
+                title={t('authRequired')}
+                message={t('pleaseAddtoken')}
+                showHomeButton={false}
+                icon={ErrorOutlineIcon}
+            />
         );
     }
 
     if (authLoading) {
-        return (
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <Box
+        return renderWithTheme(
+            <Box
+                sx={{
+                    minHeight: '100vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    bgcolor: 'background.default',
+                    gap: 3,
+                }}
+            >
+                <LogoDevIcon
                     sx={{
-                        minHeight: '100vh',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        bgcolor: 'background.default',
-                        gap: 3,
+                        fontSize: 48,
+                        color: '#5bb4ff',
+                        animation: 'pulse 2s infinite',
+                        '@keyframes pulse': {
+                            '0%': { opacity: 1, transform: 'scale(1)' },
+                            '50%': { opacity: 0.7, transform: 'scale(0.95)' },
+                            '100%': { opacity: 1, transform: 'scale(1)' },
+                        },
                     }}
-                >
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: 2,
-                        }}
-                    >
-                        <LogoDevIcon
-                            sx={{
-                                fontSize: 48,
-                                color: '#5bb4ff',
-                                animation: 'pulse 2s infinite',
-                                '@keyframes pulse': {
-                                    '0%': {
-                                        opacity: 1,
-                                        transform: 'scale(1)',
-                                    },
-                                    '50%': {
-                                        opacity: 0.7,
-                                        transform: 'scale(0.95)',
-                                    },
-                                    '100%': {
-                                        opacity: 1,
-                                        transform: 'scale(1)',
-                                    },
-                                },
-                            }}
-                        />
-                        <Typography
-                            variant="h6"
-                            sx={{
-                                color: 'rgba(255, 255, 255, 0.9)',
-                                fontWeight: 500,
-                            }}
-                        >
-                            {t('authenticating')}
-                        </Typography>
-                    </Box>
-                    <CircularProgress
-                        size={24}
-                        thickness={4}
-                        sx={{
-                            color: '#5bb4ff',
-                        }}
-                    />
-                    <Typography
-                        variant="body2"
-                        sx={{
-                            color: 'rgba(255, 255, 255, 0.6)',
-                            textAlign: 'center',
-                            maxWidth: 300,
-                            mt: 2,
-                        }}
-                    >
-                        {t('verifyWallet')}
-                    </Typography>
-                </Box>
-            </ThemeProvider>
+                />
+                <CircularProgress size={24} thickness={4} sx={{ color: '#5bb4ff' }} />
+            </Box>
         );
     }
 
     if (authError) {
-        return (
-            <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <Box
-                    className="min-h-screen flex items-center justify-center"
-                    sx={{
-                        bgcolor: 'background.default',
-                        color: 'text.primary',
-                    }}
-                >
-                    <Typography variant="h5" sx={{ color: 'error.main' }}>
-                        {t('authFailed')}
-                    </Typography>
-                </Box>
-            </ThemeProvider>
+        return renderWithTheme(
+            <ErrorPage
+                title={t('authFailed')}
+                message={authError.message || t('authenticationError')}
+                showHomeButton={true}
+                showRetryButton={true}
+                icon={ErrorOutlineIcon}
+            />
+        );
+    }
+
+    if (!user) {
+        return renderWithTheme(
+            <ErrorPage
+                title={t('noUserFound')}
+                message={t('userNotFoundMessage')}
+                showHomeButton={true}
+                icon={ErrorOutlineIcon}
+            />
         );
     }
 
@@ -212,7 +130,7 @@ function App() {
                     />
                 )}
                 {currentTab === 'leaderboard' && <Leaderboard />}
-                {currentTab === 'tasks' && <Tasks />}
+                {currentTab === 'tasks' && <Tasks userId={user?.uid} />}
                 {currentTab === 'referrals' && <ReferralTab userId={user?.uid} />}
 
                 <FireworksButton />
