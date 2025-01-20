@@ -4,15 +4,152 @@ import { useCallback, useEffect, useState } from 'react';
 import { CLAIM_COOLDOWN_MS } from '../config/env';
 import { useRewards } from '../hooks/useRewards';
 import { useScore } from '../hooks/useScore';
+import { useUserData } from '../hooks/useUserData';
 import { Countdown } from './Countdown';
 import { RankDisplay } from './RankDisplay';
 import { TabPanel } from './TabPanel';
 import { Fireworks } from './Fireworks';
 import { Challenges } from './Challenges';
+import StarIcon from '@mui/icons-material/Star';
+import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
+
+const RankCard = ({ rank, totalPlayers }) => (
+    <Box
+        sx={{
+            bgcolor: 'rgba(30, 30, 30, 0.6)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 2,
+            p: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            width: 'fit-content',
+            minWidth: '250px',
+            height: '100%',
+        }}
+    >
+        <Box
+            sx={{
+                bgcolor: 'rgba(255, 223, 0, 0.1)',
+                borderRadius: '50%',
+                p: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}
+        >
+            <EmojiEventsIcon
+                sx={{
+                    color: '#ffd700',
+                    fontSize: 28,
+                }}
+            />
+        </Box>
+        <Box>
+            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 0.5 }}>
+                <Typography
+                    variant="h5"
+                    sx={{
+                        color: '#ffd700',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    #{rank}
+                </Typography>
+                <Typography
+                    variant="subtitle1"
+                    sx={{
+                        color: '#fff',
+                        fontWeight: 'medium',
+                    }}
+                >
+                    Rank
+                </Typography>
+            </Box>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    fontSize: '0.875rem',
+                }}
+            >
+                out of {totalPlayers} players
+            </Typography>
+        </Box>
+    </Box>
+);
+
+const MultiplierCard = ({ multiplier }) => (
+    <Box
+        sx={{
+            bgcolor: 'rgba(30, 30, 30, 0.6)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: 2,
+            p: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2,
+            width: 'fit-content',
+            minWidth: '250px',
+            height: '100%',
+        }}
+    >
+        <Box
+            sx={{
+                bgcolor: 'rgba(76, 175, 80, 0.1)',
+                borderRadius: '50%',
+                p: 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}
+        >
+            <StarIcon
+                sx={{
+                    color: '#4caf50',
+                    fontSize: 28,
+                }}
+            />
+        </Box>
+        <Box>
+            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 0.5 }}>
+                <Typography
+                    variant="h5"
+                    sx={{
+                        color: '#4caf50',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    {multiplier}x
+                </Typography>
+                <Typography
+                    variant="subtitle1"
+                    sx={{
+                        color: '#fff',
+                        fontWeight: 'medium',
+                    }}
+                >
+                    Multiplier
+                </Typography>
+            </Box>
+            <Typography
+                variant="body2"
+                sx={{
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    fontSize: '0.875rem',
+                }}
+            >
+                Bonus points multiplier
+            </Typography>
+        </Box>
+    </Box>
+);
 
 export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
     const { claimDailyReward, loading: claimLoading } = useRewards(userId);
     const { scoreDoc } = useScore(userId);
+    const { userData } = useUserData(userId);
+    const multiplier = userData?.multiplier || 1;
     const [canClaim, setCanClaim] = useState(false);
     const [showFireworks, setShowFireworks] = useState(false);
 
@@ -145,9 +282,25 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                         </Button>
                     </Box>
 
-                    {rank && totalPlayers && (
-                        <RankDisplay rank={rank} totalPlayers={totalPlayers} />
-                    )}
+                    <Box
+                        sx={{
+                            width: '100%',
+                            display: 'flex',
+                            gap: 1,
+                            flexDirection: { xs: 'column', sm: 'row' },
+                            alignItems: 'stretch',
+                            justifyContent: 'center',
+                        }}
+                    >
+                        <Box sx={{ display: 'flex' }}>
+                            {rank && totalPlayers && (
+                                <RankCard rank={rank} totalPlayers={totalPlayers} />
+                            )}
+                        </Box>
+                        <Box sx={{ display: 'flex' }}>
+                            <MultiplierCard multiplier={multiplier} />
+                        </Box>
+                    </Box>
 
                     <Challenges userId={userId} />
 
@@ -160,7 +313,16 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
 
 PointsDisplay.propTypes = {
     points: PropTypes.number.isRequired,
-    rank: PropTypes.number,
-    totalPlayers: PropTypes.number,
+    rank: PropTypes.number.isRequired,
+    totalPlayers: PropTypes.number.isRequired,
     userId: PropTypes.string.isRequired,
+};
+
+RankCard.propTypes = {
+    rank: PropTypes.number.isRequired,
+    totalPlayers: PropTypes.number.isRequired,
+};
+
+MultiplierCard.propTypes = {
+    multiplier: PropTypes.number.isRequired,
 };
