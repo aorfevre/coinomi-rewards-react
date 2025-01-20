@@ -4,10 +4,13 @@ import { resources } from './translations';
 
 i18n.use(initReactI18next).init({
     resources,
-    lng: localStorage.getItem('language') || 'en',
+    lng: 'en',
     fallbackLng: 'en',
     interpolation: {
         escapeValue: false,
+    },
+    react: {
+        useSuspense: false,
     },
 });
 

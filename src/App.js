@@ -7,7 +7,6 @@ import {
     Container,
 } from '@mui/material';
 import React from 'react';
-import { PointsDisplay } from './components/PointsDisplay';
 import { WalletInfo } from './components/WalletInfo';
 import { useAuth } from './hooks/useAuth';
 import { useScore } from './hooks/useScore';
@@ -20,12 +19,18 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import './i18n/i18n';
 import { useTranslation } from 'react-i18next';
 import { PrivacyDisclaimer } from './components/PrivacyDisclaimer';
-import { StreakBonus } from './components/StreakBonus';
+import { TabMenu } from './components/TabMenu';
+import { HomeTab } from './components/HomeTab';
+import { Leaderboard } from './components/Leaderboard';
+import { Tasks } from './components/Tasks';
+import { Profile } from './components/Profile';
+import { ReferralTab } from './components/ReferralTab';
 
 function App() {
     const { t } = useTranslation();
     const [mode, setMode] = React.useState('dark');
     const theme = React.useMemo(() => getTheme(mode), [mode]);
+    const [currentTab, setCurrentTab] = React.useState('home');
 
     // Get token from query params
     const params = new URLSearchParams(window.location.search);
@@ -199,32 +204,32 @@ function App() {
             <CssBaseline />
             <Container maxWidth="lg" sx={{ py: 4 }}>
                 <PrivacyDisclaimer />
-                <Box
-                    className="min-h-screen relative"
-                    sx={{
-                        bgcolor: 'background.default',
-                        color: 'text.primary',
-                    }}
-                >
-                    <WeeklyCountdown />
-                    <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
+                <WeeklyCountdown />
+                <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
 
-                    <Box sx={{ mb: 4 }}>
-                        <StreakBonus
-                            currentStreak={user?.currentStreak || 0}
-                            lastClaimDate={user?.lastClaimTime}
-                        />
-                    </Box>
+                <TabMenu currentTab={currentTab} onTabChange={setCurrentTab} />
 
-                    <Box className="container mx-auto px-4 py-8">
-                        <PointsDisplay
-                            points={authLoading ? 0 : score}
-                            rank={rankLoading ? 1 : rank}
-                            totalPlayers={rankLoading ? 1 : totalPlayers}
-                            userId={user?.uid}
-                        />
-                    </Box>
-                </Box>
+                {currentTab === 'home' && (
+                    <HomeTab
+                        userId={user?.uid}
+                        userData={user}
+                        score={score}
+                        rank={rankLoading ? 1 : rank}
+                        totalPlayers={rankLoading ? 1 : totalPlayers}
+                        loading={rankLoading}
+                    />
+                )}
+                {currentTab === 'leaderboard' && <Leaderboard />}
+                {currentTab === 'tasks' && <Tasks />}
+                {currentTab === 'profile' && <Profile userId={user?.uid} />}
+                {currentTab === 'referrals' && (
+                    <ReferralTab
+                        userId={user?.uid}
+                        affiliatesCount={user?.affiliatesCount || 0}
+                        userData={user}
+                    />
+                )}
+
                 <FireworksButton />
             </Container>
         </ThemeProvider>

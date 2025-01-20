@@ -23,7 +23,6 @@ export const useAuth = walletAddress => {
             try {
                 console.log('🔑 useAuth - Getting custom token for wallet:', walletAddress);
 
-                // Use httpsCallable instead of fetch
                 const getCustomToken = httpsCallable(functions, 'getCustomToken');
                 console.log('📤 useAuth - Calling getCustomToken function');
 
@@ -50,7 +49,6 @@ export const useAuth = walletAddress => {
                     throw new Error('No token received from server');
                 }
 
-                // Sign in with the custom token
                 console.log('🔓 useAuth - Signing in with custom token');
                 const userCredential = await signInWithCustomToken(auth, customToken);
                 console.log('✅ useAuth - Sign in successful:', {
@@ -91,7 +89,6 @@ export const useAuth = walletAddress => {
         signIn();
     }, [walletAddress]);
 
-    // Log state changes
     useEffect(() => {
         console.log('📊 useAuth - State updated:', {
             isLoading: loading,
