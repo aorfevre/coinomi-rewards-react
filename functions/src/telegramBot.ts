@@ -129,6 +129,8 @@ export const telegramWebhook = functions
         const startTime = Date.now();
         try {
             if (process.env.NODE_ENV === 'production') {
+                // Just launch the bot before handling the update
+                await bot.launch();
                 await bot.handleUpdate(request.body);
             }
             functions.logger.info(`Webhook processed in ${Date.now() - startTime}ms`);
