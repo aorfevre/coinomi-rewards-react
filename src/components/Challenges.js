@@ -17,6 +17,24 @@ import PropTypes from 'prop-types';
 import { useUserData } from '../hooks/useUserData';
 import { useState } from 'react';
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
+import DialogContentText from '@mui/material/DialogContentText';
+import { styled } from '@mui/material/styles';
+
+// Add styled components
+const StyledDialog = styled(Dialog)(({ theme }) => ({
+    '& .MuiDialog-paper': {
+        borderRadius: 16,
+        padding: theme.spacing(2),
+        backgroundColor: theme.palette.mode === 'dark' ? '#1a1a1a' : '#ffffff',
+    },
+}));
+
+const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
+    textAlign: 'center',
+    fontSize: '1.5rem',
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+    paddingBottom: theme.spacing(1),
+}));
 
 export const Challenges = ({ userId }) => {
     const { userData, loading } = useUserData(userId);
@@ -237,9 +255,17 @@ export const Challenges = ({ userId }) => {
                 </Card>
             </Box>
 
-            <Dialog open={openEmailDialog} onClose={() => setOpenEmailDialog(false)}>
-                <DialogTitle>Share Your Email</DialogTitle>
-                <DialogContent>
+            <StyledDialog
+                open={openEmailDialog}
+                onClose={() => setOpenEmailDialog(false)}
+                maxWidth="sm"
+                fullWidth
+            >
+                <StyledDialogTitle>Connect Your Email</StyledDialogTitle>
+                <DialogContent sx={{ pb: 3, pt: 2 }}>
+                    <DialogContentText sx={{ mb: 3, textAlign: 'center' }}>
+                        �� Get a permanent 10% bonus on all rewards by connecting your email!
+                    </DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
@@ -254,16 +280,60 @@ export const Challenges = ({ userId }) => {
                         }}
                         error={!!emailError}
                         helperText={emailError}
-                        sx={{ mt: 2 }}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                borderRadius: 2,
+                            },
+                            '& .MuiOutlinedInput-input': {
+                                padding: '16.5px 14px',
+                            },
+                        }}
+                        placeholder="your.email@example.com"
                     />
+                    <DialogContentText
+                        variant="caption"
+                        sx={{
+                            mt: 2,
+                            display: 'block',
+                            textAlign: 'center',
+                            color: 'text.secondary',
+                        }}
+                    >
+                        We&apos;ll only use your email for important updates and rewards
+                        notifications.
+                    </DialogContentText>
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setOpenEmailDialog(false)}>Cancel</Button>
-                    <Button onClick={handleEmailSubmit} variant="contained">
-                        Submit
+                <DialogActions sx={{ px: 3, pb: 3, justifyContent: 'center', gap: 2 }}>
+                    <Button
+                        onClick={() => setOpenEmailDialog(false)}
+                        variant="outlined"
+                        sx={{
+                            borderRadius: 2,
+                            px: 3,
+                            textTransform: 'none',
+                            fontSize: '1rem',
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={handleEmailSubmit}
+                        variant="contained"
+                        sx={{
+                            borderRadius: 2,
+                            px: 4,
+                            textTransform: 'none',
+                            fontSize: '1rem',
+                            bgcolor: '#1976d2',
+                            '&:hover': {
+                                bgcolor: '#1565c0',
+                            },
+                        }}
+                    >
+                        Connect Email
                     </Button>
                 </DialogActions>
-            </Dialog>
+            </StyledDialog>
         </Box>
     );
 };
