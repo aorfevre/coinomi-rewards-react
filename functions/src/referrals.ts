@@ -218,7 +218,7 @@ export const onReferralUpdate = functions.firestore
                     multiplier: 1,
                     type: 'new-referral',
                     referredUser: userId,
-                    timestamp: Timestamp.now(),
+                    timestamp: new Date().toISOString(),
                     processed: false,
                 });
 

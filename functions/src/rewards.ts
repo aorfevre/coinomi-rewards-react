@@ -89,6 +89,16 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
             timestamp: new Date().toISOString(),
             type: 'daily',
         });
+        // if the user is reffered by another user, add a new reward document
+        if (userData?.referredBy) {
+            await db.collection('rewards').add({
+                userId: userData.referredBy,
+                points: Math.round(totalPoints * 0.1),
+                type: 'referral-bonus',
+                timestamp: new Date().toISOString(),
+                rewardId: rewardRef.id,
+            });
+        }
 
         functions.logger.info('Daily reward claimed successfully', {
             userId,
