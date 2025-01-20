@@ -92,6 +92,14 @@ export const resources = {
                 '🎉 Connected! You are now receiving a permanent 10% bonus on all rewards!',
             emailAddress: 'Email Address',
             errorSavingEmail: 'Error saving email. Please try again.',
+            claimButton: 'Claim',
+            earnedReward: 'Earned Reward',
+            rewardValue: '{{amount}} Points',
+            claimingReward: 'Claiming...',
+            claimSuccess: 'Successfully claimed {{amount}} points!',
+            claimError: 'Failed to claim reward. Please try again.',
+            privacyDisclaimer:
+                'Coinomi does not collect personal data; a third-party system securely manages points and social linking.',
         },
     },
     pt: {
@@ -189,6 +197,14 @@ export const resources = {
                 '🎉 Conectado! Você agora está recebendo um bônus permanente de 10% em todas as recompensas!',
             emailAddress: 'Endereço de Email',
             errorSavingEmail: 'Erro ao salvar email. Por favor, tente novamente.',
+            claimButton: 'Receber',
+            earnedReward: 'Recompensa Ganha',
+            rewardValue: '{{amount}} Pontos',
+            claimingReward: 'Recebendo...',
+            claimSuccess: 'Recebeu {{amount}} pontos com sucesso!',
+            claimError: 'Falha ao receber recompensa. Tente novamente.',
+            privacyDisclaimer:
+                'A Coinomi não coleta dados pessoais; um sistema terceirizado gerencia com segurança os pontos e as conexões sociais.',
         },
     },
     fr: {
@@ -286,6 +302,14 @@ export const resources = {
                 '🎉 Connecté ! Vous recevez maintenant un bonus permanent de 10% sur toutes les récompenses !',
             emailAddress: 'Adresse Email',
             errorSavingEmail: "Erreur lors de l'enregistrement de l'email. Veuillez réessayer.",
+            claimButton: 'Réclamer',
+            earnedReward: 'Récompense Gagnée',
+            rewardValue: '{{amount}} Points',
+            claimingReward: 'Réclamation...',
+            claimSuccess: 'Réclamation réussie de {{amount}} points!',
+            claimError: 'Échec de la réclamation de la récompense. Veuillez réessayer.',
+            privacyDisclaimer:
+                'Coinomi ne collecte pas de données personnelles ; un système tiers gère de manière sécurisée les points et les liens sociaux.',
         },
     },
     tr: {
@@ -366,6 +390,14 @@ export const resources = {
             emailChallengeSuccess: '🎉 Bağlandı! Artık tüm ödüllerde kalıcı %10 bonus alıyorsunuz!',
             emailAddress: 'E-posta Adresi',
             errorSavingEmail: 'E-posta kaydedilirken hata oluştu. Lütfen tekrar deneyin.',
+            claimButton: 'Al',
+            earnedReward: 'Kazanılan Ödül',
+            rewardValue: '{{amount}} Puan',
+            claimingReward: 'Alınıyor...',
+            claimSuccess: '{{amount}} puan başarıyla alındı!',
+            claimError: 'Ödül alınamadı. Lütfen tekrar deneyin.',
+            privacyDisclaimer:
+                'Coinomi kişisel verileri toplamaz; üçüncü taraf bir sistem puanları ve sosyal bağlantıları güvenli bir şekilde yönetir.',
         },
     },
     zh: {
@@ -440,6 +472,13 @@ export const resources = {
             emailChallengeSuccess: '🎉 已连接！您现在获得所有奖励永久10%加成！',
             emailAddress: '邮箱地址',
             errorSavingEmail: '保存邮箱时出错。请重试。',
+            claimButton: '领取',
+            earnedReward: '已获得奖励',
+            rewardValue: '{{amount}} 积分',
+            claimingReward: '领取中...',
+            claimSuccess: '成功领取 {{amount}} 积分！',
+            claimError: '领取奖励失败。请重试。',
+            privacyDisclaimer: 'Coinomi 不收集个人数据；第三方系统安全管理积分和社交链接。',
         },
     },
     vi: {
@@ -521,6 +560,14 @@ export const resources = {
                 '🎉 Đã kết nối! Bạn đang nhận được thưởng vĩnh viễn 10% cho tất cả phần thưởng!',
             emailAddress: 'Địa Chỉ Email',
             errorSavingEmail: 'Lỗi khi lưu email. Vui lòng thử lại.',
+            claimButton: 'Nhận',
+            earnedReward: 'Phần Thưởng Đã Nhận',
+            rewardValue: '{{amount}} Điểm',
+            claimingReward: 'Đang nhận...',
+            claimSuccess: 'Đã nhận được {{amount}} điểm thành công!',
+            claimError: 'Không nhận được phần thưởng. Vui lòng thử lại.',
+            privacyDisclaimer:
+                'Coinomi không thu thập dữ liệu cá nhân; một hệ thống bên thứ ba quản lý an toàn điểm và liên kết xã hội.',
         },
     },
     fil: {
@@ -602,6 +649,14 @@ export const resources = {
                 '🎉 Konektado na! Nakakakuha ka na ngayon ng permanenteng 10% bonus sa lahat ng gantimpala!',
             emailAddress: 'Email Address',
             errorSavingEmail: 'Error sa pag-save ng email. Pakisubukang muli.',
+            claimButton: 'Kunin',
+            earnedReward: 'Nakuhang Gantimpala',
+            rewardValue: '{{amount}} Mga Puntos',
+            claimingReward: 'Kinukuha...',
+            claimSuccess: 'Nakuha na ang {{amount}} mga puntos!',
+            claimError: 'Nabigo ang pagkuha ng gantimpala. Pakisubukang muli.',
+            privacyDisclaimer:
+                'Hindi nangongolekta ng personal na datos ang Coinomi; isang third-party system ang secure na namamahala ng mga puntos at social linking.',
         },
     },
 };

@@ -1,4 +1,11 @@
-import { Box, CssBaseline, ThemeProvider, Typography, CircularProgress } from '@mui/material';
+import {
+    Box,
+    CssBaseline,
+    ThemeProvider,
+    Typography,
+    CircularProgress,
+    Container,
+} from '@mui/material';
 import React from 'react';
 import { PointsDisplay } from './components/PointsDisplay';
 import { WalletInfo } from './components/WalletInfo';
@@ -12,6 +19,7 @@ import LogoDevIcon from '@mui/icons-material/LogoDev';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import './i18n/i18n';
 import { useTranslation } from 'react-i18next';
+import { PrivacyDisclaimer } from './components/PrivacyDisclaimer';
 
 function App() {
     const { t } = useTranslation();
@@ -188,25 +196,28 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Box
-                className="min-h-screen relative"
-                sx={{
-                    bgcolor: 'background.default',
-                    color: 'text.primary',
-                }}
-            >
-                <WeeklyCountdown />
-                <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
-                <Box className="container mx-auto px-4 py-8">
-                    <PointsDisplay
-                        points={authLoading ? 0 : score}
-                        rank={rankLoading ? 1 : rank}
-                        totalPlayers={rankLoading ? 1 : totalPlayers}
-                        userId={user?.uid}
-                    />
+            <Container maxWidth="lg" sx={{ py: 4 }}>
+                <PrivacyDisclaimer />
+                <Box
+                    className="min-h-screen relative"
+                    sx={{
+                        bgcolor: 'background.default',
+                        color: 'text.primary',
+                    }}
+                >
+                    <WeeklyCountdown />
+                    <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
+                    <Box className="container mx-auto px-4 py-8">
+                        <PointsDisplay
+                            points={authLoading ? 0 : score}
+                            rank={rankLoading ? 1 : rank}
+                            totalPlayers={rankLoading ? 1 : totalPlayers}
+                            userId={user?.uid}
+                        />
+                    </Box>
                 </Box>
-            </Box>
-            <FireworksButton />
+                <FireworksButton />
+            </Container>
         </ThemeProvider>
     );
 }
