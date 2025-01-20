@@ -10,11 +10,9 @@ export const useScore = userId => {
 
     useEffect(() => {
         if (!userId) {
-            console.log('useScore - Waiting for authentication');
             return;
         }
 
-        console.log('useScore - Starting subscription for userId:', userId);
         setLoading(true);
 
         // Query scores collection where userId matches
@@ -25,12 +23,10 @@ export const useScore = userId => {
             q,
             snapshot => {
                 if (snapshot.empty) {
-                    console.log('useScore - No score found for user');
                     setScore(0);
                     setScoreDoc(null);
                 } else {
                     const doc = snapshot.docs[0].data();
-                    console.log('useScore - Received score data:', doc);
                     setScore(doc.points || 0);
                     setScoreDoc(doc);
                 }
@@ -44,7 +40,6 @@ export const useScore = userId => {
         );
 
         return () => {
-            console.log('useScore - Cleaning up subscription');
             unsubscribe();
         };
     }, [userId]);

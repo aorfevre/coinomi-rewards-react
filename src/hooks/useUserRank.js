@@ -10,12 +10,10 @@ export const useUserRank = userId => {
 
     useEffect(() => {
         if (!userId) {
-            console.log('useUserRank - No userId provided');
             setLoading(false);
             return;
         }
 
-        console.log('useUserRank - Starting rank calculation for userId:', userId);
         setLoading(true);
 
         // Query all scores ordered by points in descending order
@@ -40,10 +38,6 @@ export const useUserRank = userId => {
                     setRank(userRank || null);
                     setTotalPlayers(scores.length);
                     setLoading(false);
-                    console.log('useUserRank - Rank calculated:', {
-                        userRank,
-                        totalPlayers: scores.length,
-                    });
                 } catch (err) {
                     console.error('useUserRank - Error calculating rank:', err);
                     setError(err);
@@ -58,7 +52,6 @@ export const useUserRank = userId => {
         );
 
         return () => {
-            console.log('useUserRank - Cleaning up subscription');
             unsubscribe();
         };
     }, [userId]);

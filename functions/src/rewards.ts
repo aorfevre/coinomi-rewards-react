@@ -146,8 +146,6 @@ export const onRewardCreated = functions.firestore
                 now.getTime() - lastClaimDate.getTime() <
                     2 * Number(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS) * 1000;
 
-            console.log('🔥 onRewardCreated - isStreakActive:', isStreakActive);
-
             // Get current score or create new one
 
             const insertScore: UserScore = {

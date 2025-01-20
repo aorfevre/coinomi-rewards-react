@@ -67,7 +67,6 @@ export const Challenges = ({ userId }) => {
     };
 
     const telegramConnected = userData.telegramConnected;
-    console.log('🔥 Challenges - userData:', userData);
     const handleTelegramClick = () => {
         const botName = process.env.REACT_APP_TELEGRAM_BOT_NAME;
         if (!botName) {
@@ -218,8 +217,6 @@ export const Challenges = ({ userId }) => {
                                 lineHeight: 1.4,
                             }}
                         >
-                            {console.log('Translation key:', 'emailChallengePrompt')}
-                            {console.log('Translation value:', t('emailChallengePrompt'))}
                             {userData.emailConnected
                                 ? t('emailChallengeSuccess')
                                 : t('emailChallengePrompt')}

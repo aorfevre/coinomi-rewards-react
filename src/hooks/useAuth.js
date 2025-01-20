@@ -11,20 +11,14 @@ export const useAuth = walletAddress => {
     const [user, setUser] = useState(null);
 
     useEffect(() => {
-        console.log('🔄 useAuth - Effect triggered with wallet:', walletAddress);
-
         if (!walletAddress || !ethers.isAddress(walletAddress)) {
-            console.log('⚠️ useAuth - Invalid wallet address:', walletAddress);
             setLoading(false);
             return;
         }
 
         const signIn = async () => {
             try {
-                console.log('🔑 useAuth - Getting custom token for wallet:', walletAddress);
-
                 const getCustomToken = httpsCallable(functions, 'getCustomToken');
-                console.log('📤 useAuth - Calling getCustomToken function');
 
                 const result = await getCustomToken({ walletAddress }).catch(error => {
                     console.error('🚨 getCustomToken error:', {
@@ -38,30 +32,17 @@ export const useAuth = walletAddress => {
                     throw error;
                 });
 
-                console.log('📥 useAuth - Received response:', {
-                    hasCustomToken: !!result.data.customToken,
-                    uid: result.data.uid,
-                    displayName: result.data.displayName,
-                });
-
                 const { customToken } = result.data;
                 if (!customToken) {
                     throw new Error('No token received from server');
                 }
 
-                console.log('🔓 useAuth - Signing in with custom token');
                 const userCredential = await signInWithCustomToken(auth, customToken);
-                console.log('✅ useAuth - Sign in successful:', {
-                    uid: userCredential.user.uid,
-                    email: userCredential.user.email,
-                    displayName: userCredential.user.displayName,
-                });
 
                 setUser(userCredential.user);
 
                 // Store user data in Firestore
                 const userRef = doc(db, 'users', userCredential.user.uid);
-                console.log('💾 useAuth - Storing user data in Firestore');
 
                 await setDoc(
                     userRef,
@@ -71,7 +52,6 @@ export const useAuth = walletAddress => {
                     },
                     { merge: true }
                 );
-                console.log('✨ useAuth - User data stored successfully');
             } catch (err) {
                 console.error('❌ useAuth - Authentication error:', {
                     message: err.message,
@@ -81,22 +61,12 @@ export const useAuth = walletAddress => {
                 });
                 setError(err instanceof Error ? err : new Error('Authentication failed'));
             } finally {
-                console.log('🏁 useAuth - Authentication process completed');
                 setLoading(false);
             }
         };
 
         signIn();
     }, [walletAddress]);
-
-    useEffect(() => {
-        console.log('📊 useAuth - State updated:', {
-            isLoading: loading,
-            hasError: !!error,
-            isAuthenticated: !!user,
-            userId: user?.uid,
-        });
-    }, [loading, error, user]);
 
     return { loading, error, user };
 };

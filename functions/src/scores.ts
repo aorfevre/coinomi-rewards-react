@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import { admin } from './config/firebase';
+import { getWeek, getYear } from 'date-fns';
 
 export const getUserRank = functions.https.onCall(async (data, context) => {
     try {
@@ -45,12 +46,34 @@ export const getLeaderboard = functions.https.onCall(async (data, context) => {
         }
 
         const limit = data.limit || 10;
-        functions.logger.info('📊 Getting leaderboard:', { limit });
+        const now = new Date();
+        const currentWeek = getWeek(now);
+        const currentYear = getYear(now);
+
+        functions.logger.info('📊 Getting leaderboard:', {
+            limit,
+            week: currentWeek,
+            year: currentYear,
+        });
 
         const scoresRef = admin.firestore().collection('scores');
-        const snapshot = await scoresRef.orderBy('points', 'desc').limit(limit).get();
-        const leaderboard = snapshot.docs.map(doc => doc.data());
-        return { leaderboard };
+        const snapshot = await scoresRef
+            .where('weekNumber', '==', currentWeek)
+            .where('yearNumber', '==', currentYear)
+            .orderBy('points', 'desc')
+            .limit(limit)
+            .get();
+
+        const leaderboard = snapshot.docs.map(doc => ({
+            ...doc.data(),
+            id: doc.id,
+        }));
+
+        return {
+            leaderboard,
+            weekNumber: currentWeek,
+            yearNumber: currentYear,
+        };
     } catch (error) {
         functions.logger.error('❌ Error getting leaderboard:', { error });
         throw new functions.https.HttpsError(
