@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { signInWithCustomToken } from 'firebase/auth';
+import { signInWithCustomToken, onAuthStateChanged } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
 import { useEffect, useState } from 'react';
@@ -9,41 +9,47 @@ export const useAuth = walletAddress => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [user, setUser] = useState(null);
+    const [userId, setUserId] = useState(null);
 
+    // Listen to auth state changes
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, user => {
+            if (user) {
+                setUser(user);
+                setUserId(user.uid);
+            } else {
+                setUser(null);
+                setUserId(null);
+            }
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
+
+    // Handle wallet authentication
     useEffect(() => {
         if (!walletAddress || !ethers.isAddress(walletAddress)) {
-            setLoading(false);
             return;
         }
+
+        let isMounted = true;
+        setLoading(true);
 
         const signIn = async () => {
             try {
                 const getCustomToken = httpsCallable(functions, 'getCustomToken');
-
-                const result = await getCustomToken({ walletAddress }).catch(error => {
-                    console.error('🚨 getCustomToken error:', {
-                        code: error.code,
-                        message: error.message,
-                        details: error.details,
-                        functionName: 'getCustomToken',
-                        region: error.region,
-                        requestUrl: error.requestUrl,
-                    });
-                    throw error;
-                });
-
+                const result = await getCustomToken({ walletAddress });
                 const { customToken } = result.data;
+
                 if (!customToken) {
                     throw new Error('No token received from server');
                 }
 
                 const userCredential = await signInWithCustomToken(auth, customToken);
+                const uid = userCredential.user.uid;
 
-                setUser(userCredential.user);
-
-                // Store user data in Firestore
-                const userRef = doc(db, 'users', userCredential.user.uid);
-
+                const userRef = doc(db, 'users', uid);
                 await setDoc(
                     userRef,
                     {
@@ -53,20 +59,19 @@ export const useAuth = walletAddress => {
                     { merge: true }
                 );
             } catch (err) {
-                console.error('❌ useAuth - Authentication error:', {
-                    message: err.message,
-                    code: err.code,
-                    stack: err.stack,
-                    details: err.details,
-                });
-                setError(err instanceof Error ? err : new Error('Authentication failed'));
-            } finally {
-                setLoading(false);
+                console.error('❌ useAuth - Authentication error:', err);
+                if (isMounted) {
+                    setError(err instanceof Error ? err : new Error('Authentication failed'));
+                }
             }
         };
 
         signIn();
+
+        return () => {
+            isMounted = false;
+        };
     }, [walletAddress]);
 
-    return { loading, error, user };
+    return { loading, error, user, userId };
 };

@@ -330,8 +330,6 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                     </Box>
 
                     <Challenges userId={userId} />
-
-                    {/* <TabPanel userId={userId} /> */}
                 </Box>
             </Box>
         </>
