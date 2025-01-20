@@ -20,6 +20,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import './i18n/i18n';
 import { useTranslation } from 'react-i18next';
 import { PrivacyDisclaimer } from './components/PrivacyDisclaimer';
+import { StreakBonus } from './components/StreakBonus';
 
 function App() {
     const { t } = useTranslation();
@@ -207,6 +208,14 @@ function App() {
                 >
                     <WeeklyCountdown />
                     <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
+
+                    <Box sx={{ mb: 4 }}>
+                        <StreakBonus
+                            currentStreak={user?.currentStreak || 0}
+                            lastClaimDate={user?.lastClaimTime}
+                        />
+                    </Box>
+
                     <Box className="container mx-auto px-4 py-8">
                         <PointsDisplay
                             points={authLoading ? 0 : score}

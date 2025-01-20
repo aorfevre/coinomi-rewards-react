@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { Box, Button, Typography, CircularProgress, Snackbar, Alert, Divider } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { getFirestore, doc, updateDoc, increment } from 'firebase/firestore';
+import { getFirestore, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 import PropTypes from 'prop-types';
+import { useUserData } from '../hooks/useUserData';
 
 export const ClaimReward = ({ userId, rewardAmount = 100, multiplier = 1 }) => {
     const { t } = useTranslation();
     const [claiming, setClaiming] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [showError, setShowError] = useState(false);
+    const { userData } = useUserData(userId);
 
     const finalRewardAmount = Math.floor(rewardAmount * multiplier);
     // Placeholder for USD value calculation
@@ -19,11 +21,26 @@ export const ClaimReward = ({ userId, rewardAmount = 100, multiplier = 1 }) => {
         setClaiming(true);
         try {
             const db = getFirestore();
+            const now = new Date();
+            const lastClaimTime = userData?.lastClaimTime ? new Date(userData.lastClaimTime) : null;
+
+            // Check if this claim continues the streak
+            const isStreakContinued =
+                lastClaimTime && now.getTime() - lastClaimTime.getTime() < 24 * 60 * 60 * 1000;
+
+            const newStreak = isStreakContinued ? (userData?.currentStreak || 0) + 1 : 1;
+
+            // Calculate bonus from streak
+            const streakBonus = newStreak >= 5 ? 0.2 : newStreak * 0.02; // 2% per day, 10% extra on day 5
+            const totalMultiplier = multiplier * (1 + streakBonus);
+
             await updateDoc(doc(db, 'users', userId), {
-                points: increment(finalRewardAmount),
-                lastClaimTime: new Date().toISOString(),
+                points: increment(Math.floor(rewardAmount * totalMultiplier)),
+                lastClaimTime: serverTimestamp(),
+                currentStreak: newStreak,
                 totalClaims: increment(1),
             });
+
             setShowSuccess(true);
         } catch (error) {
             console.error('Error claiming reward:', error);
