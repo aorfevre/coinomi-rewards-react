@@ -19,33 +19,48 @@ export const TabMenu = ({ currentTab, onTabChange }) => {
                 variant="fullWidth"
                 sx={{
                     '& .MuiTab-root': {
-                        minHeight: 64,
-                        fontSize: '1rem',
+                        minHeight: { xs: '48px', sm: '64px' },
+                        fontSize: { xs: '0', sm: '1rem' },
+                        '& .MuiTab-iconWrapper': {
+                            marginBottom: { xs: 0, sm: 1 },
+                        },
+                        '& .MuiTab-labelIcon': {
+                            minHeight: { xs: '48px', sm: '64px' },
+                        },
                     },
                 }}
             >
-                <Tab icon={<HomeIcon />} label={t('home')} value="home" iconPosition="start" />
+                <Tab
+                    icon={<HomeIcon />}
+                    label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('home')}</Box>}
+                    value="home"
+                    iconPosition="start"
+                />
                 <Tab
                     icon={<EmojiEventsIcon />}
-                    label={t('leaderboard')}
+                    label={
+                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('leaderboard')}</Box>
+                    }
                     value="leaderboard"
                     iconPosition="start"
                 />
                 <Tab
                     icon={<AssignmentIcon />}
-                    label={t('tasks')}
+                    label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('tasks')}</Box>}
                     value="tasks"
                     iconPosition="start"
                 />
                 <Tab
                     icon={<GroupAddIcon />}
-                    label={t('referrals')}
+                    label={
+                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('referrals')}</Box>
+                    }
                     value="referrals"
                     iconPosition="start"
                 />
                 <Tab
                     icon={<AccountCircleIcon />}
-                    label={t('profile')}
+                    label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('profile')}</Box>}
                     value="profile"
                     iconPosition="start"
                 />
