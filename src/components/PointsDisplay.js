@@ -1,6 +1,7 @@
 import { Box, Button, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CLAIM_COOLDOWN_MS } from '../config/env';
 import { useRewards } from '../hooks/useRewards';
 import { useScore } from '../hooks/useScore';
@@ -12,139 +13,166 @@ import { Challenges } from './Challenges';
 import StarIcon from '@mui/icons-material/Star';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
-const RankCard = ({ rank, totalPlayers }) => (
-    <Box
-        sx={{
-            bgcolor: 'rgba(30, 30, 30, 0.6)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: 2,
-            p: 2,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            width: 'fit-content',
-            minWidth: '250px',
-            height: '100%',
-        }}
-    >
+const RankCard = ({ rank, totalPlayers }) => {
+    const { t } = useTranslation();
+    return (
         <Box
             sx={{
-                bgcolor: 'rgba(255, 223, 0, 0.1)',
-                borderRadius: '50%',
-                p: 1,
+                bgcolor: theme =>
+                    theme.palette.mode === 'light'
+                        ? 'rgba(25, 118, 210, 0.08)'
+                        : 'rgba(91, 180, 255, 0.08)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 2,
+                p: 2,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                gap: 2,
+                width: 'fit-content',
+                minWidth: '250px',
+                height: '100%',
+                border: theme =>
+                    `1px solid ${
+                        theme.palette.mode === 'light'
+                            ? 'rgba(25, 118, 210, 0.12)'
+                            : 'rgba(91, 180, 255, 0.12)'
+                    }`,
             }}
         >
-            <EmojiEventsIcon
+            <Box
                 sx={{
-                    color: '#ffd700',
-                    fontSize: 28,
-                }}
-            />
-        </Box>
-        <Box>
-            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 0.5 }}>
-                <Typography
-                    variant="h5"
-                    sx={{
-                        color: '#ffd700',
-                        fontWeight: 'bold',
-                    }}
-                >
-                    #{rank}
-                </Typography>
-                <Typography
-                    variant="subtitle1"
-                    sx={{
-                        color: '#fff',
-                        fontWeight: 'medium',
-                    }}
-                >
-                    Rank
-                </Typography>
-            </Box>
-            <Typography
-                variant="body2"
-                sx={{
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    fontSize: '0.875rem',
+                    bgcolor: 'rgba(255, 223, 0, 0.1)',
+                    borderRadius: '50%',
+                    p: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                 }}
             >
-                out of {totalPlayers} players
-            </Typography>
+                <EmojiEventsIcon
+                    sx={{
+                        color: theme => (theme.palette.mode === 'light' ? '#f4b619' : '#ffd700'),
+                        fontSize: 28,
+                    }}
+                />
+            </Box>
+            <Box>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 0.5 }}>
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            color: theme =>
+                                theme.palette.mode === 'light' ? '#f4b619' : '#ffd700',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        #{rank}
+                    </Typography>
+                    <Typography
+                        variant="subtitle1"
+                        sx={{
+                            color: theme => theme.palette.text.primary,
+                            fontWeight: 'medium',
+                        }}
+                    >
+                        {t('rank')}
+                    </Typography>
+                </Box>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: theme => theme.palette.text.secondary,
+                        fontSize: '0.875rem',
+                    }}
+                >
+                    {t('outOf')} {totalPlayers} {t('players')}
+                </Typography>
+            </Box>
         </Box>
-    </Box>
-);
+    );
+};
 
-const MultiplierCard = ({ multiplier }) => (
-    <Box
-        sx={{
-            bgcolor: 'rgba(30, 30, 30, 0.6)',
-            backdropFilter: 'blur(10px)',
-            borderRadius: 2,
-            p: 2,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 2,
-            width: 'fit-content',
-            minWidth: '250px',
-            height: '100%',
-        }}
-    >
+const MultiplierCard = ({ multiplier }) => {
+    const { t } = useTranslation();
+    return (
         <Box
             sx={{
-                bgcolor: 'rgba(76, 175, 80, 0.1)',
-                borderRadius: '50%',
-                p: 1,
+                bgcolor: theme =>
+                    theme.palette.mode === 'light'
+                        ? 'rgba(76, 175, 80, 0.08)'
+                        : 'rgba(76, 175, 80, 0.08)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: 2,
+                p: 2,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
+                gap: 2,
+                width: 'fit-content',
+                minWidth: '250px',
+                height: '100%',
+                border: theme =>
+                    `1px solid ${
+                        theme.palette.mode === 'light'
+                            ? 'rgba(76, 175, 80, 0.12)'
+                            : 'rgba(76, 175, 80, 0.12)'
+                    }`,
             }}
         >
-            <StarIcon
+            <Box
                 sx={{
-                    color: '#4caf50',
-                    fontSize: 28,
-                }}
-            />
-        </Box>
-        <Box>
-            <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 0.5 }}>
-                <Typography
-                    variant="h5"
-                    sx={{
-                        color: '#4caf50',
-                        fontWeight: 'bold',
-                    }}
-                >
-                    {multiplier}x
-                </Typography>
-                <Typography
-                    variant="subtitle1"
-                    sx={{
-                        color: '#fff',
-                        fontWeight: 'medium',
-                    }}
-                >
-                    Multiplier
-                </Typography>
-            </Box>
-            <Typography
-                variant="body2"
-                sx={{
-                    color: 'rgba(255, 255, 255, 0.7)',
-                    fontSize: '0.875rem',
+                    bgcolor: 'rgba(76, 175, 80, 0.1)',
+                    borderRadius: '50%',
+                    p: 1,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                 }}
             >
-                Bonus points multiplier
-            </Typography>
+                <StarIcon
+                    sx={{
+                        color: theme => (theme.palette.mode === 'light' ? '#2e7d32' : '#4caf50'),
+                        fontSize: 28,
+                    }}
+                />
+            </Box>
+            <Box>
+                <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 1, mb: 0.5 }}>
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            color: theme =>
+                                theme.palette.mode === 'light' ? '#2e7d32' : '#4caf50',
+                            fontWeight: 'bold',
+                        }}
+                    >
+                        {multiplier}x
+                    </Typography>
+                    <Typography
+                        variant="subtitle1"
+                        sx={{
+                            color: theme => theme.palette.text.primary,
+                            fontWeight: 'medium',
+                        }}
+                    >
+                        {t('multiplier')}
+                    </Typography>
+                </Box>
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: theme => theme.palette.text.secondary,
+                        fontSize: '0.875rem',
+                    }}
+                >
+                    {t('bonusPointsMultiplier')}
+                </Typography>
+            </Box>
         </Box>
-    </Box>
-);
+    );
+};
 
 export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
+    const { t } = useTranslation();
     const { claimDailyReward, loading: claimLoading } = useRewards(userId);
     const { scoreDoc } = useScore(userId);
     const { userData } = useUserData(userId);
@@ -208,9 +236,10 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                             fontSize: { xs: '3rem', sm: '4rem' },
                             fontWeight: 'bold',
                             textAlign: 'center',
+                            color: theme => theme.palette.text.primary,
                         }}
                     >
-                        Your Points: {points}
+                        {t('yourPoints')}: {points}
                     </Typography>
 
                     <Box
@@ -233,7 +262,7 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                                     textAlign: 'center',
                                 }}
                             >
-                                Daily Reward Available!
+                                {t('dailyRewardAvailable')}
                             </Typography>
                         ) : (
                             <>
@@ -245,7 +274,7 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                                         textAlign: 'center',
                                     }}
                                 >
-                                    Next Claim Available In:
+                                    {t('nextClaimAvailable')}
                                 </Typography>
                                 <Countdown
                                     targetDate={getNextClaimTime()}
@@ -277,7 +306,7 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                                 opacity: canClaim ? 1 : 0.7,
                             }}
                         >
-                            {claimLoading ? 'Claiming...' : 'Claim Daily Reward'}
+                            {claimLoading ? t('claiming') : t('claimDailyReward')}
                         </Button>
                     </Box>
 

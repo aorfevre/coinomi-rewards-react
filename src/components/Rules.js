@@ -3,57 +3,42 @@ import TimerIcon from '@mui/icons-material/Timer';
 import StarIcon from '@mui/icons-material/Star';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import TelegramIcon from '@mui/icons-material/Telegram';
+import { useTranslation } from 'react-i18next';
 
 export const Rules = () => {
+    const { t } = useTranslation();
+
     const rules = [
         {
-            title: 'Daily Rewards',
+            title: t('dailyRewardsTitle'),
             icon: <TimerIcon sx={{ color: '#2196f3' }} />,
-            items: [
-                'Claim your daily reward every 24 hours',
-                'Each claim gives you 100 points',
-                'Points are multiplied based on your multiplier',
-            ],
+            items: t('dailyRewardsRules', { returnObjects: true }),
         },
         {
-            title: 'Multiplier Bonuses',
+            title: t('multiplierBonusesTitle'),
             icon: <StarIcon sx={{ color: '#4caf50' }} />,
-            items: [
-                'Start with a 1x multiplier',
-                'Connect Telegram for +10% bonus',
-                'Verify email for +10% bonus',
-                'Bonuses stack for maximum rewards',
-            ],
+            items: t('multiplierBonusesRules', { returnObjects: true }),
         },
         {
-            title: 'Leaderboard',
+            title: t('leaderboardTitle'),
             icon: <EmojiEventsIcon sx={{ color: '#ffd700' }} />,
-            items: [
-                'Compete with other players',
-                'Rankings update in real-time',
-                'Top players earn special rewards',
-            ],
+            items: t('leaderboardRules', { returnObjects: true }),
         },
         {
-            title: 'Boost Your Earnings',
+            title: t('boostEarningsTitle'),
             icon: <TelegramIcon sx={{ color: '#0088cc' }} />,
-            items: [
-                'Complete challenges to earn bonuses',
-                'Join our Telegram community',
-                'Stay active to maximize your rewards',
-            ],
+            items: t('boostEarningsRules', { returnObjects: true }),
         },
     ];
 
     return (
         <Box sx={{ maxWidth: 800, mx: 'auto', p: 3 }}>
             <Typography variant="h4" gutterBottom sx={{ mb: 4, fontWeight: 'normal' }}>
-                How It Works
+                {t('howItWorks')}
             </Typography>
 
             <Typography variant="h6" sx={{ mb: 3, color: 'text.secondary' }}>
-                Welcome to Coinomi Rewards! Earn points by completing various tasks and climb the
-                leaderboard.
+                {t('welcomeMessage')}
             </Typography>
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>

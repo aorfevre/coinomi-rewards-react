@@ -1,10 +1,12 @@
 import { Box, CircularProgress, Typography } from '@mui/material';
 import { format } from 'date-fns';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import { useRewardHistory } from '../hooks/useRewardHistory';
 import { useScore } from '../hooks/useScore';
 
 export const Tasks = ({ userId }) => {
+    const { t } = useTranslation();
     const { scoreDoc } = useScore(userId);
     const { rewards, loading, error } = useRewardHistory(userId);
 
@@ -19,7 +21,7 @@ export const Tasks = ({ userId }) => {
     if (error) {
         return (
             <Typography color="error" sx={{ textAlign: 'center', py: 4 }}>
-                Error loading reward history
+                {t('errorLoading')}
             </Typography>
         );
     }
@@ -27,7 +29,7 @@ export const Tasks = ({ userId }) => {
     return (
         <Box>
             <Typography variant="h5" sx={{ mb: 3 }}>
-                Completed Tasks
+                {t('completedTasks')}
             </Typography>
 
             <Box
@@ -45,17 +47,19 @@ export const Tasks = ({ userId }) => {
                     }}
                 >
                     <Typography variant="subtitle1" color="primary">
-                        Daily Rewards Claimed
+                        {t('dailyRewardsClaimed')}
                     </Typography>
-                    <Typography variant="h6">{scoreDoc?.tasksCompleted || 0} times</Typography>
+                    <Typography variant="h6">
+                        {scoreDoc?.tasksCompleted || 0} {t('times')}
+                    </Typography>
                 </Box>
 
                 <Box>
                     <Typography variant="h6" sx={{ mb: 2 }}>
-                        Recent Activity
+                        {t('recentActivity')}
                     </Typography>
                     {rewards.length === 0 ? (
-                        <Typography color="text.secondary">No rewards claimed yet</Typography>
+                        <Typography color="text.secondary">{t('noRewardsClaimed')}</Typography>
                     ) : (
                         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                             {rewards.map(reward => (
@@ -72,14 +76,16 @@ export const Tasks = ({ userId }) => {
                                 >
                                     <Box>
                                         <Typography variant="subtitle2" color="primary">
-                                            {reward.type === 'daily' ? 'Daily Reward' : reward.type}
+                                            {reward.type === 'daily'
+                                                ? t('dailyReward')
+                                                : reward.type}
                                         </Typography>
                                         <Typography variant="caption" color="text.secondary">
                                             {format(new Date(reward.timestamp), 'PPp')}
                                         </Typography>
                                     </Box>
                                     <Typography variant="subtitle1">
-                                        +{reward.points} points
+                                        +{reward.points} {t('points')}
                                     </Typography>
                                 </Box>
                             ))}

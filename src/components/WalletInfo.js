@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageToggle } from './LanguageToggle';
+import { useTranslation } from 'react-i18next';
 
 export const WalletInfo = ({ address, onThemeToggle }) => {
+    const { t } = useTranslation();
     const shortenAddress = addr => {
         if (!addr) return '';
         return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
     };
-
     return (
         <Box
             sx={{
@@ -27,6 +28,7 @@ export const WalletInfo = ({ address, onThemeToggle }) => {
                     fontFamily: 'monospace',
                     fontSize: '0.9rem',
                 }}
+                title={t('walletAddress')}
             >
                 {shortenAddress(address)}
             </Typography>

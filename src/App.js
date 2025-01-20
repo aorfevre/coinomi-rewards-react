@@ -11,8 +11,10 @@ import { WeeklyCountdown } from './components/WeeklyCountdown';
 import LogoDevIcon from '@mui/icons-material/LogoDev';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import './i18n/i18n';
+import { useTranslation } from 'react-i18next';
 
 function App() {
+    const { t } = useTranslation();
     const [mode, setMode] = React.useState('dark');
     const theme = React.useMemo(() => getTheme(mode), [mode]);
 
@@ -79,7 +81,7 @@ function App() {
                                 fontWeight: 500,
                             }}
                         >
-                            Authentication Required
+                            {t('authRequired')}
                         </Typography>
                     </Box>
                 </Box>
@@ -138,7 +140,7 @@ function App() {
                                 fontWeight: 500,
                             }}
                         >
-                            Authenticating
+                            {t('authenticating')}
                         </Typography>
                     </Box>
                     <CircularProgress
@@ -157,7 +159,7 @@ function App() {
                             mt: 2,
                         }}
                     >
-                        Please wait while we verify your wallet
+                        {t('verifyWallet')}
                     </Typography>
                 </Box>
             </ThemeProvider>
@@ -176,7 +178,7 @@ function App() {
                     }}
                 >
                     <Typography variant="h5" sx={{ color: 'error.main' }}>
-                        Authentication failed. Please try again.
+                        {t('authFailed')}
                     </Typography>
                 </Box>
             </ThemeProvider>

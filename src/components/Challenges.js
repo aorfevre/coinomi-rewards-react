@@ -19,6 +19,7 @@ import { useState } from 'react';
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 import DialogContentText from '@mui/material/DialogContentText';
 import { styled } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
 // Add styled components
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -37,6 +38,7 @@ const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
 }));
 
 export const Challenges = ({ userId }) => {
+    const { t } = useTranslation();
     const { userData, loading } = useUserData(userId);
     const [openEmailDialog, setOpenEmailDialog] = useState(false);
     const [email, setEmail] = useState('');
@@ -47,7 +49,7 @@ export const Challenges = ({ userId }) => {
 
     const handleEmailSubmit = async () => {
         if (!emailRegex.test(email)) {
-            setEmailError('Please enter a valid email address');
+            setEmailError(t('enterValidEmail'));
             return;
         }
 
@@ -58,10 +60,9 @@ export const Challenges = ({ userId }) => {
                 emailConnected: true,
             });
             setOpenEmailDialog(false);
-            // You might want to refresh userData here
         } catch (error) {
             console.error('Error saving email:', error);
-            setEmailError('Failed to save email. Please try again.');
+            setEmailError(t('errorSavingEmail'));
         }
     };
 
@@ -90,114 +91,93 @@ export const Challenges = ({ userId }) => {
     };
 
     if (loading) {
-        return <Box sx={{ mt: 4 }}>Loading...</Box>;
+        return <Box sx={{ mt: 4 }}>{t('loading')}</Box>;
     }
 
     return (
         <Box sx={{ mt: 4, width: '100%' }}>
-            <Typography variant="h4" sx={{ mb: 3, fontWeight: 'normal' }}>
-                Challenges
+            <Typography variant="h5" sx={{ mb: 3, textAlign: 'center', color: 'text.primary' }}>
+                {t('challenges')}
             </Typography>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    flexWrap: 'wrap',
-                    gap: 2,
-                    justifyContent: 'center',
-                    alignItems: 'stretch',
-                }}
-            >
+
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <Card
                     sx={{
-                        flex: '1 1 300px',
-                        maxWidth: '400px',
-                        bgcolor: telegramConnected
-                            ? 'rgba(46, 125, 50, 0.6)'
-                            : 'rgba(30, 30, 30, 0.6)',
-                        backdropFilter: 'blur(10px)',
-                        borderRadius: 2,
+                        bgcolor: theme =>
+                            theme.palette.mode === 'light'
+                                ? 'rgba(25, 118, 210, 0.04)'
+                                : 'rgba(91, 180, 255, 0.04)',
+                        border: theme =>
+                            `1px solid ${
+                                theme.palette.mode === 'light'
+                                    ? 'rgba(25, 118, 210, 0.12)'
+                                    : 'rgba(91, 180, 255, 0.12)'
+                            }`,
                     }}
                 >
-                    <CardContent sx={{ p: 3 }}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                            <TelegramIcon
-                                sx={{
-                                    mr: 1.5,
-                                    color: telegramConnected ? '#4caf50' : '#0088cc',
-                                    fontSize: '2rem',
-                                }}
-                            />
-                            <Typography
-                                variant="h5"
-                                sx={{
-                                    fontWeight: 'normal',
-                                    color: 'white',
-                                }}
-                            >
-                                Telegram Challenge
+                    <CardContent>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
+                            <TelegramIcon sx={{ color: '#0088cc', fontSize: 32 }} />
+                            <Typography variant="h6" sx={{ color: 'text.primary' }}>
+                                {t('telegramChallenge')}
                             </Typography>
-                            {telegramConnected && (
-                                <CheckCircleIcon
-                                    sx={{
-                                        ml: 'auto',
-                                        color: '#4caf50',
-                                        fontSize: '2rem',
-                                    }}
-                                />
-                            )}
                         </Box>
-                        <Typography
-                            variant="body1"
-                            sx={{
-                                mb: 3,
-                                color: 'rgba(255, 255, 255, 0.7)',
-                                fontSize: '1.1rem',
-                                lineHeight: 1.4,
-                            }}
-                        >
-                            {telegramConnected
-                                ? '🎉 Congratulations! You are now receiving a permanent 10% bonus on all rewards!'
-                                : 'Link your Telegram account to get a permanent 10% bonus on all rewards!'}
-                        </Typography>
-                        {!telegramConnected && (
-                            <Button
-                                variant="contained"
-                                onClick={handleTelegramClick}
-                                startIcon={<TelegramIcon />}
-                                fullWidth
-                                sx={{
-                                    bgcolor: '#0088cc',
-                                    '&:hover': {
-                                        bgcolor: '#0077b3',
-                                    },
-                                    py: 1.5,
-                                    fontSize: '1.1rem',
-                                }}
-                            >
-                                Connect with Telegram
-                            </Button>
+
+                        {telegramConnected ? (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <CheckCircleIcon sx={{ color: 'success.main' }} />
+                                <Typography sx={{ color: 'text.primary' }}>
+                                    {t('telegramSuccess')}
+                                </Typography>
+                            </Box>
+                        ) : (
+                            <>
+                                <Typography sx={{ mb: 2, color: 'text.secondary' }}>
+                                    {t('telegramPrompt')}
+                                </Typography>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleTelegramClick}
+                                    startIcon={<TelegramIcon />}
+                                    sx={{
+                                        bgcolor: '#0088cc',
+                                        '&:hover': { bgcolor: '#0077b3' },
+                                        fontSize: '1.1rem',
+                                    }}
+                                >
+                                    {t('connectTelegram')}
+                                </Button>
+                            </>
                         )}
                     </CardContent>
                 </Card>
 
                 <Card
                     sx={{
-                        flex: '1 1 300px',
-                        maxWidth: '400px',
-                        bgcolor: userData.emailConnected
-                            ? 'rgba(46, 125, 50, 0.6)'
-                            : 'rgba(30, 30, 30, 0.6)',
-                        backdropFilter: 'blur(10px)',
-                        borderRadius: 2,
+                        bgcolor: theme =>
+                            theme.palette.mode === 'light'
+                                ? 'rgba(76, 175, 80, 0.04)'
+                                : 'rgba(76, 175, 80, 0.04)',
+                        border: theme =>
+                            `1px solid ${
+                                theme.palette.mode === 'light'
+                                    ? 'rgba(76, 175, 80, 0.12)'
+                                    : 'rgba(76, 175, 80, 0.12)'
+                            }`,
                     }}
                 >
-                    <CardContent sx={{ p: 3 }}>
+                    <CardContent>
                         <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                             <EmailIcon
                                 sx={{
                                     mr: 1.5,
-                                    color: userData.emailConnected ? '#4caf50' : '#1976d2',
+                                    color: userData.emailConnected
+                                        ? theme =>
+                                              theme.palette.mode === 'light' ? '#2e7d32' : '#4caf50'
+                                        : theme =>
+                                              theme.palette.mode === 'light'
+                                                  ? '#1565c0'
+                                                  : '#1976d2',
                                     fontSize: '2rem',
                                 }}
                             />
@@ -205,16 +185,17 @@ export const Challenges = ({ userId }) => {
                                 variant="h5"
                                 sx={{
                                     fontWeight: 'normal',
-                                    color: 'white',
+                                    color: 'text.primary',
                                 }}
                             >
-                                Email Challenge
+                                {t('emailChallenge')}
                             </Typography>
                             {userData.emailConnected && (
                                 <CheckCircleIcon
                                     sx={{
                                         ml: 'auto',
-                                        color: '#4caf50',
+                                        color: theme =>
+                                            theme.palette.mode === 'light' ? '#2e7d32' : '#4caf50',
                                         fontSize: '2rem',
                                     }}
                                 />
@@ -224,14 +205,16 @@ export const Challenges = ({ userId }) => {
                             variant="body1"
                             sx={{
                                 mb: 3,
-                                color: 'rgba(255, 255, 255, 0.7)',
+                                color: 'text.secondary',
                                 fontSize: '1.1rem',
                                 lineHeight: 1.4,
                             }}
                         >
+                            {console.log('Translation key:', 'emailChallengePrompt')}
+                            {console.log('Translation value:', t('emailChallengePrompt'))}
                             {userData.emailConnected
-                                ? '🎉 Congratulations! You are now receiving a permanent 10% bonus on all rewards!'
-                                : 'Share your email to get a permanent 10% bonus on all rewards!'}
+                                ? t('emailChallengeSuccess')
+                                : t('emailChallengePrompt')}
                         </Typography>
                         {!userData.emailConnected && (
                             <Button
@@ -240,15 +223,17 @@ export const Challenges = ({ userId }) => {
                                 startIcon={<EmailIcon />}
                                 fullWidth
                                 sx={{
-                                    bgcolor: '#1976d2',
+                                    bgcolor: theme =>
+                                        theme.palette.mode === 'light' ? '#1976d2' : '#2196f3',
                                     '&:hover': {
-                                        bgcolor: '#1565c0',
+                                        bgcolor: theme =>
+                                            theme.palette.mode === 'light' ? '#1565c0' : '#1976d2',
                                     },
                                     py: 1.5,
                                     fontSize: '1.1rem',
                                 }}
                             >
-                                Share Email
+                                {t('shareEmail')}
                             </Button>
                         )}
                     </CardContent>
@@ -261,15 +246,21 @@ export const Challenges = ({ userId }) => {
                 maxWidth="sm"
                 fullWidth
             >
-                <StyledDialogTitle>Connect Your Email</StyledDialogTitle>
+                <StyledDialogTitle>{t('connectYourEmail')}</StyledDialogTitle>
                 <DialogContent sx={{ pb: 3, pt: 2 }}>
-                    <DialogContentText sx={{ mb: 3, textAlign: 'center' }}>
-                        �� Get a permanent 10% bonus on all rewards by connecting your email!
+                    <DialogContentText
+                        sx={{
+                            mb: 3,
+                            textAlign: 'center',
+                            color: 'text.secondary',
+                        }}
+                    >
+                        {t('emailBonus')}
                     </DialogContentText>
                     <TextField
                         autoFocus
                         margin="dense"
-                        label="Email Address"
+                        label={t('emailAddress')}
                         type="email"
                         fullWidth
                         variant="outlined"
@@ -283,6 +274,10 @@ export const Challenges = ({ userId }) => {
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 borderRadius: 2,
+                                color: 'text.primary',
+                            },
+                            '& .MuiInputLabel-root': {
+                                color: 'text.secondary',
                             },
                             '& .MuiOutlinedInput-input': {
                                 padding: '16.5px 14px',
@@ -299,8 +294,7 @@ export const Challenges = ({ userId }) => {
                             color: 'text.secondary',
                         }}
                     >
-                        We&apos;ll only use your email for important updates and rewards
-                        notifications.
+                        {t('emailPrivacy')}
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions sx={{ px: 3, pb: 3, justifyContent: 'center', gap: 2 }}>
@@ -314,7 +308,7 @@ export const Challenges = ({ userId }) => {
                             fontSize: '1rem',
                         }}
                     >
-                        Cancel
+                        {t('cancel')}
                     </Button>
                     <Button
                         onClick={handleEmailSubmit}
@@ -330,7 +324,7 @@ export const Challenges = ({ userId }) => {
                             },
                         }}
                     >
-                        Connect Email
+                        {t('connectEmail')}
                     </Button>
                 </DialogActions>
             </StyledDialog>

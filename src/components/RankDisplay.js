@@ -1,8 +1,11 @@
 import { EmojiEvents } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 export const RankDisplay = ({ rank, totalPlayers }) => {
+    const { t } = useTranslation();
+
     const getMedalColor = position => {
         switch (position) {
             case 1:
@@ -42,7 +45,7 @@ export const RankDisplay = ({ rank, totalPlayers }) => {
                         color: getMedalColor(rank),
                     }}
                 >
-                    Rank #{rank}
+                    {t('rank')} #{rank}
                 </Typography>
                 <Typography
                     variant="body2"
@@ -51,7 +54,7 @@ export const RankDisplay = ({ rank, totalPlayers }) => {
                         fontSize: '0.875rem',
                     }}
                 >
-                    out of {totalPlayers} players
+                    {t('outOf')} {totalPlayers} {t('players')}
                 </Typography>
             </Box>
         </Box>

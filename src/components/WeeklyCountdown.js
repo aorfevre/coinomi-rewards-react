@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Paper } from '@mui/material';
 import TimerIcon from '@mui/icons-material/Timer';
+import { useTranslation } from 'react-i18next';
 
 const calculateTimeLeft = () => {
     const now = new Date();
@@ -21,6 +22,7 @@ const calculateTimeLeft = () => {
 };
 
 export const WeeklyCountdown = () => {
+    const { t } = useTranslation();
     const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
 
     useEffect(() => {
@@ -35,16 +37,19 @@ export const WeeklyCountdown = () => {
         <Paper
             sx={{
                 p: 2,
-                background:
-                    'linear-gradient(to right, rgba(91, 180, 255, 0.1), rgba(91, 180, 255, 0.05))',
+                background: theme =>
+                    theme.palette.mode === 'light'
+                        ? 'linear-gradient(to right, rgba(25, 118, 210, 0.1), rgba(25, 118, 210, 0.05))'
+                        : 'linear-gradient(to right, rgba(91, 180, 255, 0.1), rgba(91, 180, 255, 0.05))',
                 borderRadius: '8px',
                 mb: 3,
+                boxShadow: 'none',
             }}
         >
             <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                <TimerIcon sx={{ color: '#5bb4ff' }} />
-                <Typography sx={{ color: 'rgba(255, 255, 255, 0.9)' }}>
-                    Weekly rewards in:
+                <TimerIcon sx={{ color: theme => theme.palette.primary.main }} />
+                <Typography sx={{ color: theme => theme.palette.text.primary }}>
+                    {t('weeklyRewards')}
                 </Typography>
             </Box>
             <Box
@@ -53,43 +58,34 @@ export const WeeklyCountdown = () => {
                     justifyContent: 'center',
                     gap: 2,
                     mt: 1,
-                    color: '#5bb4ff',
-                    fontFamily: 'monospace',
-                    fontSize: '1.2rem',
                 }}
             >
-                <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="h4" sx={{ color: '#5bb4ff', fontWeight: 'bold' }}>
-                        {timeLeft.days}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                        days
-                    </Typography>
-                </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="h4" sx={{ color: '#5bb4ff', fontWeight: 'bold' }}>
-                        {String(timeLeft.hours).padStart(2, '0')}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                        hours
-                    </Typography>
-                </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="h4" sx={{ color: '#5bb4ff', fontWeight: 'bold' }}>
-                        {String(timeLeft.minutes).padStart(2, '0')}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                        mins
-                    </Typography>
-                </Box>
-                <Box sx={{ textAlign: 'center' }}>
-                    <Typography variant="h4" sx={{ color: '#5bb4ff', fontWeight: 'bold' }}>
-                        {String(timeLeft.seconds).padStart(2, '0')}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                        secs
-                    </Typography>
-                </Box>
+                {[
+                    { value: timeLeft.days, label: t('days') },
+                    { value: timeLeft.hours, label: t('hours') },
+                    { value: timeLeft.minutes, label: t('minutes') },
+                    { value: timeLeft.seconds, label: t('seconds') },
+                ].map((item, index) => (
+                    <Box key={index} sx={{ textAlign: 'center' }}>
+                        <Typography
+                            variant="h4"
+                            sx={{
+                                color: theme => theme.palette.primary.main,
+                                fontWeight: 'bold',
+                            }}
+                        >
+                            {String(item.value).padStart(2, '0')}
+                        </Typography>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: theme => theme.palette.text.secondary,
+                            }}
+                        >
+                            {item.label}
+                        </Typography>
+                    </Box>
+                ))}
             </Box>
         </Paper>
     );

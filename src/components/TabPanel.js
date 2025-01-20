@@ -1,6 +1,7 @@
 import { Box, Tab, Tabs } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Leaderboard } from './Leaderboard';
 import { Profile } from './Profile';
 import { Rules } from './Rules';
@@ -27,6 +28,7 @@ CustomTabPanel.propTypes = {
 };
 
 export const TabPanel = ({ userId }) => {
+    const { t } = useTranslation();
     const [value, setValue] = useState(0);
 
     const handleChange = (event, newValue) => {
@@ -50,10 +52,10 @@ export const TabPanel = ({ userId }) => {
                         },
                     }}
                 >
-                    <Tab label="Leaderboard" />
-                    <Tab label="Tasks" />
-                    <Tab label="Rules" />
-                    <Tab label="Profile" />
+                    <Tab label={t('leaderboard')} />
+                    <Tab label={t('tasks')} />
+                    <Tab label={t('rules')} />
+                    <Tab label={t('profile')} />
                 </Tabs>
             </Box>
 

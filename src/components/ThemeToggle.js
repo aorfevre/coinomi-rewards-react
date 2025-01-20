@@ -1,30 +1,25 @@
-import { DarkMode, LightMode } from '@mui/icons-material';
-import { IconButton, useTheme } from '@mui/material';
+import { IconButton } from '@mui/material';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
 import PropTypes from 'prop-types';
+import { useTheme } from '@mui/material/styles';
+import { useTranslation } from 'react-i18next';
 
-export const ThemeToggle = ({ onToggle, sx }) => {
+export const ThemeToggle = ({ onToggle }) => {
     const theme = useTheme();
-    const isDarkMode = theme.palette.mode === 'dark';
+    const { t } = useTranslation();
 
     return (
         <IconButton
             onClick={onToggle}
             color="inherit"
-            sx={{
-                ...sx,
-                transition: 'transform 0.3s ease-in-out',
-                '&:hover': {
-                    transform: 'rotate(30deg)',
-                },
-            }}
-            aria-label="toggle theme"
+            title={theme.palette.mode === 'dark' ? t('lightMode') : t('darkMode')}
         >
-            {isDarkMode ? <LightMode sx={{ fontSize: 24 }} /> : <DarkMode sx={{ fontSize: 24 }} />}
+            {theme.palette.mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
         </IconButton>
     );
 };
 
 ThemeToggle.propTypes = {
     onToggle: PropTypes.func.isRequired,
-    sx: PropTypes.object,
 };
