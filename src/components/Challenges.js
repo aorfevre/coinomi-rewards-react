@@ -1,7 +1,5 @@
 import {
     Box,
-    Card,
-    CardContent,
     Typography,
     Button,
     Dialog,
@@ -11,7 +9,6 @@ import {
     TextField,
 } from '@mui/material';
 import TelegramIcon from '@mui/icons-material/Telegram';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EmailIcon from '@mui/icons-material/Email';
 import PropTypes from 'prop-types';
 import { useUserData } from '../hooks/useUserData';
@@ -20,6 +17,7 @@ import { getFirestore, doc, updateDoc } from 'firebase/firestore';
 import DialogContentText from '@mui/material/DialogContentText';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
+import { ChallengeCard } from './ChallengeCard';
 
 // Add styled components
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -108,141 +106,31 @@ export const Challenges = ({ userId }) => {
             </Box> */}
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <Card
-                    sx={{
-                        bgcolor: theme =>
-                            theme.palette.mode === 'light'
-                                ? 'rgba(25, 118, 210, 0.04)'
-                                : 'rgba(91, 180, 255, 0.04)',
-                        border: theme =>
-                            `1px solid ${
-                                theme.palette.mode === 'light'
-                                    ? 'rgba(25, 118, 210, 0.12)'
-                                    : 'rgba(91, 180, 255, 0.12)'
-                            }`,
-                    }}
-                >
-                    <CardContent>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                            <TelegramIcon sx={{ color: '#0088cc', fontSize: 32 }} />
-                            <Typography variant="h6" sx={{ color: 'text.primary' }}>
-                                {t('telegramChallenge')}
-                            </Typography>
-                        </Box>
+                <ChallengeCard
+                    icon={TelegramIcon}
+                    title={t('telegramChallenge')}
+                    description={telegramConnected ? t('telegramSuccess') : t('telegramPrompt')}
+                    isCompleted={telegramConnected}
+                    buttonText={t('connectTelegram')}
+                    onAction={handleTelegramClick}
+                    color="#0088cc"
+                    buttonStartIcon={<TelegramIcon />}
+                />
 
-                        {telegramConnected ? (
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                <CheckCircleIcon sx={{ color: 'success.main' }} />
-                                <Typography sx={{ color: 'text.primary' }}>
-                                    {t('telegramSuccess')}
-                                </Typography>
-                            </Box>
-                        ) : (
-                            <>
-                                <Typography sx={{ mb: 2, color: 'text.secondary' }}>
-                                    {t('telegramPrompt')}
-                                </Typography>
-                                <Button
-                                    variant="contained"
-                                    onClick={handleTelegramClick}
-                                    startIcon={<TelegramIcon />}
-                                    sx={{
-                                        bgcolor: '#0088cc',
-                                        '&:hover': { bgcolor: '#0077b3' },
-                                        fontSize: '1.1rem',
-                                    }}
-                                >
-                                    {t('connectTelegram')}
-                                </Button>
-                            </>
-                        )}
-                    </CardContent>
-                </Card>
-
-                <Card
-                    sx={{
-                        bgcolor: theme =>
-                            theme.palette.mode === 'light'
-                                ? 'rgba(76, 175, 80, 0.04)'
-                                : 'rgba(76, 175, 80, 0.04)',
-                        border: theme =>
-                            `1px solid ${
-                                theme.palette.mode === 'light'
-                                    ? 'rgba(76, 175, 80, 0.12)'
-                                    : 'rgba(76, 175, 80, 0.12)'
-                            }`,
-                    }}
-                >
-                    <CardContent>
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                            <EmailIcon
-                                sx={{
-                                    mr: 1.5,
-                                    color: userData.emailConnected
-                                        ? theme =>
-                                              theme.palette.mode === 'light' ? '#2e7d32' : '#4caf50'
-                                        : theme =>
-                                              theme.palette.mode === 'light'
-                                                  ? '#1565c0'
-                                                  : '#1976d2',
-                                    fontSize: '2rem',
-                                }}
-                            />
-                            <Typography
-                                variant="h5"
-                                sx={{
-                                    fontWeight: 'normal',
-                                    color: 'text.primary',
-                                }}
-                            >
-                                {t('emailChallenge')}
-                            </Typography>
-                            {userData.emailConnected && (
-                                <CheckCircleIcon
-                                    sx={{
-                                        ml: 'auto',
-                                        color: theme =>
-                                            theme.palette.mode === 'light' ? '#2e7d32' : '#4caf50',
-                                        fontSize: '2rem',
-                                    }}
-                                />
-                            )}
-                        </Box>
-                        <Typography
-                            variant="body1"
-                            sx={{
-                                mb: 3,
-                                color: 'text.secondary',
-                                fontSize: '1.1rem',
-                                lineHeight: 1.4,
-                            }}
-                        >
-                            {userData.emailConnected
-                                ? t('emailChallengeSuccess')
-                                : t('emailChallengePrompt')}
-                        </Typography>
-                        {!userData.emailConnected && (
-                            <Button
-                                variant="contained"
-                                onClick={() => setOpenEmailDialog(true)}
-                                startIcon={<EmailIcon />}
-                                fullWidth
-                                sx={{
-                                    bgcolor: theme =>
-                                        theme.palette.mode === 'light' ? '#1976d2' : '#2196f3',
-                                    '&:hover': {
-                                        bgcolor: theme =>
-                                            theme.palette.mode === 'light' ? '#1565c0' : '#1976d2',
-                                    },
-                                    py: 1.5,
-                                    fontSize: '1.1rem',
-                                }}
-                            >
-                                {t('shareEmail')}
-                            </Button>
-                        )}
-                    </CardContent>
-                </Card>
+                <ChallengeCard
+                    icon={EmailIcon}
+                    title={t('emailChallenge')}
+                    description={
+                        userData.emailConnected
+                            ? t('emailChallengeSuccess')
+                            : t('emailChallengePrompt')
+                    }
+                    isCompleted={userData.emailConnected}
+                    buttonText={t('shareEmail')}
+                    onAction={() => setOpenEmailDialog(true)}
+                    color="#1976d2"
+                    buttonStartIcon={<EmailIcon />}
+                />
             </Box>
 
             <StyledDialog
