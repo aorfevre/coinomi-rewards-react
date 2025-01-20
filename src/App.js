@@ -23,7 +23,6 @@ import { TabMenu } from './components/TabMenu';
 import { HomeTab } from './components/HomeTab';
 import { Leaderboard } from './components/Leaderboard';
 import { Tasks } from './components/Tasks';
-import { Profile } from './components/Profile';
 import { ReferralTab } from './components/ReferralTab';
 
 function App() {
@@ -221,7 +220,6 @@ function App() {
                 )}
                 {currentTab === 'leaderboard' && <Leaderboard />}
                 {currentTab === 'tasks' && <Tasks />}
-                {currentTab === 'profile' && <Profile userId={user?.uid} />}
                 {currentTab === 'referrals' && <ReferralTab userId={user?.uid} />}
 
                 <FireworksButton />

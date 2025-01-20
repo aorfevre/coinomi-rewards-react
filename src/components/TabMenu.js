@@ -3,7 +3,6 @@ import { Tabs, Tab, Box } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import AssignmentIcon from '@mui/icons-material/Assignment';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
@@ -56,12 +55,6 @@ export const TabMenu = ({ currentTab, onTabChange }) => {
                         <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('referrals')}</Box>
                     }
                     value="referrals"
-                    iconPosition="start"
-                />
-                <Tab
-                    icon={<AccountCircleIcon />}
-                    label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('profile')}</Box>}
-                    value="profile"
                     iconPosition="start"
                 />
             </Tabs>
