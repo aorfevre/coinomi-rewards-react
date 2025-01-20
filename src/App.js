@@ -9,6 +9,7 @@ import { getTheme } from './theme';
 import { FireworksButton } from './components/FireworksButton';
 import { WeeklyCountdown } from './components/WeeklyCountdown';
 import LogoDevIcon from '@mui/icons-material/LogoDev';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 function App() {
     const [mode, setMode] = React.useState('dark');
@@ -38,15 +39,48 @@ function App() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <Box
-                    className="min-h-screen flex items-center justify-center"
                     sx={{
+                        minHeight: '100vh',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                         bgcolor: 'background.default',
-                        color: 'text.primary',
+                        gap: 3,
+                        p: 3,
                     }}
                 >
-                    <Typography variant="h5" sx={{ color: 'error.main' }}>
-                        Please provide a valid authentication token in the URL
-                    </Typography>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            gap: 2,
+                            textAlign: 'center',
+                        }}
+                    >
+                        <ErrorOutlineIcon
+                            sx={{
+                                fontSize: 64,
+                                color: 'error.main',
+                                animation: 'shake 0.5s ease-in-out',
+                                '@keyframes shake': {
+                                    '0%, 100%': { transform: 'translateX(0)' },
+                                    '20%, 60%': { transform: 'translateX(-5px)' },
+                                    '40%, 80%': { transform: 'translateX(5px)' },
+                                },
+                            }}
+                        />
+                        <Typography
+                            variant="h5"
+                            sx={{
+                                color: 'error.main',
+                                fontWeight: 500,
+                            }}
+                        >
+                            Authentication Required
+                        </Typography>
+                    </Box>
                 </Box>
             </ThemeProvider>
         );
