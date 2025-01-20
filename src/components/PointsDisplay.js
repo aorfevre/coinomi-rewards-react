@@ -6,7 +6,6 @@ import { useRewards } from '../hooks/useRewards';
 import { useScore } from '../hooks/useScore';
 import { useUserData } from '../hooks/useUserData';
 import { Countdown } from './Countdown';
-import { RankDisplay } from './RankDisplay';
 import { TabPanel } from './TabPanel';
 import { Fireworks } from './Fireworks';
 import { Challenges } from './Challenges';
