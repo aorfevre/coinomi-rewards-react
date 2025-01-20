@@ -49,13 +49,14 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
             }
         }
 
-        // Get user data to check for Telegram bonus
+        // Get user data to check for Telegram and email bonuses
         const userData = userDoc.data();
 
         // Calculate bonus multiplier
-        const telegramBonus = userData?.telegramConnected ? 1.1 : 1.0; // 10% bonus
+        const telegramBonus = userData?.telegramConnected ? 0.1 : 0; // 10% bonus
+        const emailBonus = userData?.emailConnected ? 0.1 : 0; // 10% bonus
         const basePoints = 100;
-        const totalPoints = Math.floor(basePoints * telegramBonus);
+        const totalPoints = basePoints * (1 + telegramBonus + emailBonus);
 
         // Add reward document
         const rewardRef = await db.collection('rewards').add({
@@ -63,6 +64,7 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
             points: totalPoints,
             basePoints,
             telegramBonus: userData?.telegramConnected ? 0.1 : 0,
+            emailBonus: userData?.emailConnected ? 0.1 : 0,
             timestamp: new Date().toISOString(),
             type: 'daily',
         });
