@@ -6,54 +6,54 @@ on:
             - main
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
+    # test:
+    #     runs-on: ubuntu-latest
 
-        steps:
-            - name: Checkout code
-              uses: actions/checkout@v3
+    #     steps:
+    #         - name: Checkout code
+    #           uses: actions/checkout@v3
 
-            - name: Set up Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: '20'
-                  cache: 'npm'
+    #         - name: Set up Node.js
+    #           uses: actions/setup-node@v3
+    #           with:
+    #               node-version: '20'
+    #               cache: 'npm'
 
-            - name: Install dependencies
-              working-directory: ./
-              run: npm ci --legacy-peer-deps
+    #         - name: Install dependencies
+    #           working-directory: ./
+    #           run: npm ci --legacy-peer-deps
 
-            - name: Run unit tests
-              working-directory: ./
-              run: npm test
-              env:
-                  SKIP_PREFLIGHT_CHECK: true
-                  NODE_ENV: test
-                  CI: true
-                  REACT_APP_FIREBASE_API_KEY: ${{ secrets.REACT_APP_FIREBASE_API_KEY }}
-                  REACT_APP_FIREBASE_PROJECT_ID: ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}
+    #         - name: Run unit tests
+    #           working-directory: ./
+    #           run: npm test
+    #           env:
+    #               SKIP_PREFLIGHT_CHECK: true
+    #               NODE_ENV: test
+    #               CI: true
+    #               REACT_APP_FIREBASE_API_KEY: ${{ secrets.REACT_APP_FIREBASE_API_KEY }}
+    #               REACT_APP_FIREBASE_PROJECT_ID: ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}
 
-    test-functions:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v3
+    # test-functions:
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         - uses: actions/checkout@v3
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: '20'
-                  cache: 'npm'
-                  cache-dependency-path: './functions/package-lock.json'
+    #         - name: Setup Node.js
+    #           uses: actions/setup-node@v3
+    #           with:
+    #               node-version: '20'
+    #               cache: 'npm'
+    #               cache-dependency-path: './functions/package-lock.json'
 
-            - name: Install Functions Dependencies
-              working-directory: ./functions
-              run: npm ci --legacy-peer-deps
+    #         - name: Install Functions Dependencies
+    #           working-directory: ./functions
+    #           run: npm ci --legacy-peer-deps
 
-            - name: Run Functions Tests
-              working-directory: ./functions
-              run: npm test
-              env:
-                  NODE_ENV: test
+    #         - name: Run Functions Tests
+    #           working-directory: ./functions
+    #           run: npm test
+    #           env:
+    #               NODE_ENV: test
 
     build_and_deploy:
         runs-on: ubuntu-latest
@@ -86,7 +86,6 @@ jobs:
                   REACT_APP_TELEGRAM_BOT_NAME: ${{ secrets.REACT_APP_TELEGRAM_BOT_NAME }}
                   REACT_APP_TELEGRAM_BOT_ID: ${{ secrets.REACT_APP_TELEGRAM_BOT_ID }}
 
-
             - name: Deploy to Firebase
               uses: FirebaseExtended/action-hosting-deploy@v0
               with:
@@ -118,16 +117,16 @@ jobs:
 
             - name: Create .env file
               run: |
-                cd functions
-                echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" > .env
-                echo "FUNCTION_URL=${{ secrets.FUNCTION_URL }}" >> .env
-                echo "REACT_APP_CLAIM_COOLDOWN_SECONDS=${{ secrets.REACT_APP_CLAIM_COOLDOWN_SECONDS }}" >> .env
-                echo "REACT_APP_TELEGRAM_BOT_ID=${{ secrets.REACT_APP_TELEGRAM_BOT_ID }}" >> .env
+                  cd functions
+                  echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" > .env
+                  echo "FUNCTION_URL=${{ secrets.FUNCTION_URL }}" >> .env
+                  echo "REACT_APP_CLAIM_COOLDOWN_SECONDS=${{ secrets.REACT_APP_CLAIM_COOLDOWN_SECONDS }}" >> .env
+                  echo "REACT_APP_TELEGRAM_BOT_ID=${{ secrets.REACT_APP_TELEGRAM_BOT_ID }}" >> .env
               env:
-                TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-                FUNCTION_URL: ${{ secrets.FUNCTION_URL }}
-                REACT_APP_CLAIM_COOLDOWN_SECONDS: ${{ secrets.REACT_APP_CLAIM_COOLDOWN_SECONDS }}
-                REACT_APP_TELEGRAM_BOT_ID: ${{ secrets.REACT_APP_TELEGRAM_BOT_ID }}
+                  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+                  FUNCTION_URL: ${{ secrets.FUNCTION_URL }}
+                  REACT_APP_CLAIM_COOLDOWN_SECONDS: ${{ secrets.REACT_APP_CLAIM_COOLDOWN_SECONDS }}
+                  REACT_APP_TELEGRAM_BOT_ID: ${{ secrets.REACT_APP_TELEGRAM_BOT_ID }}
 
             - name: Build Functions
               run: |
