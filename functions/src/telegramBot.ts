@@ -107,17 +107,44 @@ bot.command('start', async (ctx: StartCommandContext) => {
     }
 });
 
-// // Development mode: Use polling
-// if (process.env.NODE_ENV !== 'production') {
-//     functions.logger.info('Starting Telegram bot in development mode (polling)');
-//     bot.launch()
-//         .then(() => {
-//             functions.logger.info('Telegram bot is running in polling mode');
-//         })
-//         .catch(error => {
-//             functions.logger.error('Failed to start Telegram bot in polling mode:', error);
-//         });
-// }
+let isPolling = false;
+
+// Development mode: Use polling
+if (process.env.NODE_ENV !== 'production') {
+    functions.logger.info('Starting Telegram bot in development mode (polling)');
+
+    const startPolling = async () => {
+        if (isPolling) {
+            functions.logger.warn('Bot is already polling, skipping...');
+            return;
+        }
+
+        try {
+            isPolling = true;
+            await bot.telegram.deleteWebhook(); // Clear any existing webhooks
+            await bot.launch();
+            functions.logger.info('Telegram bot is running in polling mode');
+        } catch (error: any) {
+            isPolling = false;
+            if (error.message.includes('409: Conflict')) {
+                functions.logger.warn('Another bot instance is already running');
+            } else {
+                functions.logger.error('Failed to start Telegram bot in polling mode:', error);
+            }
+        }
+    };
+
+    startPolling();
+    // Cleanup webhook on function termination
+    process.once('SIGINT', () => {
+        isPolling = false;
+        bot.stop('SIGINT');
+    });
+    process.once('SIGTERM', () => {
+        isPolling = false;
+        bot.stop('SIGTERM');
+    });
+}
 
 // Production mode: Use webhook
 export const telegramWebhook = functions
@@ -140,7 +167,3 @@ export const telegramWebhook = functions
             response.sendStatus(500);
         }
     });
-
-// Cleanup webhook on function termination
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
