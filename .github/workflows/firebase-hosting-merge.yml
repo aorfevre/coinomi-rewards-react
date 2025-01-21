@@ -179,7 +179,7 @@ jobs:
                   curl -X POST \
                     -H "Content-Type: application/json" \
                     -d '{
-                      "url": "${{ secrets.FUNCTION_URL }}/telegram",
+                      "url": "${{ secrets.FUNCTION_URL }}/telegramWebhook",
                       "allowed_updates": ["message", "callback_query"],
                       "drop_pending_updates": true
                     }' \
@@ -191,6 +191,7 @@ jobs:
                       echo "Failed to set webhook"
                       exit 1
                   fi
+
               env:
                   TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
                   FUNCTION_URL: ${{ secrets.FUNCTION_URL }}
