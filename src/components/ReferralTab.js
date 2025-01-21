@@ -19,6 +19,7 @@ import { useReferral } from '../hooks/useReferral';
 import { EditReferralDialog } from './EditReferralDialog';
 import { EnterReferralDialog } from './EnterReferralDialog';
 import { useUserData } from '../hooks/useUserData';
+import { SocialShare } from './SocialShare';
 
 export const ReferralTab = ({ userId }) => {
     const { t } = useTranslation();
@@ -125,6 +126,10 @@ export const ReferralTab = ({ userId }) => {
                             </IconButton>
                         </Tooltip>
                     </Box>
+                </Box>
+
+                <Box sx={{ mb: 4 }}>
+                    <SocialShare referralCode={referralCode} />
                 </Box>
 
                 <Box

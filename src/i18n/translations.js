@@ -172,6 +172,11 @@ export const resources = {
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
             unranked: 'Unranked',
             noPlayersYet: 'Be the first to join!',
+            // Social Sharing
+            shareVia: 'Share via',
+            shareOn: 'Share on {{network}}',
+            shareInviteText:
+                '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
         },
     },
     pt: {
@@ -317,6 +322,11 @@ export const resources = {
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
             unranked: 'Unranked',
             noPlayersYet: 'Be the first to join!',
+            // Social Sharing
+            shareVia: 'Share via',
+            shareOn: 'Share on {{network}}',
+            shareInviteText:
+                '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
         },
     },
     fr: {
@@ -463,6 +473,11 @@ export const resources = {
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
             unranked: 'Unranked',
             noPlayersYet: 'Be the first to join!',
+            // Social Sharing
+            shareVia: 'Share via',
+            shareOn: 'Share on {{network}}',
+            shareInviteText:
+                '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
         },
     },
     tr: {
@@ -592,6 +607,11 @@ export const resources = {
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
             unranked: 'Unranked',
             noPlayersYet: 'Be the first to join!',
+            // Social Sharing
+            shareVia: 'Share via',
+            shareOn: 'Share on {{network}}',
+            shareInviteText:
+                '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
         },
     },
     zh: {
@@ -714,6 +734,11 @@ export const resources = {
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
             unranked: 'Unranked',
             noPlayersYet: 'Be the first to join!',
+            // Social Sharing
+            shareVia: 'Share via',
+            shareOn: 'Share on {{network}}',
+            shareInviteText:
+                '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
         },
     },
     vi: {
@@ -845,6 +870,11 @@ export const resources = {
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
             unranked: 'Unranked',
             noPlayersYet: 'Be the first to join!',
+            // Social Sharing
+            shareVia: 'Share via',
+            shareOn: 'Share on {{network}}',
+            shareInviteText:
+                '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
         },
     },
     fil: {
@@ -976,6 +1006,11 @@ export const resources = {
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
             unranked: 'Unranked',
             noPlayersYet: 'Be the first to join!',
+            // Social Sharing
+            shareVia: 'Share via',
+            shareOn: 'Share on {{network}}',
+            shareInviteText:
+                '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
         },
     },
 };
