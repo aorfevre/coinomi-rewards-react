@@ -1,6 +1,5 @@
 import * as functions from 'firebase-functions';
 import { db } from './config/firebase';
-import { Timestamp } from 'firebase-admin/firestore';
 
 // Generate a random 7-character code
 const generateReferralCode = (): string => {
