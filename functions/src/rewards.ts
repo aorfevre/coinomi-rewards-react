@@ -93,7 +93,9 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
         if (userData?.referredBy) {
             await db.collection('rewards').add({
                 userId: userData.referredBy,
+                basePoints: totalPoints,
                 points: Math.round(totalPoints * 0.1),
+                multiplier: 0.1,
                 type: 'referral-bonus',
                 timestamp: new Date().toISOString(),
                 rewardId: rewardRef.id,
@@ -182,16 +184,17 @@ export const onRewardCreated = functions.firestore
             } else if (type === 'new-referral') {
                 const userScoreRef = db.collection('scores').doc(userId);
                 const scoreDoc = await userScoreRef.get();
-                const currentData = scoreDoc.data() as UserScore;
+                const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
                 const pointsToAdd = 100;
                 insertScore.points = currentData.points + pointsToAdd || 0;
                 await userScoreRef.set(insertScore, { merge: true });
             } else if (type === 'referral-bonus') {
                 const userScoreRef = db.collection('scores').doc(userId);
                 const scoreDoc = await userScoreRef.get();
-                const currentData = scoreDoc.data() as UserScore;
-                const pointsToAdd = points * 0.1;
+                const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
+                const pointsToAdd = points;
                 insertScore.points = currentData.points + pointsToAdd || 0;
+
                 await userScoreRef.set(insertScore, { merge: true });
             }
         } catch (error) {

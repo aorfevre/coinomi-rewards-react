@@ -107,17 +107,17 @@ bot.command('start', async (ctx: StartCommandContext) => {
     }
 });
 
-// Development mode: Use polling
-if (process.env.NODE_ENV !== 'production') {
-    functions.logger.info('Starting Telegram bot in development mode (polling)');
-    bot.launch()
-        .then(() => {
-            functions.logger.info('Telegram bot is running in polling mode');
-        })
-        .catch(error => {
-            functions.logger.error('Failed to start Telegram bot in polling mode:', error);
-        });
-}
+// // Development mode: Use polling
+// if (process.env.NODE_ENV !== 'production') {
+//     functions.logger.info('Starting Telegram bot in development mode (polling)');
+//     bot.launch()
+//         .then(() => {
+//             functions.logger.info('Telegram bot is running in polling mode');
+//         })
+//         .catch(error => {
+//             functions.logger.error('Failed to start Telegram bot in polling mode:', error);
+//         });
+// }
 
 // Production mode: Use webhook
 export const telegramWebhook = functions
