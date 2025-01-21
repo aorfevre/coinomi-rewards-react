@@ -18,24 +18,21 @@ import PropTypes from 'prop-types';
 import { useReferral } from '../hooks/useReferral';
 import { EditReferralDialog } from './EditReferralDialog';
 import { EnterReferralDialog } from './EnterReferralDialog';
+import { useUserData } from '../hooks/useUserData';
 
 export const ReferralTab = ({ userId }) => {
     const { t } = useTranslation();
+    const { userData } = useUserData(userId);
     const [showCopied, setShowCopied] = React.useState(false);
     const [editDialogOpen, setEditDialogOpen] = React.useState(false);
     const [enterReferralOpen, setEnterReferralOpen] = React.useState(false);
     const { referralCode, referralCount, loading, error, refresh, hasReferrer } =
         useReferral(userId);
 
-    const referralLink = `${window.location.origin}?ref=${referralCode}`;
-
-    const handleCopy = async () => {
-        try {
-            await navigator.clipboard.writeText(referralLink);
-            setShowCopied(true);
-        } catch (err) {
-            console.error('Failed to copy:', err);
-        }
+    const handleCopy = () => {
+        navigator.clipboard.writeText(userData?.referralCode || '');
+        setShowCopied(true);
+        setTimeout(() => setShowCopied(false), 2000);
     };
 
     const handleEditSuccess = () => {
