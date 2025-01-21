@@ -153,11 +153,13 @@ export const telegramWebhook = functions
         memory: '256MB',
     })
     .https.onRequest(async (request, response) => {
+        functions.logger.info('Telegram webhook received');
         const startTime = Date.now();
         try {
             if (process.env.NODE_ENV === 'production') {
                 // Just launch the bot before handling the update
-                await bot.launch();
+                // No need to launch the bot on every webhook request
+                // The bot is already configured with the webhook URL
                 await bot.handleUpdate(request.body);
             }
             functions.logger.info(`Webhook processed in ${Date.now() - startTime}ms`);
