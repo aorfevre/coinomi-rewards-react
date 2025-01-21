@@ -160,6 +160,9 @@ export const resources = {
             userNotFoundMessage: 'Could not find user data',
             backToHome: 'Back to Home',
             retry: 'Retry',
+            // Multiplier
+            baseMultiplier: 'Base Multiplier',
+            telegramBonus: 'Telegram Bonus',
         },
     },
     pt: {
@@ -293,6 +296,9 @@ export const resources = {
             userNotFoundMessage: 'Não foi possível encontrar dados do usuário',
             backToHome: 'Voltar ao Início',
             retry: 'Tentar Novamente',
+            // Multiplier
+            baseMultiplier: 'Base Multiplier',
+            telegramBonus: 'Telegram Bonus',
         },
     },
     fr: {
@@ -427,6 +433,9 @@ export const resources = {
             userNotFoundMessage: "Impossible de trouver les données de l'utilisateur",
             backToHome: "Retour à l'Accueil",
             retry: 'Réessayer',
+            // Multiplier
+            baseMultiplier: 'Base Multiplier',
+            telegramBonus: 'Telegram Bonus',
         },
     },
     tr: {
@@ -543,6 +552,10 @@ export const resources = {
             userNotFoundMessage: 'Kullanıcı verileri bulunamadı',
             backToHome: 'Ana Sayfaya Dön',
             retry: 'Tekrar Dene',
+            // Multiplier
+            baseMultiplier: 'Base Multiplier',
+            telegramBonus: 'Telegram Bonus',
+            emailBonus: 'Email Bonus',
         },
     },
     zh: {
@@ -652,6 +665,10 @@ export const resources = {
             userNotFoundMessage: '无法找到用户数据',
             backToHome: '返回首页',
             retry: '重试',
+            // Multiplier
+            baseMultiplier: 'Base Multiplier',
+            telegramBonus: 'Telegram Bonus',
+            emailBonus: 'Email Bonus',
         },
     },
     vi: {
@@ -770,6 +787,10 @@ export const resources = {
             userNotFoundMessage: 'Không thể tìm thấy dữ liệu người dùng',
             backToHome: 'Trở Về Trang Chủ',
             retry: 'Thử Lại',
+            // Multiplier
+            baseMultiplier: 'Base Multiplier',
+            telegramBonus: 'Telegram Bonus',
+            emailBonus: 'Email Bonus',
         },
     },
     fil: {
@@ -888,6 +909,10 @@ export const resources = {
             userNotFoundMessage: 'Hindi mahanap ang data ng user',
             backToHome: 'Bumalik sa Home',
             retry: 'Subukan Muli',
+            // Multiplier
+            baseMultiplier: 'Base Multiplier',
+            telegramBonus: 'Telegram Bonus',
+            emailBonus: 'Email Bonus',
         },
     },
 };

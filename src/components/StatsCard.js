@@ -1,8 +1,16 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Tooltip } from '@mui/material';
 import PropTypes from 'prop-types';
 
-export const StatsCard = ({ icon: Icon, coloredTitle, title, subtitle, color, bgColor }) => {
-    return (
+export const StatsCard = ({
+    icon: Icon,
+    coloredTitle,
+    title,
+    subtitle,
+    color,
+    bgColor,
+    tooltip,
+}) => {
+    const card = (
         <Box
             sx={{
                 display: 'flex',
@@ -15,6 +23,7 @@ export const StatsCard = ({ icon: Icon, coloredTitle, title, subtitle, color, bg
                     theme.palette.mode === 'dark'
                         ? '0 4px 6px rgba(0, 0, 0, 0.3)'
                         : '0 4px 6px rgba(0, 0, 0, 0.1)',
+                cursor: tooltip ? 'help' : 'default',
             }}
         >
             <Box
@@ -49,6 +58,17 @@ export const StatsCard = ({ icon: Icon, coloredTitle, title, subtitle, color, bg
             </Box>
         </Box>
     );
+
+    return tooltip ? (
+        <Tooltip
+            title={<Typography style={{ whiteSpace: 'pre-line' }}>{tooltip}</Typography>}
+            arrow
+        >
+            {card}
+        </Tooltip>
+    ) : (
+        card
+    );
 };
 
 StatsCard.propTypes = {
@@ -58,4 +78,5 @@ StatsCard.propTypes = {
     subtitle: PropTypes.string.isRequired,
     color: PropTypes.string.isRequired,
     bgColor: PropTypes.string,
+    tooltip: PropTypes.string,
 };

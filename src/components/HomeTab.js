@@ -8,10 +8,19 @@ import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import StarIcon from '@mui/icons-material/Star';
 import { StatsCard } from './StatsCard';
 import { useTranslation } from 'react-i18next';
+import { useUserData } from '../hooks/useUserData';
+import { calculateMultiplier } from '../utils/multiplierCalculator';
 
 export const HomeTab = ({ userId, score, rank, totalPlayers }) => {
+    const { userData } = useUserData(userId);
     const { scoreDoc } = useScore(userId);
     const { t } = useTranslation();
+
+    const multiplier = calculateMultiplier(userData, scoreDoc || {}, t);
+    const formattedMultiplier = `${multiplier.total.toFixed(2)}x`;
+
+    // Use the breakdown text directly from the calculator
+    const multiplierBreakdown = multiplier.breakdownText;
 
     return (
         <Box>
@@ -33,11 +42,12 @@ export const HomeTab = ({ userId, score, rank, totalPlayers }) => {
                 />
                 <StatsCard
                     icon={StarIcon}
-                    coloredTitle="1x"
+                    coloredTitle={formattedMultiplier}
                     title={t('multiplier')}
                     subtitle={t('bonusPointsMultiplier')}
                     color="#4CAF50"
                     bgColor="#1a2e1f"
+                    tooltip={multiplierBreakdown}
                 />
             </Box>
             <StreakBonus
