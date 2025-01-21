@@ -10,6 +10,7 @@ import { StatsCard } from './StatsCard';
 import { useTranslation } from 'react-i18next';
 import { useUserData } from '../hooks/useUserData';
 import { calculateMultiplier } from '../utils/multiplierCalculator';
+import { UserKPI } from './UserKPI';
 
 export const HomeTab = ({ userId, score, rank, totalPlayers }) => {
     const { userData } = useUserData(userId);
@@ -50,6 +51,11 @@ export const HomeTab = ({ userId, score, rank, totalPlayers }) => {
                     tooltip={multiplierBreakdown}
                 />
             </Box>
+
+            <Box sx={{ mb: 4 }}>
+                <UserKPI userId={userId} />
+            </Box>
+
             <StreakBonus
                 currentStreak={scoreDoc?.currentStreak || 0}
                 lastClaimDate={scoreDoc?.lastTaskTimestamp}

@@ -18,6 +18,7 @@ import { Leaderboard } from './components/Leaderboard';
 import { Tasks } from './components/Tasks';
 import { ReferralTab } from './components/ReferralTab';
 import { ErrorPage } from './components/ErrorPage';
+import { ChallengesTab } from './components/ChallengesTab';
 
 function App() {
     const { t } = useTranslation();
@@ -132,6 +133,7 @@ function App() {
                 {currentTab === 'leaderboard' && <Leaderboard />}
                 {currentTab === 'tasks' && <Tasks userId={user?.uid} />}
                 {currentTab === 'referrals' && <ReferralTab userId={user?.uid} />}
+                {currentTab === 'challenges' && <ChallengesTab userId={user?.uid} />}
 
                 <FireworksButton />
             </Container>

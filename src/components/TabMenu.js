@@ -4,6 +4,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
@@ -33,6 +34,14 @@ export const TabMenu = ({ currentTab, onTabChange }) => {
                     icon={<HomeIcon />}
                     label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('home')}</Box>}
                     value="home"
+                    iconPosition="start"
+                />
+                <Tab
+                    icon={<MilitaryTechIcon />}
+                    label={
+                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('challenges')}</Box>
+                    }
+                    value="challenges"
                     iconPosition="start"
                 />
                 <Tab

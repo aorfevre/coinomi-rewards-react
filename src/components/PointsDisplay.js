@@ -5,10 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { CLAIM_COOLDOWN_MS } from '../config/env';
 import { useRewards } from '../hooks/useRewards';
 import { useScore } from '../hooks/useScore';
-import { useUserData } from '../hooks/useUserData';
 import { Countdown } from './Countdown';
 import { Fireworks } from './Fireworks';
-import { Challenges } from './Challenges';
 import StarIcon from '@mui/icons-material/Star';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 
@@ -170,12 +168,10 @@ const MultiplierCard = ({ multiplier }) => {
     );
 };
 
-export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
+export const PointsDisplay = ({ userId }) => {
     const { t } = useTranslation();
     const { claimDailyReward, loading: claimLoading } = useRewards(userId);
     const { scoreDoc } = useScore(userId);
-    const { userData } = useUserData(userId);
-    const multiplier = userData?.multiplier || 1;
     const [canClaim, setCanClaim] = useState(false);
     const [showFireworks, setShowFireworks] = useState(false);
 
@@ -229,18 +225,6 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                         width: '100%',
                     }}
                 >
-                    <Typography
-                        variant="h1"
-                        sx={{
-                            fontSize: { xs: '3rem', sm: '4rem' },
-                            fontWeight: 'bold',
-                            textAlign: 'center',
-                            color: theme => theme.palette.text.primary,
-                        }}
-                    >
-                        {t('yourPoints')}: {points}
-                    </Typography>
-
                     <Box
                         sx={{
                             display: 'flex',
@@ -308,28 +292,6 @@ export const PointsDisplay = ({ points, rank, totalPlayers, userId }) => {
                             {claimLoading ? t('claiming') : t('claimDailyReward')}
                         </Button>
                     </Box>
-
-                    <Box
-                        sx={{
-                            width: '100%',
-                            display: 'flex',
-                            gap: 1,
-                            flexDirection: { xs: 'column', sm: 'row' },
-                            alignItems: 'stretch',
-                            justifyContent: 'center',
-                        }}
-                    >
-                        <Box sx={{ display: 'flex' }}>
-                            {rank && totalPlayers && (
-                                <RankCard rank={rank} totalPlayers={totalPlayers} />
-                            )}
-                        </Box>
-                        <Box sx={{ display: 'flex' }}>
-                            <MultiplierCard multiplier={multiplier} />
-                        </Box>
-                    </Box>
-
-                    <Challenges userId={userId} />
                 </Box>
             </Box>
         </>
