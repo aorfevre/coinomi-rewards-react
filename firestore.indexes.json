@@ -91,6 +91,24 @@
                     "order": "DESCENDING"
                 }
             ]
+        },
+        {
+            "collectionGroup": "scores",
+            "queryScope": "COLLECTION",
+            "fields": [
+                {
+                    "fieldPath": "weekNumber",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "yearNumber",
+                    "order": "ASCENDING"
+                },
+                {
+                    "fieldPath": "points",
+                    "order": "DESCENDING"
+                }
+            ]
         }
     ],
     "fieldOverrides": []
