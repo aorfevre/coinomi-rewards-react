@@ -163,6 +163,13 @@ export const resources = {
             // Multiplier
             baseMultiplier: 'Base Multiplier',
             telegramBonus: 'Telegram Bonus',
+            // Referral Challenge
+            referralChallenge: 'Referral Challenge',
+            referralChallengePrompt:
+                'Invite friends and earn bonus points! Get 100 points for each referral plus 10% of their earnings.',
+            startReferring: 'Start Referring',
+            referralSuccess:
+                '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
         },
     },
     pt: {
@@ -299,6 +306,13 @@ export const resources = {
             // Multiplier
             baseMultiplier: 'Base Multiplier',
             telegramBonus: 'Telegram Bonus',
+            // Referral Challenge
+            referralChallenge: 'Referral Challenge',
+            referralChallengePrompt:
+                'Invite friends and earn bonus points! Get 100 points for each referral plus 10% of their earnings.',
+            startReferring: 'Start Referring',
+            referralSuccess:
+                '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
         },
     },
     fr: {
@@ -436,6 +450,13 @@ export const resources = {
             // Multiplier
             baseMultiplier: 'Base Multiplier',
             telegramBonus: 'Telegram Bonus',
+            // Referral Challenge
+            referralChallenge: 'Referral Challenge',
+            referralChallengePrompt:
+                'Invite friends and earn bonus points! Get 100 points for each referral plus 10% of their earnings.',
+            startReferring: 'Start Referring',
+            referralSuccess:
+                '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
         },
     },
     tr: {
@@ -556,6 +577,13 @@ export const resources = {
             baseMultiplier: 'Base Multiplier',
             telegramBonus: 'Telegram Bonus',
             emailBonus: 'Email Bonus',
+            // Referral Challenge
+            referralChallenge: 'Referral Challenge',
+            referralChallengePrompt:
+                'Invite friends and earn bonus points! Get 100 points for each referral plus 10% of their earnings.',
+            startReferring: 'Start Referring',
+            referralSuccess:
+                '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
         },
     },
     zh: {
@@ -669,6 +697,13 @@ export const resources = {
             baseMultiplier: 'Base Multiplier',
             telegramBonus: 'Telegram Bonus',
             emailBonus: 'Email Bonus',
+            // Referral Challenge
+            referralChallenge: 'Referral Challenge',
+            referralChallengePrompt:
+                'Invite friends and earn bonus points! Get 100 points for each referral plus 10% of their earnings.',
+            startReferring: 'Start Referring',
+            referralSuccess:
+                '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
         },
     },
     vi: {
@@ -791,6 +826,13 @@ export const resources = {
             baseMultiplier: 'Base Multiplier',
             telegramBonus: 'Telegram Bonus',
             emailBonus: 'Email Bonus',
+            // Referral Challenge
+            referralChallenge: 'Referral Challenge',
+            referralChallengePrompt:
+                'Invite friends and earn bonus points! Get 100 points for each referral plus 10% of their earnings.',
+            startReferring: 'Start Referring',
+            referralSuccess:
+                '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
         },
     },
     fil: {
@@ -913,6 +955,13 @@ export const resources = {
             baseMultiplier: 'Base Multiplier',
             telegramBonus: 'Telegram Bonus',
             emailBonus: 'Email Bonus',
+            // Referral Challenge
+            referralChallenge: 'Referral Challenge',
+            referralChallengePrompt:
+                'Invite friends and earn bonus points! Get 100 points for each referral plus 10% of their earnings.',
+            startReferring: 'Start Referring',
+            referralSuccess:
+                '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
         },
     },
 };

@@ -18,6 +18,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
 import { ChallengeCard } from './ChallengeCard';
+import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 // Add styled components
 const StyledDialog = styled(Dialog)(({ theme }) => ({
@@ -35,7 +36,7 @@ const StyledDialogTitle = styled(DialogTitle)(({ theme }) => ({
     paddingBottom: theme.spacing(1),
 }));
 
-export const Challenges = ({ userId }) => {
+export const Challenges = ({ userId, onTabChange }) => {
     const { t } = useTranslation();
     const { userData, loading } = useUserData(userId);
     const [openEmailDialog, setOpenEmailDialog] = useState(false);
@@ -87,6 +88,10 @@ export const Challenges = ({ userId }) => {
         );
     };
 
+    const handleReferralClick = () => {
+        onTabChange('referrals');
+    };
+
     if (loading) {
         return <Box sx={{ mt: 4 }}>{t('loading')}</Box>;
     }
@@ -130,6 +135,16 @@ export const Challenges = ({ userId }) => {
                     onAction={() => setOpenEmailDialog(true)}
                     color="#1976d2"
                     buttonStartIcon={<EmailIcon />}
+                />
+
+                <ChallengeCard
+                    icon={GroupAddIcon}
+                    title={t('referralChallenge')}
+                    description={t('referralChallengePrompt')}
+                    buttonText={t('startReferring')}
+                    onAction={handleReferralClick}
+                    completed={userData?.referralCount > 0}
+                    successMessage={t('referralSuccess')}
                 />
             </Box>
 
@@ -227,4 +242,5 @@ export const Challenges = ({ userId }) => {
 
 Challenges.propTypes = {
     userId: PropTypes.string.isRequired,
+    onTabChange: PropTypes.func.isRequired,
 };

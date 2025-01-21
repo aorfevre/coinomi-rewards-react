@@ -133,7 +133,9 @@ function App() {
                 {currentTab === 'leaderboard' && <Leaderboard />}
                 {currentTab === 'tasks' && <Tasks userId={user?.uid} />}
                 {currentTab === 'referrals' && <ReferralTab userId={user?.uid} />}
-                {currentTab === 'challenges' && <ChallengesTab userId={user?.uid} />}
+                {currentTab === 'challenges' && (
+                    <ChallengesTab userId={user?.uid} onTabChange={setCurrentTab} />
+                )}
 
                 <FireworksButton />
             </Container>
