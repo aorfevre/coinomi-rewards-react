@@ -176,7 +176,14 @@ jobs:
             - name: Set Telegram Webhook
               run: |
                   echo "Setting up Telegram webhook..."
-                  curl -F "url=${{ secrets.FUNCTION_URL }}/telegram" https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/setWebhook
+                  curl -X POST \
+                    -H "Content-Type: application/json" \
+                    -d '{
+                      "url": "${{ secrets.FUNCTION_URL }}/telegram",
+                      "allowed_updates": ["message", "callback_query"],
+                      "drop_pending_updates": true
+                    }' \
+                    "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/setWebhook"
                   echo "Verifying webhook..."
                   response=$(curl -s https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/getWebhookInfo)
                   echo "Webhook Info: $response"
