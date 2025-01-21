@@ -18,6 +18,7 @@
     "main": "lib/index.js",
     "dependencies": {
         "@types/node": "^22.10.7",
+        "date-fns": "^4.1.0",
         "dotenv": "^16.4.7",
         "firebase-admin": "^11.11.1",
         "firebase-functions": "^4.5.0",
