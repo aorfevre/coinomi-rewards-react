@@ -168,3 +168,22 @@ jobs:
               env:
                   GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
                   PROJECT_ID: ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}
+
+    set_telegram_webhook:
+        runs-on: ubuntu-latest
+        needs: [deploy_functions]
+        steps:
+            - name: Set Telegram Webhook
+              run: |
+                  echo "Setting up Telegram webhook..."
+                  curl -F "url=${{ secrets.FUNCTION_URL }}/telegram" https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/setWebhook
+                  echo "Verifying webhook..."
+                  response=$(curl -s https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/getWebhookInfo)
+                  echo "Webhook Info: $response"
+                  if [[ $response != *"\"ok\":true"* ]]; then
+                      echo "Failed to set webhook"
+                      exit 1
+                  fi
+              env:
+                  TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+                  FUNCTION_URL: ${{ secrets.FUNCTION_URL }}
