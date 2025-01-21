@@ -124,7 +124,6 @@ export const processReferral = functions.https.onCall(async (data, context) => {
         // Update new user with referral info
         await db.collection('users').doc(newUserId).update({
             referredBy: referrerId,
-            referralCode: referralCode,
             referralTimestamp: new Date().toISOString(),
         });
 
