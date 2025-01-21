@@ -170,6 +170,8 @@ export const resources = {
             startReferring: 'Start Referring',
             referralSuccess:
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
+            unranked: 'Unranked',
+            noPlayersYet: 'Be the first to join!',
         },
     },
     pt: {
@@ -313,6 +315,8 @@ export const resources = {
             startReferring: 'Start Referring',
             referralSuccess:
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
+            unranked: 'Unranked',
+            noPlayersYet: 'Be the first to join!',
         },
     },
     fr: {
@@ -457,6 +461,8 @@ export const resources = {
             startReferring: 'Start Referring',
             referralSuccess:
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
+            unranked: 'Unranked',
+            noPlayersYet: 'Be the first to join!',
         },
     },
     tr: {
@@ -584,6 +590,8 @@ export const resources = {
             startReferring: 'Start Referring',
             referralSuccess:
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
+            unranked: 'Unranked',
+            noPlayersYet: 'Be the first to join!',
         },
     },
     zh: {
@@ -704,6 +712,8 @@ export const resources = {
             startReferring: 'Start Referring',
             referralSuccess:
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
+            unranked: 'Unranked',
+            noPlayersYet: 'Be the first to join!',
         },
     },
     vi: {
@@ -833,6 +843,8 @@ export const resources = {
             startReferring: 'Start Referring',
             referralSuccess:
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
+            unranked: 'Unranked',
+            noPlayersYet: 'Be the first to join!',
         },
     },
     fil: {
@@ -962,6 +974,8 @@ export const resources = {
             startReferring: 'Start Referring',
             referralSuccess:
                 '🎉 Congratulations! You have successfully referred users and are earning bonus points!',
+            unranked: 'Unranked',
+            noPlayersYet: 'Be the first to join!',
         },
     },
 };

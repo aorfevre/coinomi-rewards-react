@@ -12,10 +12,23 @@ import { useUserData } from '../hooks/useUserData';
 import { calculateMultiplier } from '../utils/multiplierCalculator';
 import { UserKPI } from './UserKPI';
 
-export const HomeTab = ({ userId, score, rank, totalPlayers }) => {
+export const HomeTab = ({ userId, score, rank, totalPlayers, loading }) => {
     const { userData } = useUserData(userId);
     const { scoreDoc } = useScore(userId);
     const { t } = useTranslation();
+
+    // Format rank display
+    const formatRankDisplay = () => {
+        if (loading) return '#-';
+        if (!rank || !totalPlayers) return t('unranked');
+        return `#${rank}`;
+    };
+
+    // Format total players display
+    const formatPlayersDisplay = () => {
+        if (loading || !totalPlayers) return t('noPlayersYet');
+        return `${t('outOf')} ${totalPlayers} ${t('players')}`;
+    };
 
     const multiplier = calculateMultiplier(userData, scoreDoc || {}, t);
     const formattedMultiplier = `${multiplier.total.toFixed(2)}x`;
@@ -35,9 +48,9 @@ export const HomeTab = ({ userId, score, rank, totalPlayers }) => {
             >
                 <StatsCard
                     icon={EmojiEventsIcon}
-                    coloredTitle={`#${rank}`}
+                    coloredTitle={formatRankDisplay()}
                     title={t('rank')}
-                    subtitle={`${t('outOf')} ${totalPlayers} ${t('players')}`}
+                    subtitle={formatPlayersDisplay()}
                     color="#FFD700"
                     bgColor="#1a1f2e"
                 />
