@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IconButton, Menu, MenuItem } from '@mui/material';
 import TranslateIcon from '@mui/icons-material/Translate';
+import { languageNames } from '../i18n/translations/index';
 
 export const LanguageToggle = () => {
     const { i18n } = useTranslation();
@@ -20,15 +21,11 @@ export const LanguageToggle = () => {
         handleClose();
     };
 
-    const languages = [
-        { code: 'en', name: 'English' },
-        { code: 'pt', name: 'Português' },
-        { code: 'fr', name: 'Français' },
-        { code: 'tr', name: 'Türkçe' },
-        { code: 'zh', name: '中文' },
-        { code: 'vi', name: 'Tiếng Việt' },
-        { code: 'fil', name: 'Filipino' },
-    ];
+    // Convert languageNames object to array format for MenuItem mapping
+    const languages = Object.entries(languageNames).map(([code, name]) => ({
+        code,
+        name,
+    }));
 
     return (
         <>
