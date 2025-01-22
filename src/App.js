@@ -1,5 +1,5 @@
 import { Box, CssBaseline, ThemeProvider, CircularProgress, Container } from '@mui/material';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { WalletInfo } from './components/WalletInfo';
 import { useAuth } from './hooks/useAuth';
 import { useScore } from './hooks/useScore';
@@ -19,9 +19,10 @@ import { ReferralTab } from './components/ReferralTab';
 import { ErrorPage } from './components/ErrorPage';
 import { ChallengesTab } from './components/ChallengesTab';
 import { CountdownSection } from './components/CountdownSection';
+import { isRTL } from './i18n/i18n';
 
 function App() {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [mode, setMode] = React.useState('dark');
     const theme = React.useMemo(() => getTheme(mode), [mode]);
     const [currentTab, setCurrentTab] = React.useState('home');
@@ -37,6 +38,12 @@ function App() {
     const handleThemeToggle = () => {
         setMode(prevMode => (prevMode === 'dark' ? 'light' : 'dark'));
     };
+
+    useEffect(() => {
+        // Update document direction when language changes
+        document.dir = isRTL() ? 'rtl' : 'ltr';
+        document.documentElement.lang = i18n.language;
+    }, [i18n.language]);
 
     // Wrap error and loading states with ThemeProvider
     const renderWithTheme = content => (

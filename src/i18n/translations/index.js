@@ -1,94 +1,97 @@
 import { en } from './en';
+import { es } from './es';
+import { fr } from './fr';
 import { ar } from './ar';
+import { hi } from './hi';
+import { pt_BR } from './pt_BR';
+import { ru } from './ru';
+import { ja } from './ja';
+import { de } from './de';
+import { ko } from './ko';
+import { tr } from './tr';
+import { it } from './it';
+import { pl } from './pl';
+import { fa } from './fa';
+import { id } from './id';
+import { nl } from './nl';
+import { uk } from './uk';
+import { ro } from './ro';
+import { el } from './el';
+import { cs } from './cs';
+import { hu } from './hu';
 import { zh_CN } from './zh_CN';
 import { zh_TW } from './zh_TW';
 import { hr } from './hr';
-import { cs } from './cs';
-import { nl } from './nl';
-import { fr } from './fr';
 import { ka } from './ka';
-import { de } from './de';
-import { el } from './el';
-import { hi } from './hi';
-import { hu } from './hu';
 import { is } from './is';
-import { id } from './id';
-import { it } from './it';
-import { ja } from './ja';
-import { ko } from './ko';
 import { ms } from './ms';
-import { fa } from './fa';
-import { pl } from './pl';
-import { pt_BR } from './pt_BR';
 import { pt_PT } from './pt_PT';
-import { ro } from './ro';
-import { ru } from './ru';
 import { sl } from './sl';
-import { es } from './es';
-import { tr } from './tr';
-import { uk } from './uk';
 
 export const resources = {
-    en: { translation: en }, // English
+    en: { translation: en }, // English (Global)
+    es: { translation: es }, // Spanish
+    fr: { translation: fr }, // French
     ar: { translation: ar }, // Arabic
+    hi: { translation: hi }, // Hindi
+    'pt-BR': { translation: pt_BR }, // Portuguese (Brazil)
+    ru: { translation: ru }, // Russian
+    ja: { translation: ja }, // Japanese
+    de: { translation: de }, // German
+    ko: { translation: ko }, // Korean
+    tr: { translation: tr }, // Turkish
+    it: { translation: it }, // Italian
+    pl: { translation: pl }, // Polish
+    fa: { translation: fa }, // Persian
+    id: { translation: id }, // Indonesian
+    nl: { translation: nl }, // Dutch
+    uk: { translation: uk }, // Ukrainian
+    ro: { translation: ro }, // Romanian
+    el: { translation: el }, // Greek
+    cs: { translation: cs }, // Czech
+    hu: { translation: hu }, // Hungarian
     'zh-CN': { translation: zh_CN }, // Chinese Simplified
     'zh-TW': { translation: zh_TW }, // Chinese Traditional
     hr: { translation: hr }, // Croatian
-    cs: { translation: cs }, // Czech
-    nl: { translation: nl }, // Dutch
-    fr: { translation: fr }, // French
     ka: { translation: ka }, // Georgian
-    de: { translation: de }, // German
-    el: { translation: el }, // Greek
-    hi: { translation: hi }, // Hindi
-    hu: { translation: hu }, // Hungarian
     is: { translation: is }, // Icelandic
-    id: { translation: id }, // Indonesian
-    it: { translation: it }, // Italian
-    ja: { translation: ja }, // Japanese
-    ko: { translation: ko }, // Korean
     ms: { translation: ms }, // Malaysian
-    fa: { translation: fa }, // Persian
-    pl: { translation: pl }, // Polish
-    'pt-BR': { translation: pt_BR }, // Portuguese (Brazil)
     'pt-PT': { translation: pt_PT }, // Portuguese (Portugal)
-    ro: { translation: ro }, // Romanian
-    ru: { translation: ru }, // Russian
     sl: { translation: sl }, // Slovenian
-    es: { translation: es }, // Spanish
-    tr: { translation: tr }, // Turkish
-    uk: { translation: uk }, // Ukrainian
 };
 
-// Language names in their native form
+// Language names in their native form with flags
 export const languageNames = {
-    en: 'English',
-    ar: 'العربية',
-    'zh-CN': '简体中文',
-    'zh-TW': '繁體中文',
-    hr: 'Hrvatski',
-    cs: 'Čeština',
-    nl: 'Nederlands',
-    fr: 'Français',
-    ka: 'ქართული',
-    de: 'Deutsch',
-    el: 'Ελληνικά',
-    hi: 'हिन्दी',
-    hu: 'Magyar',
-    is: 'Íslenska',
-    id: 'Bahasa Indonesia',
-    it: 'Italiano',
-    ja: '日本語',
-    ko: '한국어',
-    ms: 'Bahasa Melayu',
-    fa: 'فارسی',
-    pl: 'Polski',
-    'pt-BR': 'Português (Brasil)',
-    'pt-PT': 'Português',
-    ro: 'Română',
-    ru: 'Русский',
-    sl: 'Slovenščina',
-    es: 'Español',
-    tr: 'Türkçe',
-    uk: 'Українська',
+    en: '🇬🇧 English',
+    es: '🇪🇸 Español',
+    fr: '🇫🇷 Français',
+    ar: '🇸🇦 العربية',
+    hi: '🇮🇳 हिन्दी',
+    'pt-BR': '🇧🇷 Português (Brasil)',
+    ru: '🇷🇺 Русский',
+    ja: '🇯🇵 日本語',
+    de: '🇩🇪 Deutsch',
+    ko: '🇰🇷 한국어',
+    tr: '🇹🇷 Türkçe',
+    it: '🇮🇹 Italiano',
+    pl: '🇵🇱 Polski',
+    fa: '🇮🇷 فارسی',
+    id: '🇮🇩 Bahasa Indonesia',
+    nl: '🇳🇱 Nederlands',
+    uk: '🇺🇦 Українська',
+    ro: '🇷🇴 Română',
+    el: '🇬🇷 Ελληνικά',
+    cs: '🇨🇿 Čeština',
+    hu: '🇭🇺 Magyar',
+    'zh-CN': '🇨🇳 简体中文',
+    'zh-TW': '🇹🇼 繁體中文',
+    hr: '🇭🇷 Hrvatski',
+    ka: '🇬🇪 ქართული',
+    is: '🇮🇸 Íslenska',
+    ms: '🇲🇾 Bahasa Melayu',
+    'pt-PT': '🇵🇹 Português',
+    sl: '🇸🇮 Slovenščina',
 };
+
+// Export RTL languages list
+export const rtlLanguages = ['ar', 'fa', 'he'];
