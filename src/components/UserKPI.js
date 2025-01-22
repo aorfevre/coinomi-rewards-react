@@ -6,10 +6,12 @@ import { useTranslation } from 'react-i18next';
 import WorkHistoryIcon from '@mui/icons-material/WorkHistory';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import { useScore } from '../hooks/useScore';
+import { useTheme } from '@mui/material/styles';
 
 export const UserKPI = ({ userId }) => {
     const { t } = useTranslation();
     const { scoreDoc } = useScore(userId);
+    const theme = useTheme();
 
     const stats = [
         {
@@ -18,7 +20,10 @@ export const UserKPI = ({ userId }) => {
             title: '',
             subtitle: t('completedTasks'),
             color: '#FF9800',
-            bgColor: '#2d1f1a',
+            bgColor:
+                theme.palette.mode === 'dark'
+                    ? '#2d1f1a'
+                    : 'linear-gradient(145deg, rgba(255, 248, 240, 1), rgba(255, 237, 213, 1))',
         },
         {
             icon: EmojiEventsIcon,
@@ -26,7 +31,10 @@ export const UserKPI = ({ userId }) => {
             title: '',
             subtitle: t('points'),
             color: '#FFD700',
-            bgColor: '#1a1f2e',
+            bgColor:
+                theme.palette.mode === 'dark'
+                    ? '#1a1f2e'
+                    : 'linear-gradient(145deg, rgba(255, 250, 230, 1), rgba(255, 243, 191, 1))',
         },
     ];
 
@@ -42,17 +50,7 @@ export const UserKPI = ({ userId }) => {
             }}
         >
             {stats.map((stat, index) => (
-                <StatsCard
-                    key={index}
-                    icon={stat.icon}
-                    coloredTitle={stat.coloredTitle}
-                    title={stat.title}
-                    subtitle={stat.subtitle}
-                    color={stat.color}
-                    bgColor={stat.bgColor}
-                    tooltip={stat.tooltip}
-                    sx={{ height: '100%' }}
-                />
+                <StatsCard key={index} {...stat} sx={{ height: '100%' }} />
             ))}
         </Box>
     );

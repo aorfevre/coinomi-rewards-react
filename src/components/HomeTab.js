@@ -10,11 +10,14 @@ import { useTranslation } from 'react-i18next';
 import { useUserData } from '../hooks/useUserData';
 import { calculateMultiplier } from '../utils/multiplierCalculator';
 import { UserKPI } from './UserKPI';
+import { useTheme } from '@mui/material/styles';
 
 export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
     const { userData } = useUserData(userId);
     const { scoreDoc } = useScore(userId);
     const { t } = useTranslation();
+    const theme = useTheme();
+    const isDark = theme.palette.mode === 'dark';
 
     // Format rank display
     const formatRankDisplay = () => {
@@ -35,33 +38,47 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
     // Use the breakdown text directly from the calculator
     const multiplierBreakdown = multiplier.breakdownText;
 
+    const stats = [
+        {
+            icon: EmojiEventsIcon,
+            coloredTitle: formatRankDisplay(),
+            title: t('rank'),
+            subtitle: formatPlayersDisplay(),
+            color: '#FFD700', // Gold color
+            bgColor: isDark
+                ? '#1a1f2e'
+                : 'linear-gradient(145deg, rgba(255, 250, 230, 1), rgba(255, 243, 191, 1))',
+            tooltip: t('rankTooltip'),
+        },
+        {
+            icon: StarIcon,
+            coloredTitle: formattedMultiplier,
+            title: t('multiplier'),
+            subtitle: t('bonusPointsMultiplier'),
+            color: '#4CAF50', // Green color
+            bgColor: isDark
+                ? '#1a2e1f'
+                : 'linear-gradient(145deg, rgba(230, 255, 230, 1), rgba(191, 255, 191, 1))',
+            tooltip: multiplierBreakdown,
+        },
+    ];
+
     return (
         <Box>
             <Box
                 sx={{
                     display: 'grid',
-                    gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' },
+                    gridTemplateColumns: {
+                        xs: '1fr',
+                        sm: '1fr 1fr',
+                    },
                     gap: 2,
-                    mb: 4,
+                    mb: 2,
                 }}
             >
-                <StatsCard
-                    icon={EmojiEventsIcon}
-                    coloredTitle={formatRankDisplay()}
-                    title={t('rank')}
-                    subtitle={formatPlayersDisplay()}
-                    color="#FFD700"
-                    bgColor="#1a1f2e"
-                />
-                <StatsCard
-                    icon={StarIcon}
-                    coloredTitle={formattedMultiplier}
-                    title={t('multiplier')}
-                    subtitle={t('bonusPointsMultiplier')}
-                    color="#4CAF50"
-                    bgColor="#1a2e1f"
-                    tooltip={multiplierBreakdown}
-                />
+                {stats.map((stat, index) => (
+                    <StatsCard key={index} {...stat} sx={{ height: '100%' }} />
+                ))}
             </Box>
 
             <Box sx={{ mb: 4 }}>
