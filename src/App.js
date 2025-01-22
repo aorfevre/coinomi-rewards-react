@@ -6,7 +6,6 @@ import { useScore } from './hooks/useScore';
 import { useUserRank } from './hooks/useUserRank';
 import { getTheme } from './theme';
 import { FireworksButton } from './components/FireworksButton';
-import { WeeklyCountdown } from './components/WeeklyCountdown';
 import LogoDevIcon from '@mui/icons-material/LogoDev';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import './i18n/i18n';
@@ -19,6 +18,7 @@ import { Tasks } from './components/Tasks';
 import { ReferralTab } from './components/ReferralTab';
 import { ErrorPage } from './components/ErrorPage';
 import { ChallengesTab } from './components/ChallengesTab';
+import { CountdownSection } from './components/CountdownSection';
 
 function App() {
     const { t } = useTranslation();
@@ -115,7 +115,7 @@ function App() {
             <CssBaseline />
             <Container maxWidth="lg" sx={{ py: 4 }}>
                 <PrivacyDisclaimer />
-                <WeeklyCountdown />
+                <CountdownSection userId={user?.uid} />
                 <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
 
                 <TabMenu currentTab={currentTab} onTabChange={setCurrentTab} />

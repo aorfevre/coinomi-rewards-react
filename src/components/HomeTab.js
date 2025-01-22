@@ -1,7 +1,6 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { StreakBonus } from './StreakBonus';
-import { PointsDisplay } from './PointsDisplay';
 import PropTypes from 'prop-types';
 import { useScore } from '../hooks/useScore';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
@@ -12,7 +11,7 @@ import { useUserData } from '../hooks/useUserData';
 import { calculateMultiplier } from '../utils/multiplierCalculator';
 import { UserKPI } from './UserKPI';
 
-export const HomeTab = ({ userId, score, rank, totalPlayers, loading }) => {
+export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
     const { userData } = useUserData(userId);
     const { scoreDoc } = useScore(userId);
     const { t } = useTranslation();
@@ -73,15 +72,6 @@ export const HomeTab = ({ userId, score, rank, totalPlayers, loading }) => {
                 currentStreak={scoreDoc?.currentStreak || 0}
                 lastClaimDate={scoreDoc?.lastTaskTimestamp}
             />
-
-            <Box sx={{ my: 4 }}>
-                <PointsDisplay
-                    points={score}
-                    rank={rank}
-                    totalPlayers={totalPlayers}
-                    userId={userId}
-                />
-            </Box>
         </Box>
     );
 };
