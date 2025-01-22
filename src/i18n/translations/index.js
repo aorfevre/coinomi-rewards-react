@@ -25,7 +25,6 @@ import { hr } from './hr';
 import { ka } from './ka';
 import { is } from './is';
 import { ms } from './ms';
-import { pt_PT } from './pt_PT';
 import { sl } from './sl';
 
 export const resources = {
@@ -56,7 +55,6 @@ export const resources = {
     ka: { translation: ka }, // Georgian
     is: { translation: is }, // Icelandic
     ms: { translation: ms }, // Malaysian
-    'pt-PT': { translation: pt_PT }, // Portuguese (Portugal)
     sl: { translation: sl }, // Slovenian
 };
 

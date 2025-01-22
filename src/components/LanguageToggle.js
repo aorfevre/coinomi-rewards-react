@@ -43,11 +43,27 @@ export function LanguageToggle() {
     };
 
     const handleLanguageSelect = languageCode => {
-        i18n.changeLanguage(languageCode);
+        console.log('Attempting to change language to:', languageCode);
+
+        // If it's a generic 'pt' request, use 'pt-BR' as default
+        const targetLanguage = languageCode === 'pt' ? 'pt-BR' : languageCode;
+
+        console.log('Current language resources:', i18n.options.resources);
+        console.log('Available languages:', Object.keys(i18n.options.resources));
+
+        i18n.changeLanguage(targetLanguage, err => {
+            if (err) {
+                console.error('Error changing language:', err);
+            } else {
+                console.log('Language successfully changed to:', targetLanguage);
+                console.log('New language direction:', i18n.dir());
+            }
+        });
+
         handleClose();
         // Update URL with selected language
         const url = new URL(window.location.href);
-        url.searchParams.set('lang', languageCode);
+        url.searchParams.set('lang', targetLanguage);
         window.history.replaceState({}, '', url);
     };
 
@@ -75,7 +91,10 @@ export function LanguageToggle() {
                 {Object.entries(languageNames).map(([code, name]) => (
                     <MenuItem
                         key={code}
-                        onClick={() => handleLanguageSelect(code)}
+                        onClick={() => {
+                            console.log('Language menu item clicked:', code);
+                            handleLanguageSelect(code);
+                        }}
                         className={i18n.language === code ? 'selected' : ''}
                         sx={{
                             justifyContent: 'flex-start',
