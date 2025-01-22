@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { resources } from './translations';
+import { resources } from './translations/index.js';
 
 // Define RTL languages
 const RTL_LANGUAGES = ['ar', 'fa', 'he'];
@@ -19,6 +19,12 @@ i18n.use(initReactI18next).init({
     dir: () => {
         // Return 'rtl' for RTL languages, 'ltr' for others
         return RTL_LANGUAGES.includes(i18n.language) ? 'rtl' : 'ltr';
+    },
+    // Add these configurations
+    supportedLngs: ['en', 'ar', 'es', 'fr' /* other languages */],
+    load: 'languageOnly',
+    detection: {
+        order: ['querystring', 'navigator'],
     },
 });
 
