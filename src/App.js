@@ -4,7 +4,6 @@ import { WalletInfo } from './components/WalletInfo';
 import { useAuth } from './hooks/useAuth';
 import { useScore } from './hooks/useScore';
 import { useUserRank } from './hooks/useUserRank';
-import { getTheme } from './theme';
 import { FireworksButton } from './components/FireworksButton';
 import LogoDevIcon from '@mui/icons-material/LogoDev';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
@@ -20,11 +19,12 @@ import { ErrorPage } from './components/ErrorPage';
 import { ChallengesTab } from './components/ChallengesTab';
 import { CountdownSection } from './components/CountdownSection';
 import { isRTL } from './i18n/i18n';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import { createTheme } from '@mui/material/styles';
 
 function App() {
     const { t, i18n } = useTranslation();
-    const [mode, setMode] = React.useState('dark');
-    const theme = React.useMemo(() => getTheme(mode), [mode]);
+    const [mode, setMode] = useLocalStorage('theme', 'dark');
     const [currentTab, setCurrentTab] = React.useState('home');
 
     // Get token from query params
@@ -35,8 +35,39 @@ function App() {
     const { score } = useScore(user?.uid);
     const { rank, totalPlayers, loading: rankLoading } = useUserRank(user?.uid);
 
+    useEffect(() => {
+        // Check URL for theme parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const themeParam = urlParams.get('theme');
+
+        if (themeParam && ['light', 'dark'].includes(themeParam)) {
+            setMode(themeParam);
+        }
+    }, [setMode]); // Add setMode to dependencies
+
+    const theme = React.useMemo(
+        () =>
+            createTheme({
+                palette: {
+                    mode,
+                    primary: {
+                        main: '#1976d2',
+                    },
+                    secondary: {
+                        main: '#dc004e',
+                    },
+                    background: {
+                        default: mode === 'dark' ? '#121212' : '#f5f5f5',
+                        paper: mode === 'dark' ? '#1e1e1e' : '#ffffff',
+                    },
+                },
+            }),
+        [mode]
+    );
+
     const handleThemeToggle = () => {
-        setMode(prevMode => (prevMode === 'dark' ? 'light' : 'dark'));
+        const newMode = mode === 'dark' ? 'light' : 'dark';
+        setMode(newMode);
     };
 
     useEffect(() => {
