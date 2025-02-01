@@ -183,4 +183,6 @@ export const pt = {
     youHaveReferred_one: 'Você indicou 1 amigo',
     youHaveReferred_other: 'Você indicou {{count}} amigos',
     referYourFriends: 'Indique seus amigos',
+    dailyRewardTooltip: 'Volte todos os dias para reivindicar seus pontos e recompensas',
+    weeklyRewardTooltip: 'As recompensas são distribuídas semanalmente',
 };

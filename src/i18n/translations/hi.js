@@ -178,4 +178,6 @@ export const hi = {
     youHaveReferred_one: 'आपने 1 दोस्त को आमंत्रित किया है',
     youHaveReferred_other: 'आपने {{count}} दोस्तों को आमंत्रित किया है',
     referYourFriends: 'अपने दोस्तों को आमंत्रित करें',
+    dailyRewardTooltip: 'अपने अंक और पुरस्कार प्राप्त करने के लिए हर दिन वापस आएं',
+    weeklyRewardTooltip: 'पुरस्कार एयरड्रॉप साप्ताहिक आधार पर वितरित किए जाते हैं',
 };

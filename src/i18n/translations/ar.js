@@ -178,4 +178,6 @@ export const ar = {
     youHaveReferred_many: 'قمت بدعوة {{count}} صديقاً',
     youHaveReferred_other: 'قمت بدعوة {{count}} صديق',
     referYourFriends: 'ادعُ أصدقاءك',
+    dailyRewardTooltip: 'عد كل يوم للمطالبة بنقاطك ومكافآتك',
+    weeklyRewardTooltip: 'يتم توزيع مكافآت الإسقاط الجوي أسبوعياً',
 };

@@ -188,4 +188,6 @@ export const es = {
     youHaveReferred_one: 'Has referido a 1 amigo',
     youHaveReferred_other: 'Has referido a {{count}} amigos',
     referYourFriends: 'Invita a tus amigos',
+    dailyRewardTooltip: 'Vuelve cada día para reclamar tus puntos y recompensas',
+    weeklyRewardTooltip: 'Las recompensas se distribuyen semanalmente',
 };

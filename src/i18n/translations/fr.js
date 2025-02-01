@@ -187,4 +187,6 @@ export const fr = {
     youHaveReferred_one: 'Vous avez parrainé 1 ami',
     youHaveReferred_other: 'Vous avez parrainé {{count}} amis',
     referYourFriends: 'Parrainez vos amis',
+    dailyRewardTooltip: 'Revenez chaque jour pour réclamer vos points et récompenses',
+    weeklyRewardTooltip: 'Les récompenses sont distribuées de manière hebdomadaire',
 };

@@ -170,4 +170,6 @@ export const ru = {
     youHaveReferred_many: 'Вы пригласили {{count}} друзей',
     youHaveReferred_other: 'Вы пригласили {{count}} друзей',
     referYourFriends: 'Пригласите друзей',
+    dailyRewardTooltip: 'Возвращайтесь каждый день, чтобы получить очки и награды',
+    weeklyRewardTooltip: 'Награды распределяются еженедельно',
 };

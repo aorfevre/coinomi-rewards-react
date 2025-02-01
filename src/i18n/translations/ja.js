@@ -177,4 +177,6 @@ export const ja = {
     youHaveReferred_one: '1人の友達を招待しました',
     youHaveReferred_other: '{{count}}人の友達を招待しました',
     referYourFriends: '友達を招待',
+    dailyRewardTooltip: '毎日ログインしてポイントと報酬を獲得しましょう',
+    weeklyRewardTooltip: '報酬の配布は週単位で行われます',
 };

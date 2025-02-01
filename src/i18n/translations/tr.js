@@ -170,4 +170,6 @@ export const tr = {
     youHaveReferred_one: '1 arkadaş davet ettiniz',
     youHaveReferred_other: '{{count}} arkadaş davet ettiniz',
     referYourFriends: 'Arkadaşlarını Davet Et',
+    dailyRewardTooltip: 'Puanlarınızı ve ödüllerinizi almak için her gün geri gelin',
+    weeklyRewardTooltip: 'Ödül dağıtımları haftalık olarak yapılır',
 };

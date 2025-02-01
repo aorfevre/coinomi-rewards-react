@@ -198,4 +198,6 @@ export const en = {
     youHaveReferred_one: 'You have referred 1 friend',
     youHaveReferred_other: 'You have referred {{count}} friends',
     referYourFriends: 'Refer Your Friends',
+    dailyRewardTooltip: 'Come back every day to claim your points & rewards',
+    weeklyRewardTooltip: 'Reward airdrops are distributed on a weekly basis',
 };

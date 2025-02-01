@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, Tooltip, IconButton } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useRewards } from '../hooks/useRewards';
@@ -14,6 +15,8 @@ export const RewardsSection = ({ weeklyTimeLeft, sx }) => {
     const [isClaimingDaily, setIsClaimingDaily] = useState(false);
     const [timeLeft, setTimeLeft] = useState(null);
     const cooldownSeconds = parseInt(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS, 10);
+    const [openDailyTooltip, setOpenDailyTooltip] = useState(false);
+    const [openWeeklyTooltip, setOpenWeeklyTooltip] = useState(false);
 
     useEffect(() => {
         const updateTimeLeft = () => {
@@ -153,12 +156,54 @@ export const RewardsSection = ({ weeklyTimeLeft, sx }) => {
             >
                 {/* Headers */}
                 <Box sx={{ display: 'flex', mb: 1.5 }}>
-                    <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 500 }}>
-                        {t('daily')}
-                    </Typography>
-                    <Typography variant="subtitle1" sx={{ flex: 1, fontWeight: 500 }}>
-                        {t('weekly')}
-                    </Typography>
+                    <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                            {t('daily')}
+                        </Typography>
+                        <Tooltip
+                            open={openDailyTooltip}
+                            onClose={() => setOpenDailyTooltip(false)}
+                            title={t('dailyRewardTooltip')}
+                            arrow
+                            placement="top"
+                        >
+                            <IconButton
+                                size="small"
+                                onClick={() => setOpenDailyTooltip(!openDailyTooltip)}
+                                sx={{
+                                    p: 0.5,
+                                    color: 'text.secondary',
+                                    '&:hover': { color: 'primary.main' },
+                                }}
+                            >
+                                <InfoOutlinedIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
+                    <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                            {t('weekly')}
+                        </Typography>
+                        <Tooltip
+                            open={openWeeklyTooltip}
+                            onClose={() => setOpenWeeklyTooltip(false)}
+                            title={t('weeklyRewardTooltip')}
+                            arrow
+                            placement="top"
+                        >
+                            <IconButton
+                                size="small"
+                                onClick={() => setOpenWeeklyTooltip(!openWeeklyTooltip)}
+                                sx={{
+                                    p: 0.5,
+                                    color: 'text.secondary',
+                                    '&:hover': { color: 'primary.main' },
+                                }}
+                            >
+                                <InfoOutlinedIcon fontSize="small" />
+                            </IconButton>
+                        </Tooltip>
+                    </Box>
                 </Box>
 
                 {/* Buttons */}

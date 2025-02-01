@@ -184,4 +184,6 @@ export const de = {
     youHaveReferred_one: 'Du hast einen Freund eingeladen',
     youHaveReferred_other: 'Du hast {{count}} Freunde eingeladen',
     referYourFriends: 'Freunde einladen',
+    dailyRewardTooltip: 'Komm jeden Tag zurück, um deine Punkte & Belohnungen zu erhalten',
+    weeklyRewardTooltip: 'Belohnungs-Airdrops werden wöchentlich verteilt',
 };
