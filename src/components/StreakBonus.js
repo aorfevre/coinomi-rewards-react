@@ -150,7 +150,7 @@ export const StreakBonus = ({ currentStreak = 0, lastClaimDate, sx }) => {
 
             {/* Description text moved outside the card */}
             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 1 }}>
-                Claim 5 days in a row for maximum bonus
+                {t('streakDescription')}
             </Typography>
         </Box>
     );

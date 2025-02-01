@@ -105,7 +105,7 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <CalendarIcon sx={{ color: 'primary.main' }} />
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                    Rewards
+                    {t('rewards')}
                 </Typography>
             </Box>
 
@@ -121,7 +121,7 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <BarChartIcon sx={{ color: 'primary.main' }} />
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                    Your stats this week
+                    {t('yourStatsThisWeek')}
                 </Typography>
             </Box>
 
@@ -158,7 +158,7 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                                 lineHeight: 1.2,
                             }}
                         >
-                            Your{'\n'}rank
+                            {t('yourRank')}
                         </Typography>
                     </Box>
 
@@ -180,7 +180,7 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                                 lineHeight: 1.2,
                             }}
                         >
-                            Completed{'\n'}Tasks
+                            {t('completedTasks')}
                         </Typography>
                     </Box>
 
@@ -202,7 +202,7 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                                 lineHeight: 1.2,
                             }}
                         >
-                            Points{'\n'}multiplier
+                            {t('pointsMultiplier')}
                         </Typography>
                     </Box>
                 </Box>
@@ -212,7 +212,7 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <TrendingUpIcon sx={{ color: 'primary.main' }} />
                 <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                    Streak Bonus
+                    {t('streakBonus')}
                 </Typography>
                 <Typography
                     variant="h6"

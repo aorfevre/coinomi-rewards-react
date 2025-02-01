@@ -31,7 +31,7 @@ export const en = {
     rules: 'Rules',
     profile: 'Profile',
     comingSoon: 'Coming soon...',
-    completedTasks: 'Completed Tasks',
+    completedTasks: 'Completed\nTasks',
     dailyRewardsClaimed: 'Daily Rewards Claimed',
     times: 'times',
     recentActivity: 'Recent Activity',
@@ -172,8 +172,8 @@ export const en = {
     shareInviteText:
         '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
     yourStatsThisWeek: 'Your stats this week',
-    pointsMultiplier: 'Points multiplier',
-    yourRank: 'Your rank',
+    pointsMultiplier: 'Points\nmultiplier',
+    yourRank: 'Your\nrank',
     rewards: 'Rewards',
     daily: 'Daily',
     weekly: 'Weekly',
@@ -188,4 +188,6 @@ export const en = {
     // Theme Toggle
     darkMode: 'Dark Mode',
     lightMode: 'Light Mode',
+
+    pointsAvailable: 'Points available',
 };

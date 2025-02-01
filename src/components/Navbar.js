@@ -8,10 +8,12 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { ThemeToggle } from './ThemeToggle';
 import { LanguageToggle } from './LanguageToggle';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 export const Navbar = ({ onThemeToggle }) => {
     const { user } = useAuth();
     const { scoreDoc } = useScore(user?.uid);
+    const { t } = useTranslation();
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClick = event => {
@@ -55,7 +57,7 @@ export const Navbar = ({ onThemeToggle }) => {
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                     <EmojiEventsIcon sx={{ color: '#FFD700', fontSize: 28 }} />
-                    <Typography variant="h6">Rewards</Typography>
+                    <Typography variant="h6">{t('rewards')}</Typography>
                 </Box>
 
                 <Box
@@ -146,7 +148,7 @@ export const Navbar = ({ onThemeToggle }) => {
                         lineHeight: 1.2,
                     }}
                 >
-                    Points available
+                    {t('pointsAvailable')}
                 </Typography>
             </Box>
         </Box>
