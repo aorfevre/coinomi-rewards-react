@@ -8,18 +8,17 @@ import { styled } from '@mui/material/styles';
 const StyledMenu = styled(Menu)(({ theme }) => ({
     '& .MuiPaper-root': {
         backgroundColor: theme.palette.background.paper,
-        width: '600px', // Increased width to accommodate 3 columns
-        maxHeight: '80vh',
+        maxWidth: '100%',
+        width: '300px', // Reduced width for mobile
+        maxHeight: '70vh',
     },
     '& .MuiList-root': {
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)', // 3 columns
         padding: theme.spacing(1),
-        gap: theme.spacing(1),
     },
     '& .MuiMenuItem-root': {
-        minHeight: '40px',
+        minHeight: '48px', // Taller for better touch targets
         borderRadius: theme.shape.borderRadius,
+        marginBottom: theme.spacing(0.5),
         '&:hover': {
             backgroundColor: theme.palette.action.hover,
         },
@@ -43,24 +42,10 @@ export function LanguageToggle() {
     };
 
     const handleLanguageSelect = languageCode => {
-        console.log('Attempting to change language to:', languageCode);
-
-        // If it's a generic 'pt' request, use 'pt-BR' as default
         const targetLanguage = languageCode === 'pt' ? 'pt-BR' : languageCode;
-
-        console.log('Current language resources:', i18n.options.resources);
-        console.log('Available languages:', Object.keys(i18n.options.resources));
-
-        i18n.changeLanguage(targetLanguage, err => {
-            if (err) {
-                console.error('Error changing language:', err);
-            } else {
-                console.log('Language successfully changed to:', targetLanguage);
-                console.log('New language direction:', i18n.dir());
-            }
-        });
-
+        i18n.changeLanguage(targetLanguage);
         handleClose();
+
         // Update URL with selected language
         const url = new URL(window.location.href);
         url.searchParams.set('lang', targetLanguage);
@@ -75,7 +60,7 @@ export function LanguageToggle() {
                 aria-controls={open ? 'language-menu' : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? 'true' : undefined}
-                sx={{ color: 'text.primary' }}
+                sx={{ color: 'inherit' }}
             >
                 <TranslateIcon />
             </IconButton>
@@ -91,15 +76,12 @@ export function LanguageToggle() {
                 {Object.entries(languageNames).map(([code, name]) => (
                     <MenuItem
                         key={code}
-                        onClick={() => {
-                            console.log('Language menu item clicked:', code);
-                            handleLanguageSelect(code);
-                        }}
+                        onClick={() => handleLanguageSelect(code)}
                         className={i18n.language === code ? 'selected' : ''}
                         sx={{
-                            justifyContent: 'flex-start',
-                            width: '100%',
-                            px: 2,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 1.5,
                         }}
                     >
                         {name}
