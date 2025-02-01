@@ -170,4 +170,8 @@ export const ko = {
     claimRewards: '보상 받기',
     player: '플레이어',
     score: '점수',
+    youHaveReferred_zero: '아직 초대한 친구가 없습니다',
+    youHaveReferred_one: '1명의 친구를 초대했습니다',
+    youHaveReferred_other: '{{count}}명의 친구를 초대했습니다',
+    referYourFriends: '친구 초대하기',
 };

@@ -193,4 +193,9 @@ export const en = {
 
     player: 'Player',
     score: 'Score',
+
+    youHaveReferred_zero: "You haven't referred any friends yet",
+    youHaveReferred_one: 'You have referred 1 friend',
+    youHaveReferred_other: 'You have referred {{count}} friends',
+    referYourFriends: 'Refer Your Friends',
 };

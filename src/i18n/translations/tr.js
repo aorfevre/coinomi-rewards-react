@@ -166,4 +166,8 @@ export const tr = {
         "🚀 Coinomi Wallet'ta bana katılın ve bonus ödüller alın! Uygulamayı {{appUrl}} adresinden indirin ve kaydolurken referans kodumu kullanın: {{referralCode}}. #Coinomi #Crypto",
     player: 'Oyuncu',
     score: 'Puan',
+    youHaveReferred_zero: 'Henüz hiç arkadaş davet etmediniz',
+    youHaveReferred_one: '1 arkadaş davet ettiniz',
+    youHaveReferred_other: '{{count}} arkadaş davet ettiniz',
+    referYourFriends: 'Arkadaşlarını Davet Et',
 };

@@ -183,4 +183,8 @@ export const fr = {
     pointsAvailable: 'Points disponibles',
     player: 'Joueur',
     score: 'Score',
+    youHaveReferred_zero: "Vous n'avez pas encore parrainé d'amis",
+    youHaveReferred_one: 'Vous avez parrainé 1 ami',
+    youHaveReferred_other: 'Vous avez parrainé {{count}} amis',
+    referYourFriends: 'Parrainez vos amis',
 };

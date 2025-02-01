@@ -180,4 +180,8 @@ export const de = {
     pointsAvailable: 'Verfügbare Punkte',
     player: 'Spieler',
     score: 'Punkte',
+    youHaveReferred_zero: 'Du hast noch keine Freunde eingeladen',
+    youHaveReferred_one: 'Du hast einen Freund eingeladen',
+    youHaveReferred_other: 'Du hast {{count}} Freunde eingeladen',
+    referYourFriends: 'Freunde einladen',
 };

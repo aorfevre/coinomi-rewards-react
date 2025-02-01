@@ -179,4 +179,8 @@ export const pt = {
     claimRewards: 'Resgatar recompensas',
     player: 'Jogador',
     score: 'Pontos',
+    youHaveReferred_zero: 'Você ainda não indicou nenhum amigo',
+    youHaveReferred_one: 'Você indicou 1 amigo',
+    youHaveReferred_other: 'Você indicou {{count}} amigos',
+    referYourFriends: 'Indique seus amigos',
 };

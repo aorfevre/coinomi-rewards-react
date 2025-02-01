@@ -2,17 +2,13 @@ import React from 'react';
 import {
     Box,
     Typography,
-    Paper,
+    Card,
     TextField,
-    Tooltip,
-    IconButton,
     Snackbar,
     CircularProgress,
     Button,
 } from '@mui/material';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
-import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { useReferral } from '../hooks/useReferral';
@@ -36,11 +32,6 @@ export const ReferralTab = ({ userId }) => {
         setTimeout(() => setShowCopied(false), 2000);
     };
 
-    const handleEditSuccess = () => {
-        refresh();
-        setShowCopied(true);
-    };
-
     if (loading) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
@@ -58,14 +49,11 @@ export const ReferralTab = ({ userId }) => {
     }
 
     return (
-        <Box sx={{ maxWidth: 800, mx: 'auto', p: 2 }}>
-            <Typography variant="h5" sx={{ mb: 4, textAlign: 'center' }}>
-                {t('referralProgram')}
-            </Typography>
-
+        <Box sx={{ p: 2 }}>
+            {/* Have a Referral Code section */}
             {!hasReferrer && (
-                <Paper sx={{ p: 3, mb: 4, bgcolor: 'background.paper' }}>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
+                <Card sx={{ p: 3, mb: 3, borderRadius: 3 }}>
+                    <Typography variant="h6" sx={{ mb: 1 }}>
                         {t('haveReferralCode')}
                     </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
@@ -73,92 +61,77 @@ export const ReferralTab = ({ userId }) => {
                     </Typography>
                     <Button
                         variant="contained"
-                        color="primary"
                         onClick={() => setEnterReferralOpen(true)}
+                        sx={{
+                            bgcolor: 'primary.main',
+                            color: 'white',
+                            '&:hover': {
+                                bgcolor: 'primary.dark',
+                            },
+                        }}
                     >
                         {t('enterCode')}
                     </Button>
-                </Paper>
+                </Card>
             )}
+            <Typography variant="h5" sx={{ mb: 4 }}>
+                {t('referYourFriends')}
+            </Typography>
 
-            <Paper
-                sx={{
-                    p: 3,
-                    mb: 4,
-                    bgcolor: theme =>
-                        theme.palette.mode === 'light'
-                            ? 'rgba(25, 118, 210, 0.04)'
-                            : 'rgba(91, 180, 255, 0.04)',
-                    border: theme =>
-                        `1px solid ${
-                            theme.palette.mode === 'light'
-                                ? 'rgba(25, 118, 210, 0.12)'
-                                : 'rgba(91, 180, 255, 0.12)'
-                        }`,
-                }}
-            >
-                <Box sx={{ mb: 4 }}>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                        {t('yourReferralCode')}
-                    </Typography>
-                    <Box sx={{ display: 'flex', gap: 1 }}>
-                        <TextField
-                            fullWidth
-                            value={referralCode || ''}
-                            InputProps={{
-                                readOnly: true,
-                                sx: {
-                                    bgcolor: 'background.paper',
+            {/* Your Referral Code section */}
+            <Card sx={{ p: 3, mb: 3, borderRadius: 3 }}>
+                <Typography variant="subtitle1" sx={{ mb: 2 }}>
+                    {t('yourReferralCode')}
+                </Typography>
+
+                <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
+                    <TextField
+                        fullWidth
+                        value={referralCode || ''}
+                        InputProps={{
+                            readOnly: true,
+                            sx: {
+                                bgcolor: 'background.default',
+                                borderRadius: 2,
+                                '& .MuiOutlinedInput-input': {
                                     fontFamily: 'monospace',
-                                    fontSize: '1.2rem',
+                                    fontSize: '1.1rem',
                                     letterSpacing: '0.1em',
                                 },
-                            }}
-                        />
-                        <Tooltip title={t('copyToClipboard')} placement="top">
-                            <IconButton onClick={handleCopy} color="primary">
-                                <ContentCopyIcon />
-                            </IconButton>
-                        </Tooltip>
-                        <Tooltip title={t('editReferralCode')} placement="top">
-                            <IconButton onClick={() => setEditDialogOpen(true)} color="primary">
-                                <EditIcon />
-                            </IconButton>
-                        </Tooltip>
-                    </Box>
+                            },
+                        }}
+                    />
+                    <Button
+                        variant="contained"
+                        onClick={handleCopy}
+                        startIcon={<ContentCopyIcon />}
+                        sx={{ minWidth: 100 }}
+                    >
+                        {t('copy')}
+                    </Button>
                 </Box>
 
-                <Box sx={{ mb: 4 }}>
-                    <SocialShare referralCode={referralCode} />
-                </Box>
-
-                <Box
-                    sx={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 2,
-                        p: 2,
-                        borderRadius: 1,
-                        bgcolor: 'background.paper',
-                    }}
-                >
-                    <PeopleAltIcon sx={{ fontSize: 40, color: 'primary.main' }} />
-                    <Box>
-                        <Typography variant="h6" color="primary">
-                            {referralCount}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            {t('totalReferrals')}
-                        </Typography>
-                    </Box>
-                </Box>
-            </Paper>
-
-            <Paper sx={{ p: 3, mb: 4, bgcolor: 'background.paper' }}>
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                    {t('howReferralWorks')}
+                <Typography variant="subtitle1" sx={{ mb: 2 }}>
+                    {t('shareVia')}:
                 </Typography>
-                <Box component="ul" sx={{ pl: 2, mb: 3 }}>
+
+                <SocialShare referralCode={referralCode} />
+
+                <Typography
+                    variant="body2"
+                    color="text.secondary"
+                    sx={{ mt: 3, textAlign: 'center' }}
+                >
+                    {t('youHaveReferred', { count: referralCount })}
+                </Typography>
+            </Card>
+
+            <Card sx={{ p: 3, borderRadius: 3 }}>
+                <Typography variant="h6" sx={{ mb: 2 }}>
+                    {t('howItWorks')}:
+                </Typography>
+
+                <Box component="ul" sx={{ pl: 2, m: 0 }}>
                     {t('referralSteps', { returnObjects: true }).map((step, index) => (
                         <Typography
                             component="li"
@@ -171,24 +144,7 @@ export const ReferralTab = ({ userId }) => {
                         </Typography>
                     ))}
                 </Box>
-
-                <Typography variant="h6" sx={{ mb: 2 }}>
-                    {t('referralRewards')}
-                </Typography>
-                <Box component="ul" sx={{ pl: 2 }}>
-                    {t('referralBonuses', { returnObjects: true }).map((bonus, index) => (
-                        <Typography
-                            component="li"
-                            key={index}
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mb: 1 }}
-                        >
-                            {bonus}
-                        </Typography>
-                    ))}
-                </Box>
-            </Paper>
+            </Card>
 
             <Snackbar
                 open={showCopied}
@@ -202,7 +158,7 @@ export const ReferralTab = ({ userId }) => {
                 open={editDialogOpen}
                 onClose={() => setEditDialogOpen(false)}
                 userId={userId}
-                onSuccess={handleEditSuccess}
+                onSuccess={refresh}
             />
 
             <EnterReferralDialog

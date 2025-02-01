@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, IconButton, Tooltip, Typography, SvgIcon } from '@mui/material';
+import { Box, IconButton, Tooltip, SvgIcon } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import TelegramIcon from '@mui/icons-material/Telegram';
@@ -70,9 +70,6 @@ export const SocialShare = ({ referralCode }) => {
 
     return (
         <Box>
-            <Typography variant="subtitle1" sx={{ mb: 2 }}>
-                {t('shareVia')}:
-            </Typography>
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
                 {socialNetworks.map(network => (
                     <Tooltip key={network.name} title={t('shareOn', { network: network.name })}>

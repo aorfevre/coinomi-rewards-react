@@ -171,4 +171,11 @@ export const ar = {
     darkMode: 'الوضع المظلم',
     player: 'لاعب',
     score: 'نقاط',
+    youHaveReferred_zero: 'لم تقم بدعوة أي أصدقاء بعد',
+    youHaveReferred_one: 'قمت بدعوة صديق واحد',
+    youHaveReferred_two: 'قمت بدعوة صديقين',
+    youHaveReferred_few: 'قمت بدعوة {{count}} أصدقاء',
+    youHaveReferred_many: 'قمت بدعوة {{count}} صديقاً',
+    youHaveReferred_other: 'قمت بدعوة {{count}} صديق',
+    referYourFriends: 'ادعُ أصدقاءك',
 };

@@ -184,4 +184,8 @@ export const es = {
     pointsAvailable: 'Puntos disponibles',
     player: 'Jugador',
     score: 'Puntos',
+    youHaveReferred_zero: 'No has referido a ningún amigo todavía',
+    youHaveReferred_one: 'Has referido a 1 amigo',
+    youHaveReferred_other: 'Has referido a {{count}} amigos',
+    referYourFriends: 'Invita a tus amigos',
 };

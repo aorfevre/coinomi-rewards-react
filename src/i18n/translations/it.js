@@ -176,4 +176,8 @@ export const it = {
     claimRewards: 'Riscuoti ricompense',
     player: 'Giocatore',
     score: 'Punteggio',
+    youHaveReferred_zero: 'Non hai ancora invitato nessun amico',
+    youHaveReferred_one: 'Hai invitato 1 amico',
+    youHaveReferred_other: 'Hai invitato {{count}} amici',
+    referYourFriends: 'Invita i tuoi amici',
 };

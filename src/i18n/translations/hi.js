@@ -174,4 +174,8 @@ export const hi = {
     claimRewards: 'पुरस्कार प्राप्त करें',
     player: 'खिलाड़ी',
     score: 'अंक',
+    youHaveReferred_zero: 'आपने अभी तक किसी दोस्त को आमंत्रित नहीं किया है',
+    youHaveReferred_one: 'आपने 1 दोस्त को आमंत्रित किया है',
+    youHaveReferred_other: 'आपने {{count}} दोस्तों को आमंत्रित किया है',
+    referYourFriends: 'अपने दोस्तों को आमंत्रित करें',
 };

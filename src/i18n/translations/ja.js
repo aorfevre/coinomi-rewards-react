@@ -173,4 +173,8 @@ export const ja = {
     claimRewards: '報酬を受け取る',
     player: 'プレイヤー',
     score: 'スコア',
+    youHaveReferred_zero: 'まだ友達を招待していません',
+    youHaveReferred_one: '1人の友達を招待しました',
+    youHaveReferred_other: '{{count}}人の友達を招待しました',
+    referYourFriends: '友達を招待',
 };
