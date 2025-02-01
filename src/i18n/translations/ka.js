@@ -35,5 +35,9 @@ export const ka = {
     yourStatsThisWeek: 'თქვენი სტატისტიკა ამ კვირაში',
     pointsMultiplier: 'ქულების გამრავლება',
     yourRank: 'თქვენი რანგი',
+    rewards: 'ჯილდოები',
+    daily: 'ყოველდღიური',
+    weekly: 'ყოველკვირეული',
+    claimRewards: 'ჯილდოების მიღება',
     // ... add all other translations
 };

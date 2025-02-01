@@ -164,4 +164,8 @@ export const hu = {
     yourStatsThisWeek: 'Statisztikáid ezen a héten',
     pointsMultiplier: 'Pontszorzó',
     yourRank: 'Helyezésed',
+    rewards: 'Jutalmak',
+    daily: 'Napi',
+    weekly: 'Heti',
+    claimRewards: 'Jutalmak igénylése',
 };

@@ -166,4 +166,8 @@ export const hr = {
     yourStatsThisWeek: 'Vaše statistike ovaj tjedan',
     pointsMultiplier: 'Množitelj bodova',
     yourRank: 'Vaš rang',
+    rewards: 'Nagrade',
+    daily: 'Dnevno',
+    weekly: 'Tjedno',
+    claimRewards: 'Preuzmi nagrade',
 };

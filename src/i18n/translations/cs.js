@@ -164,4 +164,8 @@ export const cs = {
     yourStatsThisWeek: 'Vaše statistiky tento týden',
     pointsMultiplier: 'Násobitel bodů',
     yourRank: 'Vaše pořadí',
+    rewards: 'Odměny',
+    daily: 'Denní',
+    weekly: 'Týdenní',
+    claimRewards: 'Získat odměny',
 };

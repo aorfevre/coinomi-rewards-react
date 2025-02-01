@@ -169,4 +169,8 @@ export const fa = {
     yourStatsThisWeek: 'آمار شما در این هفته',
     pointsMultiplier: 'ضریب امتیازات',
     yourRank: 'رتبه شما',
+    rewards: 'پاداش‌ها',
+    daily: 'روزانه',
+    weekly: 'هفتگی',
+    claimRewards: 'دریافت پاداش‌ها',
 };

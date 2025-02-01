@@ -166,4 +166,8 @@ export const et = {
     yourStatsThisWeek: 'Sinu statistika sel nädalal',
     pointsMultiplier: 'Punktide kordaja',
     yourRank: 'Sinu koht',
+    rewards: 'Preemiad',
+    daily: 'Päevane',
+    weekly: 'Iganädalane',
+    claimRewards: 'Lunasta preemiad',
 };

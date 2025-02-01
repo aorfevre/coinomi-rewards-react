@@ -167,4 +167,8 @@ export const ja = {
     yourStatsThisWeek: '今週のあなたの統計',
     pointsMultiplier: 'ポイント倍率',
     yourRank: 'あなたのランク',
+    rewards: '報酬',
+    daily: '毎日',
+    weekly: '毎週',
+    claimRewards: '報酬を受け取る',
 };

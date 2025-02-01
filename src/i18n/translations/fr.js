@@ -173,4 +173,8 @@ export const fr = {
     yourStatsThisWeek: 'Vos statistiques cette semaine',
     pointsMultiplier: 'Multiplicateur de points',
     yourRank: 'Votre rang',
+    rewards: 'Récompenses',
+    daily: 'Quotidien',
+    weekly: 'Hebdomadaire',
+    claimRewards: 'Réclamer les récompenses',
 };

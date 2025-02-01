@@ -166,4 +166,8 @@ export const pl = {
     yourStatsThisWeek: 'Twoje statystyki w tym tygodniu',
     pointsMultiplier: 'Mnożnik punktów',
     yourRank: 'Twoja pozycja',
+    rewards: 'Nagrody',
+    daily: 'Dziennie',
+    weekly: 'Tygodniowo',
+    claimRewards: 'Odbierz nagrody',
 };

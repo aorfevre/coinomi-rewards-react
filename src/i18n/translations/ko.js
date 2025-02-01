@@ -164,4 +164,8 @@ export const ko = {
     yourStatsThisWeek: '이번 주 통계',
     pointsMultiplier: '포인트 배율',
     yourRank: '내 순위',
+    rewards: '보상',
+    daily: '일일',
+    weekly: '주간',
+    claimRewards: '보상 받기',
 };

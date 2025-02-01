@@ -175,4 +175,8 @@ export const en = {
     yourStatsThisWeek: 'Your stats this week',
     pointsMultiplier: 'Points multiplier',
     yourRank: 'Your rank',
+    rewards: 'Rewards',
+    daily: 'Daily',
+    weekly: 'Weekly',
+    claimRewards: 'Claim rewards',
 };

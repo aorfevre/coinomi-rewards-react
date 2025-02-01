@@ -170,4 +170,8 @@ export const el = {
     yourStatsThisWeek: 'Τα στατιστικά σας αυτήν την εβδομάδα',
     pointsMultiplier: 'Πολλαπλασιαστής πόντων',
     yourRank: 'Η κατάταξή σας',
+    rewards: 'Ανταμοιβές',
+    daily: 'Ημερήσια',
+    weekly: 'Εβδομαδιαία',
+    claimRewards: 'Διεκδίκηση ανταμοιβών',
 };

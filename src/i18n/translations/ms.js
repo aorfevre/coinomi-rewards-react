@@ -169,4 +169,8 @@ export const ms = {
     yourStatsThisWeek: 'Statistik anda minggu ini',
     pointsMultiplier: 'Pengganda mata',
     yourRank: 'Kedudukan anda',
+    rewards: 'Ganjaran',
+    daily: 'Harian',
+    weekly: 'Mingguan',
+    claimRewards: 'Tuntut ganjaran',
 };

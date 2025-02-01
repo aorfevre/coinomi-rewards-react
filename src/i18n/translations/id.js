@@ -167,4 +167,8 @@ export const id = {
     yourStatsThisWeek: 'Statistik Anda minggu ini',
     pointsMultiplier: 'Pengali poin',
     yourRank: 'Peringkat Anda',
+    rewards: 'Hadiah',
+    daily: 'Harian',
+    weekly: 'Mingguan',
+    claimRewards: 'Klaim hadiah',
 };

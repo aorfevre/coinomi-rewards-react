@@ -168,4 +168,8 @@ export const fi = {
     yourStatsThisWeek: 'Tilastosi tällä viikolla',
     pointsMultiplier: 'Pistekerroin',
     yourRank: 'Sijoituksesi',
+    rewards: 'Palkinnot',
+    daily: 'Päivittäin',
+    weekly: 'Viikoittain',
+    claimRewards: 'Lunasta palkinnot',
 };

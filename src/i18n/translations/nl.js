@@ -170,4 +170,8 @@ export const nl = {
     yourStatsThisWeek: 'Jouw statistieken deze week',
     pointsMultiplier: 'Puntenvermenigvuldiger',
     yourRank: 'Jouw rang',
+    rewards: 'Beloningen',
+    daily: 'Dagelijks',
+    weekly: 'Wekelijks',
+    claimRewards: 'Claim beloningen',
 };

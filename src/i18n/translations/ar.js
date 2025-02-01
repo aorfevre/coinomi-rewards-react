@@ -162,4 +162,8 @@ export const ar = {
     yourStatsThisWeek: 'إحصائياتك هذا الأسبوع',
     pointsMultiplier: 'مضاعف النقاط',
     yourRank: 'رتبتك',
+    rewards: 'المكافآت',
+    daily: 'يومي',
+    weekly: 'أسبوعي',
+    claimRewards: 'المطالبة بالمكافآت',
 };

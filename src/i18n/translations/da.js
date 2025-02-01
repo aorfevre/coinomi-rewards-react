@@ -164,4 +164,8 @@ export const da = {
     yourStatsThisWeek: 'Dine statistikker denne uge',
     pointsMultiplier: 'Pointmultiplikator',
     yourRank: 'Din rang',
+    rewards: 'Belønninger',
+    daily: 'Daglig',
+    weekly: 'Ugentlig',
+    claimRewards: 'Hent belønninger',
 };

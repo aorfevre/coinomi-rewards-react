@@ -169,4 +169,8 @@ export const is = {
     yourStatsThisWeek: 'Tölfræði þín þessa viku',
     pointsMultiplier: 'Stigamargfaldari',
     yourRank: 'Þín staða',
+    rewards: 'Verðlaun',
+    daily: 'Daglega',
+    weekly: 'Vikulega',
+    claimRewards: 'Sækja verðlaun',
 };

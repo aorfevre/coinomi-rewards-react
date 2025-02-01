@@ -168,4 +168,8 @@ export const hi = {
     yourStatsThisWeek: 'इस सप्ताह के आपके आंकड़े',
     pointsMultiplier: 'अंक गुणक',
     yourRank: 'आपकी रैंक',
+    rewards: 'पुरस्कार',
+    daily: 'दैनिक',
+    weekly: 'साप्ताहिक',
+    claimRewards: 'पुरस्कार प्राप्त करें',
 };

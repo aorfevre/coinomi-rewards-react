@@ -164,4 +164,8 @@ export const no = {
     yourStatsThisWeek: 'Din statistikk denne uken',
     pointsMultiplier: 'Poengmultiplikator',
     yourRank: 'Din rangering',
+    rewards: 'Belønninger',
+    daily: 'Daglig',
+    weekly: 'Ukentlig',
+    claimRewards: 'Krev belønninger',
 };

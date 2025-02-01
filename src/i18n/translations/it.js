@@ -170,4 +170,8 @@ export const it = {
     yourStatsThisWeek: 'Le tue statistiche questa settimana',
     pointsMultiplier: 'Moltiplicatore punti',
     yourRank: 'La tua posizione',
+    rewards: 'Ricompense',
+    daily: 'Giornaliero',
+    weekly: 'Settimanale',
+    claimRewards: 'Riscuoti ricompense',
 };
