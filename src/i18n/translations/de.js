@@ -178,4 +178,6 @@ export const de = {
     weekly: 'Wöchentlich',
     claimRewards: 'Belohnungen einfordern',
     pointsAvailable: 'Verfügbare Punkte',
+    player: 'Spieler',
+    score: 'Punkte',
 };

@@ -174,4 +174,6 @@ export const it = {
     daily: 'Giornaliero',
     weekly: 'Settimanale',
     claimRewards: 'Riscuoti ricompense',
+    player: 'Giocatore',
+    score: 'Punteggio',
 };

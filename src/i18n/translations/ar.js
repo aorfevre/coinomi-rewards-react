@@ -169,4 +169,6 @@ export const ar = {
     privacyDescription: 'يدير نظام طرف ثالث النقاط والروابط الاجتماعية بشكل آمن.',
     walletAddress: 'عنوان المحفظة',
     darkMode: 'الوضع المظلم',
+    player: 'لاعب',
+    score: 'نقاط',
 };

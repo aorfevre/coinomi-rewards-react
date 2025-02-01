@@ -181,4 +181,6 @@ export const fr = {
     walletAddress: 'Adresse du portefeuille',
     darkMode: 'Mode sombre',
     pointsAvailable: 'Points disponibles',
+    player: 'Joueur',
+    score: 'Score',
 };

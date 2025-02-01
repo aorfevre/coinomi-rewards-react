@@ -182,4 +182,6 @@ export const es = {
     walletAddress: 'Dirección de la cartera',
     darkMode: 'Modo oscuro',
     pointsAvailable: 'Puntos disponibles',
+    player: 'Jugador',
+    score: 'Puntos',
 };

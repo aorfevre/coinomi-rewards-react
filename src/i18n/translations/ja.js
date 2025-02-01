@@ -171,4 +171,6 @@ export const ja = {
     daily: '毎日',
     weekly: '毎週',
     claimRewards: '報酬を受け取る',
+    player: 'プレイヤー',
+    score: 'スコア',
 };

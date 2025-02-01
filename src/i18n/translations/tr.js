@@ -164,4 +164,6 @@ export const tr = {
     shareOn: "{{network}}'da paylaş",
     shareInviteText:
         "🚀 Coinomi Wallet'ta bana katılın ve bonus ödüller alın! Uygulamayı {{appUrl}} adresinden indirin ve kaydolurken referans kodumu kullanın: {{referralCode}}. #Coinomi #Crypto",
+    player: 'Oyuncu',
+    score: 'Puan',
 };

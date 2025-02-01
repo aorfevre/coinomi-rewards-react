@@ -177,4 +177,6 @@ export const pt = {
     daily: 'Diário',
     weekly: 'Semanal',
     claimRewards: 'Resgatar recompensas',
+    player: 'Jogador',
+    score: 'Pontos',
 };

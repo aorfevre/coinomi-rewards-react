@@ -172,4 +172,6 @@ export const hi = {
     daily: 'दैनिक',
     weekly: 'साप्ताहिक',
     claimRewards: 'पुरस्कार प्राप्त करें',
+    player: 'खिलाड़ी',
+    score: 'अंक',
 };

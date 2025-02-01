@@ -168,4 +168,6 @@ export const ko = {
     daily: '일일',
     weekly: '주간',
     claimRewards: '보상 받기',
+    player: '플레이어',
+    score: '점수',
 };

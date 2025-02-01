@@ -190,4 +190,7 @@ export const en = {
     lightMode: 'Light Mode',
 
     pointsAvailable: 'Points available',
+
+    player: 'Player',
+    score: 'Score',
 };
