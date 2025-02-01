@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Typography } from '@mui/material';
+import { Box, CircularProgress, Typography, Card } from '@mui/material';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { useRewardHistory } from '../hooks/useRewardHistory';
@@ -19,71 +19,104 @@ export const Tasks = ({ userId }) => {
     }
 
     return (
-        <Box>
-            <Typography variant="h5" sx={{ mb: 3 }}>
+        <Box sx={{ p: 2 }}>
+            <Typography variant="h5" sx={{ mb: 3, fontWeight: 500 }}>
                 {t('completedTasks')}
             </Typography>
 
-            <Box
+            {/* Daily Rewards Claimed Card */}
+            <Card
                 sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: 3,
+                    p: 3,
+                    mb: 4,
+                    borderRadius: 3,
+                    bgcolor: theme =>
+                        theme.palette.mode === 'dark'
+                            ? 'rgba(255, 255, 255, 0.05)'
+                            : 'background.paper',
+                    boxShadow: 'none',
                 }}
             >
-                <Box
+                <Typography
+                    variant="subtitle1"
                     sx={{
-                        p: 3,
-                        borderRadius: 2,
-                        bgcolor: 'rgba(255, 255, 255, 0.05)',
+                        color: theme => theme.palette.primary.main,
+                        mb: 1,
+                        fontWeight: 400,
                     }}
                 >
-                    <Typography variant="subtitle1" color="primary">
-                        {t('dailyRewardsClaimed')}
-                    </Typography>
-                    <Typography variant="h6">
-                        {scoreDoc?.tasksCompleted || 0} {t('times')}
-                    </Typography>
-                </Box>
+                    {t('dailyRewardsClaimed')}
+                </Typography>
+                <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                    {scoreDoc?.tasksCompleted || 0} {t('times')}
+                </Typography>
+            </Card>
 
-                <Box>
-                    <Typography variant="h6" sx={{ mb: 2 }}>
-                        {t('recentActivity')}
-                    </Typography>
-                    {rewards.length === 0 ? (
-                        <Typography color="text.secondary">{t('noRewardsClaimed')}</Typography>
-                    ) : (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                            {rewards.map(reward => (
+            {/* Recent Activity Section */}
+            <Box sx={{ mb: 2 }}>
+                <Typography variant="h6" sx={{ mb: 3, fontWeight: 500 }}>
+                    {t('recentActivity')}
+                </Typography>
+
+                {rewards.length === 0 ? (
+                    <Typography color="text.secondary">{t('noRewardsClaimed')}</Typography>
+                ) : (
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        {rewards.map(reward => (
+                            <Card
+                                key={reward.id}
+                                sx={{
+                                    p: 2,
+                                    borderRadius: 3,
+                                    bgcolor: theme =>
+                                        theme.palette.mode === 'dark'
+                                            ? 'rgba(255, 255, 255, 0.03)'
+                                            : 'background.paper',
+                                    boxShadow: 'none',
+                                }}
+                            >
                                 <Box
-                                    key={reward.id}
                                     sx={{
-                                        p: 2,
-                                        borderRadius: 1,
-                                        bgcolor: 'rgba(255, 255, 255, 0.03)',
                                         display: 'flex',
                                         justifyContent: 'space-between',
-                                        alignItems: 'center',
+                                        alignItems: 'flex-start',
                                     }}
                                 >
                                     <Box>
-                                        <Typography variant="subtitle2" color="primary">
+                                        <Typography
+                                            sx={{
+                                                color: theme => theme.palette.primary.main,
+                                                fontWeight: 500,
+                                                mb: 0.5,
+                                            }}
+                                        >
                                             {reward.type === 'daily'
                                                 ? t('dailyReward')
                                                 : reward.type}
                                         </Typography>
-                                        <Typography variant="caption" color="text.secondary">
-                                            {format(new Date(reward.timestamp), 'PPp')}
+                                        <Typography
+                                            variant="body2"
+                                            sx={{ color: 'text.secondary' }}
+                                        >
+                                            {format(
+                                                new Date(reward.timestamp),
+                                                'MMM d, yyyy, h:mm a'
+                                            )}
                                         </Typography>
                                     </Box>
-                                    <Typography variant="subtitle1">
+                                    <Typography
+                                        sx={{
+                                            color: theme => theme.palette.primary.main,
+                                            fontWeight: 500,
+                                        }}
+                                    >
                                         +{reward.points} {t('points')}
                                     </Typography>
                                 </Box>
-                            ))}
-                        </Box>
-                    )}
-                </Box>
+                            </Card>
+                        ))}
+                    </Box>
+                )}
             </Box>
         </Box>
     );
