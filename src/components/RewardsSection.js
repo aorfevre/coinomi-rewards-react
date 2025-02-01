@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -10,7 +10,7 @@ export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, s
     const { t } = useTranslation();
     const { user } = useAuth();
     const { loading, error, claimDailyReward } = useRewards(user?.uid);
-    const [showFireworks, setShowFireworks] = React.useState(false);
+    const [showFireworks, setShowFireworks] = useState(false);
 
     const formatTime = timeLeft => {
         // Ensure all values exist with defaults
@@ -42,7 +42,7 @@ export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, s
         try {
             await claimDailyReward(user.uid);
             setShowFireworks(true);
-            setTimeout(() => setShowFireworks(false), 2000);
+            setTimeout(() => setShowFireworks(false), 5000);
         } catch (err) {
             console.error('Error claiming daily reward:', err);
         }
@@ -50,8 +50,9 @@ export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, s
 
     return (
         <Box sx={{ mb: 1.5, ...sx }}>
-            {showFireworks && <Fireworks />}
+            <Fireworks show={showFireworks} />
             {/* Header */}
+            <Typography variant="h6">{t('rewards')}</Typography>
 
             {/* Card */}
             <Box
