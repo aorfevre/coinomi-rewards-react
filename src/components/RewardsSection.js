@@ -141,7 +141,6 @@ export const RewardsSection = ({ weeklyTimeLeft, sx }) => {
         <Box sx={{ mb: 1.5, ...sx }}>
             <Fireworks show={showFireworks} />
             {/* Header */}
-            <Typography variant="h6">{t('rewards')}</Typography>
 
             {/* Card */}
             <Box

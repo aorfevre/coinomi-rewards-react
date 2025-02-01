@@ -100,141 +100,143 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
     }, [scoreDoc?.lastClaimDaily]);
 
     return (
-        <Box sx={{ p: 2 }}>
-            {/* Section title with calendar icon */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <CalendarIcon sx={{ color: 'primary.main' }} />
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                    {t('rewards')}
-                </Typography>
-            </Box>
+        <Box>
+            <Box sx={{ p: 2 }}>
+                {/* Section title with calendar icon */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <CalendarIcon sx={{ color: 'primary.main' }} />
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        {t('rewards')}
+                    </Typography>
+                </Box>
 
-            {/* Rewards Section First */}
-            <RewardsSection
-                canClaimDaily={canClaimDaily}
-                dailyTimeLeft={dailyTimeLeft}
-                weeklyTimeLeft={weeklyTimeLeft}
-                sx={{ mb: 1.5 }}
-            />
+                {/* Rewards Section First */}
+                <RewardsSection
+                    canClaimDaily={canClaimDaily}
+                    dailyTimeLeft={dailyTimeLeft}
+                    weeklyTimeLeft={weeklyTimeLeft}
+                    sx={{ mb: 1.5 }}
+                />
 
-            {/* Stats section title */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <BarChartIcon sx={{ color: 'primary.main' }} />
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                    {t('yourStatsThisWeek')}
-                </Typography>
-            </Box>
+                {/* Stats section title */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <BarChartIcon sx={{ color: 'primary.main' }} />
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        {t('yourStatsThisWeek')}
+                    </Typography>
+                </Box>
 
-            {/* Stats Card */}
-            <Box
-                sx={{
-                    bgcolor: 'background.paper',
-                    borderRadius: 2,
-                    p: 2,
-                    mb: 1.5,
-                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
-                }}
-            >
+                {/* Stats Card */}
                 <Box
                     sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
+                        bgcolor: 'background.paper',
+                        borderRadius: 2,
+                        p: 2,
+                        mb: 1.5,
+                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
                     }}
                 >
-                    <Box sx={{ textAlign: 'center', flex: 1 }}>
-                        <Typography
-                            variant="h5"
-                            color="warning.main"
-                            sx={{ mb: 0.5, fontWeight: 500 }}
-                        >
-                            {formatRankDisplay()}
-                        </Typography>
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{
-                                whiteSpace: 'pre-line',
-                                lineHeight: 1.2,
-                            }}
-                        >
-                            {t('yourRank')}
-                        </Typography>
-                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                        }}
+                    >
+                        <Box sx={{ textAlign: 'center', flex: 1 }}>
+                            <Typography
+                                variant="h5"
+                                color="warning.main"
+                                sx={{ mb: 0.5, fontWeight: 500 }}
+                            >
+                                {formatRankDisplay()}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{
+                                    whiteSpace: 'pre-line',
+                                    lineHeight: 1.2,
+                                }}
+                            >
+                                {t('yourRank')}
+                            </Typography>
+                        </Box>
 
-                    <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
+                        <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
 
-                    <Box sx={{ textAlign: 'center', flex: 1 }}>
-                        <Typography
-                            variant="h5"
-                            color="text.primary"
-                            sx={{ mb: 0.5, fontWeight: 500 }}
-                        >
-                            {scoreDoc?.tasksCompleted || 0}
-                        </Typography>
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{
-                                whiteSpace: 'pre-line',
-                                lineHeight: 1.2,
-                            }}
-                        >
-                            {t('completedTasks')}
-                        </Typography>
-                    </Box>
+                        <Box sx={{ textAlign: 'center', flex: 1 }}>
+                            <Typography
+                                variant="h5"
+                                color="text.primary"
+                                sx={{ mb: 0.5, fontWeight: 500 }}
+                            >
+                                {scoreDoc?.tasksCompleted || 0}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{
+                                    whiteSpace: 'pre-line',
+                                    lineHeight: 1.2,
+                                }}
+                            >
+                                {t('completedTasks')}
+                            </Typography>
+                        </Box>
 
-                    <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
+                        <Divider orientation="vertical" flexItem sx={{ mx: 2 }} />
 
-                    <Box sx={{ textAlign: 'center', flex: 1 }}>
-                        <Typography
-                            variant="h5"
-                            color="text.primary"
-                            sx={{ mb: 0.5, fontWeight: 500 }}
-                        >
-                            {multiplier.total.toFixed(2)}x
-                        </Typography>
-                        <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{
-                                whiteSpace: 'pre-line',
-                                lineHeight: 1.2,
-                            }}
-                        >
-                            {t('pointsMultiplier')}
-                        </Typography>
+                        <Box sx={{ textAlign: 'center', flex: 1 }}>
+                            <Typography
+                                variant="h5"
+                                color="text.primary"
+                                sx={{ mb: 0.5, fontWeight: 500 }}
+                            >
+                                {multiplier.total.toFixed(2)}x
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{
+                                    whiteSpace: 'pre-line',
+                                    lineHeight: 1.2,
+                                }}
+                            >
+                                {t('pointsMultiplier')}
+                            </Typography>
+                        </Box>
                     </Box>
                 </Box>
-            </Box>
 
-            {/* Streak section title */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                <TrendingUpIcon sx={{ color: 'primary.main' }} />
-                <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                    {t('streakBonus')}
-                </Typography>
-                <Typography
-                    variant="h6"
+                {/* Streak section title */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <TrendingUpIcon sx={{ color: 'primary.main' }} />
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        {t('streakBonus')}
+                    </Typography>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            color: 'warning.main',
+                            fontWeight: 700,
+                        }}
+                    >
+                        +{streakBonus}%
+                    </Typography>
+                </Box>
+
+                {/* Streak Bonus */}
+                <StreakBonus
+                    currentStreak={scoreDoc?.currentStreak || 0}
+                    lastClaimDate={scoreDoc?.lastTaskTimestamp}
                     sx={{
-                        color: 'warning.main',
-                        fontWeight: 700,
+                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+                        borderRadius: 2,
+                        bgcolor: 'background.paper',
                     }}
-                >
-                    +{streakBonus}%
-                </Typography>
+                />
             </Box>
-
-            {/* Streak Bonus */}
-            <StreakBonus
-                currentStreak={scoreDoc?.currentStreak || 0}
-                lastClaimDate={scoreDoc?.lastTaskTimestamp}
-                sx={{
-                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
-                    borderRadius: 2,
-                    bgcolor: 'background.paper',
-                }}
-            />
         </Box>
     );
 };
