@@ -1,33 +1,76 @@
+import { ethers } from 'ethers';
+import { signInWithCustomToken } from 'firebase/auth';
+import { doc, setDoc } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
 import { useEffect, useState } from 'react';
-import { isValidAddress } from '../utils/validation';
+import { auth, db, functions } from '../config/firebase';
 
-export const useAuth = () => {
+export const useAuth = (walletAddress, coinomiId) => {
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [user, setUser] = useState(null);
+    const [userId, setUserId] = useState(null);
 
     useEffect(() => {
-        // Get token from URL parameters
-        const params = new URLSearchParams(window.location.search);
-        const token = params.get('token');
-
-        if (!token) {
-            console.error('❌ useAuth - No token provided');
+        if (!walletAddress || !ethers.isAddress(walletAddress)) {
+            console.error('❌ useAuth - Invalid wallet address:', walletAddress);
+            setLoading(false);
             return;
         }
-
-        // Clean the token (remove any whitespace, etc)
-        const cleanToken = token.trim();
-
-        if (!isValidAddress(cleanToken)) {
-            console.error('❌ useAuth - Invalid wallet address:', cleanToken);
+        if (!coinomiId) {
+            console.error('❌ useAuth - Invalid coinomiId:', coinomiId);
+            setLoading(false);
             return;
         }
+        let isMounted = true;
+        setLoading(true);
 
-        // If valid address, set the user
-        setUser({
-            uid: cleanToken,
-            walletAddress: cleanToken,
-        });
-    }, []);
+        const signIn = async () => {
+            try {
+                const getCustomToken = httpsCallable(functions, 'getCustomToken');
+                const result = await getCustomToken({ walletAddress, coinomiId });
+                const { customToken } = result.data;
 
-    return { user };
+                if (!customToken) {
+                    throw new Error('No token received from server');
+                }
+
+                const userCredential = await signInWithCustomToken(auth, customToken);
+                const uid = userCredential.user.uid;
+
+                if (isMounted) {
+                    setUserId(uid);
+                    setUser(userCredential.user);
+                }
+
+                const userRef = doc(db, 'users', uid);
+                await setDoc(
+                    userRef,
+                    {
+                        walletAddress,
+                        lastSignIn: new Date(),
+                        coinomiId,
+                    },
+                    { merge: true }
+                );
+            } catch (err) {
+                console.error('❌ useAuth - Authentication error:', err);
+                if (isMounted) {
+                    setError(err instanceof Error ? err : new Error('Authentication failed'));
+                }
+            } finally {
+                if (isMounted) {
+                    setLoading(false);
+                }
+            }
+        };
+
+        signIn();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [walletAddress, coinomiId]);
+
+    return { loading, error, user, userId };
 };

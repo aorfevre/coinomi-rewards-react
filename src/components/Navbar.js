@@ -11,7 +11,10 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 
 export const Navbar = ({ onThemeToggle }) => {
-    const { user } = useAuth();
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const userId = params.get('userId');
+    const { user } = useAuth(token, userId);
     const { scoreDoc } = useScore(user?.uid);
     const { t } = useTranslation();
     const [anchorEl, setAnchorEl] = useState(null);

@@ -9,7 +9,10 @@ import { Fireworks } from './Fireworks';
 
 export const RewardsSection = ({ weeklyTimeLeft, sx }) => {
     const { t } = useTranslation();
-    const { user } = useAuth();
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const userId = params.get('userId');
+    const { user } = useAuth(token, userId);
     const { loading, error, claimDailyReward, lastClaim } = useRewards(user?.uid);
     const [showFireworks, setShowFireworks] = useState(false);
     const [isClaimingDaily, setIsClaimingDaily] = useState(false);
@@ -21,11 +24,8 @@ export const RewardsSection = ({ weeklyTimeLeft, sx }) => {
     useEffect(() => {
         const updateTimeLeft = () => {
             // Add debug logging
-            console.log('lastClaim:', lastClaim);
-            console.log('cooldownSeconds:', cooldownSeconds);
 
             if (!lastClaim) {
-                console.log('No last claim, can claim now');
                 setTimeLeft(null);
                 return;
             }
@@ -36,10 +36,7 @@ export const RewardsSection = ({ weeklyTimeLeft, sx }) => {
             const nextClaimTime = lastClaimMs + cooldownSeconds * 1000;
             const diff = nextClaimTime - now;
 
-            console.log('Time diff:', diff);
-
             if (diff <= 0) {
-                console.log('Cooldown expired, can claim now');
                 setTimeLeft(null);
                 setIsClaimingDaily(false);
                 return;
@@ -49,7 +46,6 @@ export const RewardsSection = ({ weeklyTimeLeft, sx }) => {
             const minutes = Math.floor((diff / (1000 * 60)) % 60);
             const hours = Math.floor(diff / (1000 * 60 * 60));
 
-            console.log('Calculated time:', { hours, minutes, seconds });
             setTimeLeft({ hours, minutes, seconds });
         };
 

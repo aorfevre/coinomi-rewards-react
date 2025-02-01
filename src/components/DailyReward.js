@@ -7,7 +7,10 @@ import { calculateTimeLeft, formatTime } from '../utils/time';
 const CLAIM_COOLDOWN = CLAIM_COOLDOWN_MS;
 
 export function DailyReward() {
-    const { user } = useAuth();
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    const userId = params.get('userId');
+    const { user } = useAuth(token, userId);
     const { loading, error, claimDailyReward, lastClaim } = useRewards(user?.uid);
     const [timeLeft, setTimeLeft] = useState(0);
 

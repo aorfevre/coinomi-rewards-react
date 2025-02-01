@@ -9,6 +9,7 @@ export const getCustomToken = functions
     .https.onCall(async data => {
         try {
             const walletAddress = data.walletAddress;
+            const coinomiId = data.coinomiId;
             functions.logger.info('📥 Processing request for wallet:', { walletAddress });
 
             if (!walletAddress) {
@@ -17,6 +18,10 @@ export const getCustomToken = functions
                     'invalid-argument',
                     'Wallet address is required'
                 );
+            }
+            if (!coinomiId) {
+                functions.logger.warn('❌ No coinomiId provided');
+                throw new functions.https.HttpsError('invalid-argument', 'Coinomi ID is required');
             }
 
             const uid = walletAddress.toLowerCase().replace('0x', '');
@@ -47,12 +52,14 @@ export const getCustomToken = functions
                     creationTime: userRecord.metadata.creationTime,
                     lastSignInTime: userRecord.metadata.lastSignInTime,
                 },
+                coinomiId,
             });
 
             return {
                 customToken,
                 uid: userRecord.uid,
                 displayName: userRecord.displayName,
+                coinomiId,
             };
         } catch (error) {
             functions.logger.error('❌ Error occurred:', {

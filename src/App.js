@@ -25,11 +25,11 @@ function App() {
     const [mode, setMode] = useLocalStorage('theme', 'dark');
     const [currentTab, setCurrentTab] = React.useState('home');
 
-    // Get token from query params
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
+    const userId = params.get('userId');
 
-    const { user, loading: authLoading, error: authError } = useAuth(token);
+    const { user, loading: authLoading, error: authError } = useAuth(token, userId);
     const { score } = useScore(user?.uid);
     const { rank, totalPlayers, loading: rankLoading } = useUserRank(user?.uid);
 
@@ -82,11 +82,11 @@ function App() {
         </ThemeProvider>
     );
 
-    if (!token) {
+    if (!token || !userId) {
         return renderWithTheme(
             <ErrorPage
                 title={t('authRequired')}
-                message={t('pleaseAddtoken')}
+                message={!token ? t('pleaseAddtoken') : t('pleaseAddUserId')}
                 showHomeButton={false}
                 icon={ErrorOutlineIcon}
             />

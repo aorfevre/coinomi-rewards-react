@@ -149,6 +149,7 @@ export const en = {
     enterCode: 'Enter Code',
     // Error Page Messages
     pleaseAddtoken: 'Please add a token parameter to the URL',
+    pleaseAddUserId: 'Please add a userId parameter to the URL',
     authenticationError: 'An error occurred during authentication',
     noUserFound: 'No User Found',
     userNotFoundMessage: 'Could not find user data',
