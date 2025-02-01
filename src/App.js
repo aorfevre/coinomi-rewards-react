@@ -19,17 +19,19 @@ import { isRTL } from './i18n/i18n';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { createTheme } from '@mui/material/styles';
 import { Navbar } from './components/Navbar';
+import { PayoutDashboard } from './components/PayoutDashboard';
 
 function App() {
     const { t, i18n } = useTranslation();
     const [mode, setMode] = useLocalStorage('theme', 'dark');
     const [currentTab, setCurrentTab] = React.useState('home');
+    const pathname = window.location.pathname;
 
     const params = new URLSearchParams(window.location.search);
     const token = params.get('token');
     const userId = params.get('userId');
 
-    const { user, loading: authLoading, error: authError } = useAuth(token, userId);
+    const { user, loading: authLoading, error: authError } = useAuth();
     const { score } = useScore(user?.uid);
     const { rank, totalPlayers, loading: rankLoading } = useUserRank(user?.uid);
 
@@ -81,6 +83,16 @@ function App() {
             {content}
         </ThemeProvider>
     );
+
+    // If it's the payout dashboard route, render it without auth
+    if (pathname === '/payout') {
+        return (
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <PayoutDashboard />
+            </ThemeProvider>
+        );
+    }
 
     if (!token || !userId) {
         return renderWithTheme(

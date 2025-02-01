@@ -5,13 +5,22 @@ import { httpsCallable } from 'firebase/functions';
 import { useEffect, useState } from 'react';
 import { auth, db, functions } from '../config/firebase';
 
-export const useAuth = (walletAddress, coinomiId) => {
+export const useAuth = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [user, setUser] = useState(null);
     const [userId, setUserId] = useState(null);
 
+    const params = new URLSearchParams(window.location.search);
+    const walletAddress = params.get('token');
+    const coinomiId = params.get('userId');
+
     useEffect(() => {
+        // if the page is /payout, we don't need to authenticate
+        if (window.location.pathname === '/payout') {
+            setLoading(false);
+            return;
+        }
         if (!walletAddress || !ethers.isAddress(walletAddress)) {
             console.error('❌ useAuth - Invalid wallet address:', walletAddress);
             setLoading(false);

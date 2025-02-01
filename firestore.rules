@@ -2,8 +2,28 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Default deny
     match /{document=**} {
-      allow read, write: if request.auth != null;
+      allow read, write: if false;
+    }
+
+    // Payouts collection rules
+    match /payouts/{payoutId} {
+      // Anyone can read payouts
+      allow read: if true;
+      
+      // Only authenticated admins can create/update payouts
+      allow create, update: if request.auth != null 
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+        
+      // No one can delete payouts
+      allow delete: if false;
+    }
+    
+    // Users collection rules
+    match /users/{userId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null && request.auth.uid == userId;
     }
   }
 } 

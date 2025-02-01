@@ -9,10 +9,8 @@ import { Fireworks } from './Fireworks';
 
 export const RewardsSection = ({ weeklyTimeLeft, sx }) => {
     const { t } = useTranslation();
-    const params = new URLSearchParams(window.location.search);
-    const token = params.get('token');
-    const userId = params.get('userId');
-    const { user } = useAuth(token, userId);
+
+    const { user } = useAuth();
     const { loading, error, claimDailyReward, lastClaim } = useRewards(user?.uid);
     const [showFireworks, setShowFireworks] = useState(false);
     const [isClaimingDaily, setIsClaimingDaily] = useState(false);
