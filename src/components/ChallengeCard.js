@@ -1,67 +1,123 @@
-import { Box, Card, CardContent, Typography, Button } from '@mui/material';
+import { Box, Card, Typography, Button } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 export const ChallengeCard = ({
     icon: Icon,
     title,
     description,
     isCompleted,
-    buttonText,
+    isReferralChallenge,
     onAction,
-    color,
-    buttonStartIcon,
 }) => {
+    const { t } = useTranslation();
+
+    const handleClick = () => {
+        if (!isCompleted && !isReferralChallenge) {
+            onAction?.();
+        }
+    };
+
     return (
         <Card
+            onClick={handleClick}
             sx={{
+                p: 2,
+                borderRadius: 3,
                 bgcolor: theme =>
-                    theme.palette.mode === 'light'
-                        ? `${color}.light`
-                        : `rgba(${color === '#0088cc' ? '91, 180, 255' : '76, 175, 80'}, 0.04)`,
-                border: theme =>
-                    `1px solid ${
-                        theme.palette.mode === 'light'
-                            ? `${color}.border`
-                            : `rgba(${color === '#0088cc' ? '91, 180, 255' : '76, 175, 80'}, 0.12)`
-                    }`,
+                    theme.palette.mode === 'dark'
+                        ? 'rgba(255, 255, 255, 0.03)'
+                        : 'background.paper',
+                boxShadow: 'none',
+                cursor: !isCompleted && !isReferralChallenge ? 'pointer' : 'default',
+                '&:hover': {
+                    bgcolor:
+                        !isCompleted && !isReferralChallenge
+                            ? theme =>
+                                  theme.palette.mode === 'dark'
+                                      ? 'rgba(255, 255, 255, 0.05)'
+                                      : 'rgba(0, 0, 0, 0.02)'
+                            : 'inherit',
+                },
             }}
         >
-            <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                    <Icon sx={{ color: color, fontSize: 32 }} />
-                    <Typography variant="h6" sx={{ color: 'text.primary' }}>
-                        {title}
-                    </Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                    }}
+                >
+                    <Box sx={{ display: 'flex', gap: 2, flex: 1 }}>
+                        <Icon
+                            sx={{
+                                fontSize: 24,
+                                color: theme => (theme.palette.mode === 'dark' ? '#fff' : '#000'),
+                            }}
+                        />
+                        <Box>
+                            <Typography
+                                variant="subtitle1"
+                                sx={{
+                                    fontWeight: 500,
+                                    mb: 0.5,
+                                }}
+                            >
+                                {title}
+                            </Typography>
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    color: 'text.secondary',
+                                }}
+                            >
+                                {description}
+                            </Typography>
+                        </Box>
+                    </Box>
+
+                    {isCompleted ? (
+                        <CheckCircleIcon
+                            sx={{
+                                color: 'success.main',
+                                fontSize: 24,
+                            }}
+                        />
+                    ) : (
+                        !isReferralChallenge && (
+                            <KeyboardArrowRightIcon
+                                sx={{
+                                    color: 'text.secondary',
+                                    fontSize: 24,
+                                    opacity: 0.8,
+                                }}
+                            />
+                        )
+                    )}
                 </Box>
 
-                {isCompleted ? (
-                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                        <CheckCircleIcon sx={{ color: 'success.main' }} />
-                        <Typography sx={{ color: 'text.primary' }}>{description}</Typography>
-                    </Box>
-                ) : (
-                    <>
-                        <Typography sx={{ mb: 2, color: 'text.secondary' }}>
-                            {description}
-                        </Typography>
-                        <Button
-                            variant="contained"
-                            onClick={onAction}
-                            startIcon={buttonStartIcon}
-                            fullWidth
-                            sx={{
-                                bgcolor: color,
-                                '&:hover': { bgcolor: theme => theme.palette.action.hover },
-                                py: 1.5,
-                                fontSize: '1.1rem',
-                            }}
-                        >
-                            {buttonText}
-                        </Button>
-                    </>
+                {/* Referral Challenge Button */}
+                {isReferralChallenge && !isCompleted && (
+                    <Button
+                        variant="contained"
+                        onClick={onAction}
+                        fullWidth
+                        sx={{
+                            mt: 2,
+                            bgcolor: 'primary.main',
+                            color: 'white',
+                            '&:hover': {
+                                bgcolor: 'primary.dark',
+                            },
+                        }}
+                    >
+                        {t('startReferring')}
+                    </Button>
                 )}
-            </CardContent>
+            </Box>
         </Card>
     );
 };
@@ -71,8 +127,10 @@ ChallengeCard.propTypes = {
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     isCompleted: PropTypes.bool.isRequired,
-    buttonText: PropTypes.string,
+    isReferralChallenge: PropTypes.bool,
     onAction: PropTypes.func,
-    color: PropTypes.string.isRequired,
-    buttonStartIcon: PropTypes.element,
+};
+
+ChallengeCard.defaultProps = {
+    isReferralChallenge: false,
 };

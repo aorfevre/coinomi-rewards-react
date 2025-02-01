@@ -1,6 +1,5 @@
 import {
     Box,
-    Typography,
     Button,
     Dialog,
     DialogTitle,
@@ -98,10 +97,6 @@ export const Challenges = ({ userId, onTabChange }) => {
 
     return (
         <Box sx={{ mt: 4, width: '100%' }}>
-            <Typography variant="h5" sx={{ mb: 3, textAlign: 'center', color: 'text.primary' }}>
-                {t('challenges')}
-            </Typography>
-
             {/* <Box sx={{ mb: 4 }}>
                 <ClaimReward
                     userId={userId}
