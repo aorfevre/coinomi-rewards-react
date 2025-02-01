@@ -5,11 +5,13 @@ import { useTranslation } from 'react-i18next';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useRewards } from '../hooks/useRewards';
 import { useAuth } from '../hooks/useAuth';
+import { Fireworks } from './Fireworks';
 
 export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, sx }) => {
     const { t } = useTranslation();
     const { user } = useAuth();
     const { loading, error, claimDailyReward } = useRewards(user?.uid);
+    const [showFireworks, setShowFireworks] = React.useState(false);
 
     const formatTime = timeLeft => {
         // Ensure all values exist with defaults
@@ -18,6 +20,16 @@ export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, s
         const minutes = timeLeft?.minutes ?? 0;
         const seconds = timeLeft?.seconds ?? 0;
 
+        // For daily timer, we only show HH:MM:SS
+        if (!timeLeft.days) {
+            return [
+                hours.toString().padStart(2, '0'),
+                minutes.toString().padStart(2, '0'),
+                seconds.toString().padStart(2, '0'),
+            ].join(':');
+        }
+
+        // For weekly timer, we show DD:HH:MM:SS
         return [
             days.toString().padStart(2, '0'),
             hours.toString().padStart(2, '0'),
@@ -30,15 +42,16 @@ export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, s
         if (!user) return;
         try {
             await claimDailyReward(user.uid);
-            // The timer will automatically update through the useScore hook in HomeTab
+            setShowFireworks(true);
+            setTimeout(() => setShowFireworks(false), 2000);
         } catch (err) {
             console.error('Error claiming daily reward:', err);
-            // You might want to show an error message to the user
         }
     };
 
     return (
         <Box sx={{ mb: 1.5, ...sx }}>
+            {showFireworks && <Fireworks />}
             {/* Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5, gap: 1 }}>
                 <CalendarTodayIcon
@@ -99,6 +112,7 @@ export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, s
                                     textTransform: 'none',
                                     borderRadius: 2,
                                     bgcolor: 'action.disabledBackground',
+                                    color: 'text.secondary',
                                 }}
                             >
                                 {formatTime(dailyTimeLeft)}
@@ -116,6 +130,7 @@ export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, s
                                 textTransform: 'none',
                                 borderRadius: 2,
                                 bgcolor: 'action.disabledBackground',
+                                color: 'text.secondary',
                             }}
                         >
                             {formatTime(weeklyTimeLeft)}

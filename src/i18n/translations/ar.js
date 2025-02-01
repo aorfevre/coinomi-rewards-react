@@ -86,7 +86,6 @@ export const ar = {
     claimButton: 'مطالبة',
     earnedReward: 'المكافأة المكتسبة',
     rewardValue: '{{amount}} نقطة',
-    claimingReward: 'جاري المطالبة...',
     claimSuccess: 'تم المطالبة بنجاح بـ {{amount}} نقطة!',
     claimError: 'فشلت المطالبة بالمكافأة. يرجى المحاولة مرة أخرى.',
     privacyDisclaimer:
@@ -166,4 +165,8 @@ export const ar = {
     daily: 'يومي',
     weekly: 'أسبوعي',
     claimRewards: 'المطالبة بالمكافآت',
+    privacyTitle: 'كوينومي لا تجمع البيانات الشخصية',
+    privacyDescription: 'يدير نظام طرف ثالث النقاط والروابط الاجتماعية بشكل آمن.',
+    walletAddress: 'عنوان المحفظة',
+    darkMode: 'الوضع المظلم',
 };

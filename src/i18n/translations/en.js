@@ -90,7 +90,6 @@ export const en = {
     claimButton: 'Claim',
     earnedReward: 'Earned Reward',
     rewardValue: '{{amount}} Points',
-    claimingReward: 'Claiming...',
     claimSuccess: 'Successfully claimed {{amount}} points!',
     claimError: 'Failed to claim reward. Please try again.',
     privacyDisclaimer:
@@ -179,4 +178,13 @@ export const en = {
     daily: 'Daily',
     weekly: 'Weekly',
     claimRewards: 'Claim rewards',
+    // Privacy Disclaimer
+    privacyTitle: 'Coinomi does not collect personal data',
+    privacyDescription: 'A third-party system securely manages points and social linking.',
+
+    // Wallet Info
+    walletAddress: 'Wallet Address',
+
+    // Theme Toggle
+    darkMode: 'Dark Mode',
 };

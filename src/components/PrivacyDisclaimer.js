@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Box, Typography, IconButton } from '@mui/material';
 import ShieldIcon from '@mui/icons-material/Shield';
 import CloseIcon from '@mui/icons-material/Close';
@@ -6,26 +6,21 @@ import { useTranslation } from 'react-i18next';
 
 export const PrivacyDisclaimer = () => {
     const { t } = useTranslation();
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = React.useState(true);
 
     if (!isVisible) return null;
 
     return (
         <Box
             sx={{
-                width: '100%',
-                bgcolor: theme => theme.palette.background.paper,
+                bgcolor: 'background.paper',
                 borderRadius: 4,
                 p: 3,
-                mb: 3,
-                border: theme =>
-                    `1px solid ${
-                        theme.palette.mode === 'light'
-                            ? 'rgba(0, 0, 0, 0.08)'
-                            : 'rgba(255, 255, 255, 0.08)'
-                    }`,
-                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)',
+                mb: 2,
                 position: 'relative',
+                boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                maxWidth: '360px',
+                mx: 'auto',
             }}
         >
             <IconButton
@@ -34,48 +29,42 @@ export const PrivacyDisclaimer = () => {
                     position: 'absolute',
                     right: 12,
                     top: 12,
-                    color: theme =>
-                        theme.palette.mode === 'light'
-                            ? 'rgba(0, 0, 0, 0.54)'
-                            : 'rgba(255, 255, 255, 0.54)',
+                    color: 'text.secondary',
+                    padding: 0.5,
                 }}
-                aria-label="close"
             >
-                <CloseIcon />
+                <CloseIcon fontSize="small" />
             </IconButton>
 
-            <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
                 <ShieldIcon
                     sx={{
-                        fontSize: 28,
-                        color: theme =>
-                            theme.palette.mode === 'light'
-                                ? theme.palette.primary.main
-                                : theme.palette.primary.light,
+                        color: 'primary.main',
+                        fontSize: 24,
+                        mt: 0.5,
                     }}
                 />
                 <Box>
                     <Typography
-                        variant="h6"
+                        variant="subtitle1"
                         sx={{
                             fontWeight: 600,
-                            mb: 1,
-                            color: theme => theme.palette.text.primary,
+                            mb: 0.5,
+                            fontSize: '1.1rem',
+                            lineHeight: 1.2,
                         }}
                     >
-                        {t('privacyTitle', 'Coinomi does not collect personal data')}
+                        {t('privacyTitle')}
                     </Typography>
                     <Typography
-                        variant="body1"
+                        variant="body2"
+                        color="text.secondary"
                         sx={{
-                            color: theme => theme.palette.text.secondary,
-                            lineHeight: 1.5,
+                            lineHeight: 1.4,
+                            fontSize: '0.95rem',
                         }}
                     >
-                        {t(
-                            'privacyDescription',
-                            'A third-party system securely manages points and social linking.'
-                        )}
+                        {t('privacyDescription')}
                     </Typography>
                 </Box>
             </Box>

@@ -1,6 +1,5 @@
 import { Box, CssBaseline, ThemeProvider, CircularProgress, Container } from '@mui/material';
 import React, { useEffect } from 'react';
-import { WalletInfo } from './components/WalletInfo';
 import { useAuth } from './hooks/useAuth';
 import { useScore } from './hooks/useScore';
 import { useUserRank } from './hooks/useUserRank';
@@ -16,10 +15,10 @@ import { Tasks } from './components/Tasks';
 import { ReferralTab } from './components/ReferralTab';
 import { ErrorPage } from './components/ErrorPage';
 import { ChallengesTab } from './components/ChallengesTab';
-import { CountdownSection } from './components/CountdownSection';
 import { isRTL } from './i18n/i18n';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { createTheme } from '@mui/material/styles';
+import { Navbar } from './components/Navbar';
 
 function App() {
     const { t, i18n } = useTranslation();
@@ -64,10 +63,10 @@ function App() {
         [mode]
     );
 
-    const handleThemeToggle = () => {
-        const newMode = mode === 'dark' ? 'light' : 'dark';
-        setMode(newMode);
-    };
+    // const handleThemeToggle = () => {
+    //     const newMode = mode === 'dark' ? 'light' : 'dark';
+    //     setMode(newMode);
+    // };
 
     useEffect(() => {
         // Update document direction when language changes
@@ -159,17 +158,25 @@ function App() {
                     position: 'relative',
                 }}
             >
+                <Navbar />
                 <Box
                     sx={{
                         flex: 1,
                         overflowY: 'auto',
-                        pb: '72px', // Updated to match new TabMenu height
+                        pb: '72px', // Tab menu height
+                        pt: '40px', // Space for points card overflow
                     }}
                 >
-                    <Container maxWidth="lg" sx={{ py: 4 }}>
+                    <Container
+                        maxWidth="lg"
+                        sx={{
+                            pt: 4, // Added more top padding to separate points card from disclaimer
+                            px: 2, // Horizontal padding
+                        }}
+                    >
                         <PrivacyDisclaimer />
-                        <CountdownSection userId={user?.uid} />
-                        <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
+                        {/* <CountdownSection userId={user?.uid} /> */}
+                        {/* <WalletInfo address={token} onThemeToggle={handleThemeToggle} /> */}
 
                         {currentTab === 'home' && (
                             <HomeTab

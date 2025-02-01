@@ -92,7 +92,6 @@ export const fr = {
     claimButton: 'Réclamer',
     earnedReward: 'Récompense gagnée',
     rewardValue: '{{amount}} Points',
-    claimingReward: 'Réclamation...',
     claimSuccess: '{{amount}} points réclamés avec succès !',
     claimError: 'Échec de la réclamation. Veuillez réessayer.',
     privacyDisclaimer:
@@ -177,4 +176,8 @@ export const fr = {
     daily: 'Quotidien',
     weekly: 'Hebdomadaire',
     claimRewards: 'Réclamer les récompenses',
+    privacyTitle: 'Coinomi ne collecte pas de données personnelles',
+    privacyDescription: 'Un système tiers gère en toute sécurité les points et les liens sociaux.',
+    walletAddress: 'Adresse du portefeuille',
+    darkMode: 'Mode sombre',
 };
