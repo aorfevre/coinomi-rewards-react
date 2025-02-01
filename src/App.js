@@ -4,7 +4,6 @@ import { WalletInfo } from './components/WalletInfo';
 import { useAuth } from './hooks/useAuth';
 import { useScore } from './hooks/useScore';
 import { useUserRank } from './hooks/useUserRank';
-import { FireworksButton } from './components/FireworksButton';
 import LogoDevIcon from '@mui/icons-material/LogoDev';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import './i18n/i18n';
@@ -151,32 +150,47 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Container maxWidth="lg" sx={{ py: 4 }}>
-                <PrivacyDisclaimer />
-                <CountdownSection userId={user?.uid} />
-                <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
+            <Box
+                sx={{
+                    minHeight: '100vh',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    overflow: 'hidden',
+                    position: 'relative',
+                }}
+            >
+                <Box
+                    sx={{
+                        flex: 1,
+                        overflowY: 'auto',
+                        pb: '72px', // Updated to match new TabMenu height
+                    }}
+                >
+                    <Container maxWidth="lg" sx={{ py: 4 }}>
+                        <PrivacyDisclaimer />
+                        <CountdownSection userId={user?.uid} />
+                        <WalletInfo address={token} onThemeToggle={handleThemeToggle} />
 
+                        {currentTab === 'home' && (
+                            <HomeTab
+                                userId={user?.uid}
+                                userData={user}
+                                score={score}
+                                rank={rankLoading ? 1 : rank}
+                                totalPlayers={rankLoading ? 1 : totalPlayers}
+                                loading={rankLoading}
+                            />
+                        )}
+                        {currentTab === 'leaderboard' && <Leaderboard />}
+                        {currentTab === 'tasks' && <Tasks userId={user?.uid} />}
+                        {currentTab === 'referrals' && <ReferralTab userId={user?.uid} />}
+                        {currentTab === 'challenges' && (
+                            <ChallengesTab userId={user?.uid} onTabChange={setCurrentTab} />
+                        )}
+                    </Container>
+                </Box>
                 <TabMenu currentTab={currentTab} onTabChange={setCurrentTab} />
-
-                {currentTab === 'home' && (
-                    <HomeTab
-                        userId={user?.uid}
-                        userData={user}
-                        score={score}
-                        rank={rankLoading ? 1 : rank}
-                        totalPlayers={rankLoading ? 1 : totalPlayers}
-                        loading={rankLoading}
-                    />
-                )}
-                {currentTab === 'leaderboard' && <Leaderboard />}
-                {currentTab === 'tasks' && <Tasks userId={user?.uid} />}
-                {currentTab === 'referrals' && <ReferralTab userId={user?.uid} />}
-                {currentTab === 'challenges' && (
-                    <ChallengesTab userId={user?.uid} onTabChange={setCurrentTab} />
-                )}
-
-                <FireworksButton />
-            </Container>
+            </Box>
         </ThemeProvider>
     );
 }

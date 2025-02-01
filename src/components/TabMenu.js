@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Tab, Box } from '@mui/material';
+import { Tabs, Tab, Paper } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -12,62 +12,88 @@ export const TabMenu = ({ currentTab, onTabChange }) => {
     const { t } = useTranslation();
 
     return (
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
+        <Paper
+            elevation={0}
+            sx={{
+                position: 'fixed',
+                bottom: 0,
+                left: 0,
+                right: 0,
+                zIndex: 1000,
+                background: theme =>
+                    theme.palette.mode === 'light'
+                        ? '#F8F8F8' // Light grey background
+                        : 'rgba(20, 25, 39, 0.95)', // Dark mode background
+                backdropFilter: 'blur(10px)',
+                borderTop: theme =>
+                    `1px solid ${
+                        theme.palette.mode === 'light'
+                            ? 'rgba(0, 0, 0, 0.08)'
+                            : 'rgba(255, 255, 255, 0.08)'
+                    }`,
+                paddingBottom: 'env(safe-area-inset-bottom)', // For iPhone notch
+                paddingTop: 1,
+            }}
+        >
             <Tabs
                 value={currentTab}
                 onChange={(e, newValue) => onTabChange(newValue)}
                 variant="fullWidth"
                 sx={{
+                    minHeight: 72,
+                    '& .MuiTabs-flexContainer': {
+                        justifyContent: 'space-around',
+                        height: 72,
+                    },
                     '& .MuiTab-root': {
-                        minHeight: { xs: '48px', sm: '64px' },
-                        fontSize: { xs: '0', sm: '1rem' },
+                        minHeight: 72,
+                        minWidth: 'auto',
+                        padding: '12px',
+                        fontSize: '12px',
+                        fontWeight: 500,
+                        textTransform: 'none',
+                        color: theme =>
+                            theme.palette.mode === 'light'
+                                ? 'rgba(0, 0, 0, 0.6)'
+                                : 'rgba(255, 255, 255, 0.6)',
+                        '&.Mui-selected': {
+                            color: theme =>
+                                theme.palette.mode === 'light'
+                                    ? theme.palette.primary.main
+                                    : theme.palette.primary.light,
+                        },
                         '& .MuiTab-iconWrapper': {
-                            marginBottom: { xs: 0, sm: 1 },
+                            marginBottom: '6px',
                         },
-                        '& .MuiTab-labelIcon': {
-                            minHeight: { xs: '48px', sm: '64px' },
-                        },
+                    },
+                    '& .MuiTabs-indicator': {
+                        display: 'none',
                     },
                 }}
             >
+                <Tab icon={<HomeIcon sx={{ fontSize: 24 }} />} label={t('home')} value="home" />
                 <Tab
-                    icon={<HomeIcon />}
-                    label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('home')}</Box>}
-                    value="home"
-                    iconPosition="start"
-                />
-                <Tab
-                    icon={<MilitaryTechIcon />}
-                    label={
-                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('challenges')}</Box>
-                    }
+                    icon={<MilitaryTechIcon sx={{ fontSize: 24 }} />}
+                    label={t('challenges')}
                     value="challenges"
-                    iconPosition="start"
                 />
                 <Tab
-                    icon={<EmojiEventsIcon />}
-                    label={
-                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('leaderboard')}</Box>
-                    }
+                    icon={<EmojiEventsIcon sx={{ fontSize: 24 }} />}
+                    label={t('leaderboard')}
                     value="leaderboard"
-                    iconPosition="start"
                 />
                 <Tab
-                    icon={<AssignmentIcon />}
-                    label={<Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('tasks')}</Box>}
+                    icon={<AssignmentIcon sx={{ fontSize: 24 }} />}
+                    label={t('tasks')}
                     value="tasks"
-                    iconPosition="start"
                 />
                 <Tab
-                    icon={<GroupAddIcon />}
-                    label={
-                        <Box sx={{ display: { xs: 'none', sm: 'block' } }}>{t('referrals')}</Box>
-                    }
+                    icon={<GroupAddIcon sx={{ fontSize: 24 }} />}
+                    label={t('referrals')}
                     value="referrals"
-                    iconPosition="start"
                 />
             </Tabs>
-        </Box>
+        </Paper>
     );
 };
 
