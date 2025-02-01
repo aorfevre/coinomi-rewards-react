@@ -10,59 +10,59 @@ export const getTheme = mode => {
                 ? {
                       // Light mode
                       primary: {
-                          main: '#1976d2',
-                          light: '#42a5f5',
-                          dark: '#1565c0',
+                          main: '#4477FF',
+                          light: '#6691FF',
+                          dark: '#3366DD',
                       },
                       secondary: {
-                          main: '#9c27b0',
-                          light: '#ba68c8',
-                          dark: '#7b1fa2',
+                          main: '#FFB443',
+                          light: '#FFC670',
+                          dark: '#FF9F1C',
                       },
                       background: {
-                          default: '#f5f5f5',
-                          paper: '#ffffff',
+                          default: '#F5F8FF',
+                          paper: '#FFFFFF',
                       },
                       text: {
-                          primary: '#1a1a1a',
-                          secondary: 'rgba(0, 0, 0, 0.7)',
+                          primary: '#1A1A1A',
+                          secondary: 'rgba(0, 0, 0, 0.6)',
                       },
-                      divider: 'rgba(0, 0, 0, 0.12)',
+                      divider: 'rgba(0, 0, 0, 0.08)',
                       action: {
                           active: 'rgba(0, 0, 0, 0.54)',
-                          hover: 'rgba(0, 0, 0, 0.04)',
-                          selected: 'rgba(0, 0, 0, 0.08)',
+                          hover: 'rgba(68, 119, 255, 0.04)',
+                          selected: 'rgba(68, 119, 255, 0.08)',
                           disabled: 'rgba(0, 0, 0, 0.26)',
-                          disabledBackground: 'rgba(0, 0, 0, 0.12)',
+                          disabledBackground: 'rgba(0, 0, 0, 0.08)',
                       },
                   }
                 : {
                       // Dark mode
                       primary: {
-                          main: '#5bb4ff',
-                          light: '#82c6ff',
-                          dark: '#4090cc',
+                          main: '#4477FF',
+                          light: '#6691FF',
+                          dark: '#3366DD',
                       },
                       secondary: {
-                          main: '#ce93d8',
-                          light: '#f3e5f5',
-                          dark: '#ab47bc',
+                          main: '#FFB443',
+                          light: '#FFC670',
+                          dark: '#FF9F1C',
                       },
                       background: {
-                          default: '#0a0a0a',
-                          paper: '#1a1a1a',
+                          default: '#0A0F1F',
+                          paper: '#141927',
                       },
                       text: {
-                          primary: '#ffffff',
+                          primary: '#FFFFFF',
                           secondary: 'rgba(255, 255, 255, 0.7)',
                       },
-                      divider: 'rgba(255, 255, 255, 0.12)',
+                      divider: 'rgba(255, 255, 255, 0.08)',
                       action: {
                           active: 'rgba(255, 255, 255, 0.54)',
-                          hover: 'rgba(255, 255, 255, 0.08)',
-                          selected: 'rgba(255, 255, 255, 0.16)',
+                          hover: 'rgba(68, 119, 255, 0.08)',
+                          selected: 'rgba(68, 119, 255, 0.16)',
                           disabled: 'rgba(255, 255, 255, 0.3)',
-                          disabledBackground: 'rgba(255, 255, 255, 0.12)',
+                          disabledBackground: 'rgba(255, 255, 255, 0.08)',
                       },
                   }),
         },
@@ -70,12 +70,10 @@ export const getTheme = mode => {
             MuiCard: {
                 styleOverrides: {
                     root: {
-                        backgroundColor: isLight
-                            ? 'rgba(255, 255, 255, 0.9)'
-                            : 'rgba(30, 30, 30, 0.8)',
+                        backgroundColor: isLight ? '#FFFFFF' : '#141927',
                         backdropFilter: 'blur(10px)',
                         border: `1px solid ${
-                            isLight ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)'
+                            isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)'
                         }`,
                     },
                 },
@@ -84,15 +82,11 @@ export const getTheme = mode => {
                 styleOverrides: {
                     root: {
                         backgroundImage: 'none',
-                        backgroundColor: isLight
-                            ? 'rgba(255, 255, 255, 0.9)'
-                            : 'rgba(30, 30, 30, 0.8)',
+                        backgroundColor: isLight ? '#FFFFFF' : '#141927',
                         '&.challenge-card': {
-                            backgroundColor: isLight
-                                ? 'rgba(255, 255, 255, 0.95)'
-                                : 'rgba(30, 30, 30, 0.95)',
+                            backgroundColor: isLight ? '#FFFFFF' : '#141927',
                             border: `1px solid ${
-                                isLight ? 'rgba(0, 0, 0, 0.12)' : 'rgba(255, 255, 255, 0.12)'
+                                isLight ? 'rgba(0, 0, 0, 0.08)' : 'rgba(255, 255, 255, 0.08)'
                             }`,
                         },
                     },
@@ -101,22 +95,29 @@ export const getTheme = mode => {
             MuiButton: {
                 styleOverrides: {
                     root: {
-                        borderRadius: 8,
+                        borderRadius: 12,
                         textTransform: 'none',
+                        fontWeight: 600,
+                    },
+                    containedPrimary: {
+                        background: 'linear-gradient(45deg, #4477FF, #6691FF)',
+                        boxShadow: isLight
+                            ? '0 2px 8px rgba(68, 119, 255, 0.25)'
+                            : '0 2px 8px rgba(68, 119, 255, 0.15)',
                     },
                 },
             },
             MuiDialog: {
                 styleOverrides: {
                     paper: {
-                        backgroundColor: mode === 'light' ? '#ffffff' : '#1a1a1a',
+                        backgroundColor: isLight ? '#FFFFFF' : '#141927',
                     },
                 },
             },
             MuiIconButton: {
                 styleOverrides: {
                     root: {
-                        color: isLight ? 'rgba(0, 0, 0, 0.87)' : 'rgba(255, 255, 255, 0.87)',
+                        color: isLight ? '#1A1A1A' : '#FFFFFF',
                     },
                 },
             },
@@ -124,7 +125,7 @@ export const getTheme = mode => {
         typography: {
             fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
             h1: {
-                fontSize: '3rem',
+                fontSize: '2.5rem',
                 fontWeight: 700,
             },
             h4: {
@@ -136,9 +137,12 @@ export const getTheme = mode => {
             h6: {
                 fontWeight: 600,
             },
+            button: {
+                fontWeight: 600,
+            },
         },
         shape: {
-            borderRadius: 8,
+            borderRadius: 12,
         },
     });
 };

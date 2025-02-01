@@ -1,61 +1,83 @@
-import React from 'react';
-import { Box, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { Box, Typography, IconButton } from '@mui/material';
 import ShieldIcon from '@mui/icons-material/Shield';
+import CloseIcon from '@mui/icons-material/Close';
 import { useTranslation } from 'react-i18next';
 
 export const PrivacyDisclaimer = () => {
     const { t } = useTranslation();
+    const [isVisible, setIsVisible] = useState(true);
+
+    if (!isVisible) return null;
 
     return (
         <Box
             sx={{
                 width: '100%',
-                bgcolor: theme =>
-                    theme.palette.mode === 'light'
-                        ? 'rgba(25, 118, 210, 0.08)'
-                        : 'rgba(91, 180, 255, 0.08)',
-                borderRadius: '16px',
-                p: 2.5,
+                bgcolor: theme => theme.palette.background.paper,
+                borderRadius: 4,
+                p: 3,
                 mb: 3,
                 border: theme =>
                     `1px solid ${
                         theme.palette.mode === 'light'
-                            ? 'rgba(25, 118, 210, 0.2)'
-                            : 'rgba(91, 180, 255, 0.2)'
+                            ? 'rgba(0, 0, 0, 0.08)'
+                            : 'rgba(255, 255, 255, 0.08)'
                     }`,
-                boxShadow: theme =>
-                    theme.palette.mode === 'light'
-                        ? '0 2px 8px rgba(0, 0, 0, 0.05)'
-                        : '0 2px 8px rgba(0, 0, 0, 0.2)',
+                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)',
+                position: 'relative',
             }}
         >
-            <Box
+            <IconButton
+                onClick={() => setIsVisible(false)}
                 sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 2,
+                    position: 'absolute',
+                    right: 12,
+                    top: 12,
                     color: theme =>
                         theme.palette.mode === 'light'
-                            ? 'rgba(0, 0, 0, 0.7)'
-                            : 'rgba(255, 255, 255, 0.9)',
+                            ? 'rgba(0, 0, 0, 0.54)'
+                            : 'rgba(255, 255, 255, 0.54)',
                 }}
+                aria-label="close"
             >
+                <CloseIcon />
+            </IconButton>
+
+            <Box sx={{ display: 'flex', gap: 2 }}>
                 <ShieldIcon
                     sx={{
-                        fontSize: 24,
+                        fontSize: 28,
                         color: theme =>
-                            theme.palette.mode === 'light' ? 'primary.main' : 'primary.light',
+                            theme.palette.mode === 'light'
+                                ? theme.palette.primary.main
+                                : theme.palette.primary.light,
                     }}
                 />
-                <Typography
-                    variant="body1"
-                    sx={{
-                        fontWeight: 500,
-                        lineHeight: 1.5,
-                    }}
-                >
-                    {t('privacyDisclaimer')}
-                </Typography>
+                <Box>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontWeight: 600,
+                            mb: 1,
+                            color: theme => theme.palette.text.primary,
+                        }}
+                    >
+                        {t('privacyTitle', 'Coinomi does not collect personal data')}
+                    </Typography>
+                    <Typography
+                        variant="body1"
+                        sx={{
+                            color: theme => theme.palette.text.secondary,
+                            lineHeight: 1.5,
+                        }}
+                    >
+                        {t(
+                            'privacyDescription',
+                            'A third-party system securely manages points and social linking.'
+                        )}
+                    </Typography>
+                </Box>
             </Box>
         </Box>
     );
