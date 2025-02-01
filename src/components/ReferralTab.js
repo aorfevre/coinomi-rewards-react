@@ -48,6 +48,43 @@ export const ReferralTab = ({ userId }) => {
         );
     }
 
+    const renderReferralCodeSection = () => (
+        <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
+            <TextField
+                fullWidth
+                value={referralCode || ''}
+                InputProps={{
+                    readOnly: true,
+                    sx: {
+                        bgcolor: 'background.default',
+                        borderRadius: 2,
+                        '& .MuiOutlinedInput-input': {
+                            fontFamily: 'monospace',
+                            fontSize: '1.1rem',
+                            letterSpacing: '0.1em',
+                        },
+                    },
+                }}
+            />
+            <Button
+                variant="contained"
+                onClick={handleCopy}
+                startIcon={<ContentCopyIcon />}
+                sx={{
+                    minWidth: 120,
+                    borderRadius: 2,
+                    textTransform: 'none',
+                    boxShadow: 'none',
+                    '&:hover': {
+                        boxShadow: 'none',
+                    },
+                }}
+            >
+                {t('copy')}
+            </Button>
+        </Box>
+    );
+
     return (
         <Box sx={{ p: 2 }}>
             {/* Have a Referral Code section */}
@@ -84,32 +121,7 @@ export const ReferralTab = ({ userId }) => {
                     {t('yourReferralCode')}
                 </Typography>
 
-                <Box sx={{ display: 'flex', gap: 1, mb: 3 }}>
-                    <TextField
-                        fullWidth
-                        value={referralCode || ''}
-                        InputProps={{
-                            readOnly: true,
-                            sx: {
-                                bgcolor: 'background.default',
-                                borderRadius: 2,
-                                '& .MuiOutlinedInput-input': {
-                                    fontFamily: 'monospace',
-                                    fontSize: '1.1rem',
-                                    letterSpacing: '0.1em',
-                                },
-                            },
-                        }}
-                    />
-                    <Button
-                        variant="contained"
-                        onClick={handleCopy}
-                        startIcon={<ContentCopyIcon />}
-                        sx={{ minWidth: 100 }}
-                    >
-                        {t('copy')}
-                    </Button>
-                </Box>
+                {renderReferralCodeSection()}
 
                 <Typography variant="subtitle1" sx={{ mb: 2 }}>
                     {t('shareVia')}:
