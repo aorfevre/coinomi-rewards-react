@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Typography, Divider } from '@mui/material';
 import { StreakBonus } from './StreakBonus';
 import PropTypes from 'prop-types';
@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next';
 import { useUserData } from '../hooks/useUserData';
 import { calculateMultiplier } from '../utils/multiplierCalculator';
 import { RewardsSection } from './RewardsSection';
+import CalendarIcon from '@mui/icons-material/CalendarToday';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
     const { userData } = useUserData(userId);
@@ -30,6 +32,12 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
 
     // eslint-disable-next-line no-unused-vars
     const [canClaimDaily, setCanClaimDaily] = useState(false);
+
+    // Add streak bonus calculation
+    const streakBonus = useMemo(() => {
+        const currentStreak = scoreDoc?.currentStreak || 0;
+        return Math.min(currentStreak * 2, 10); // 2% per day up to 10% max
+    }, [scoreDoc?.currentStreak]);
 
     // Format rank display
     const formatRankDisplay = () => {
@@ -93,6 +101,14 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
 
     return (
         <Box sx={{ p: 2 }}>
+            {/* Section title with calendar icon */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <CalendarIcon sx={{ color: 'primary.main' }} />
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                    Rewards
+                </Typography>
+            </Box>
+
             {/* Rewards Section First */}
             <RewardsSection
                 canClaimDaily={canClaimDaily}
@@ -101,16 +117,11 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                 sx={{ mb: 1.5 }}
             />
 
-            {/* Stats Header */}
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5, gap: 1 }}>
-                <BarChartIcon
-                    sx={{
-                        color: 'primary.main',
-                        fontSize: '1.5rem',
-                    }}
-                />
-                <Typography variant="subtitle1" color="text.primary" sx={{ fontWeight: 500 }}>
-                    {t('yourStatsThisWeek')}
+            {/* Stats section title */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <BarChartIcon sx={{ color: 'primary.main' }} />
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                    Your stats this week
                 </Typography>
             </Box>
 
@@ -147,7 +158,7 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                                 lineHeight: 1.2,
                             }}
                         >
-                            {t('yourRank')}
+                            Your{'\n'}rank
                         </Typography>
                     </Box>
 
@@ -195,6 +206,23 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                         </Typography>
                     </Box>
                 </Box>
+            </Box>
+
+            {/* Streak section title */}
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                <TrendingUpIcon sx={{ color: 'primary.main' }} />
+                <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                    Streak Bonus
+                </Typography>
+                <Typography
+                    variant="h6"
+                    sx={{
+                        color: 'warning.main',
+                        fontWeight: 700,
+                    }}
+                >
+                    +{streakBonus}%
+                </Typography>
             </Box>
 
             {/* Streak Bonus */}

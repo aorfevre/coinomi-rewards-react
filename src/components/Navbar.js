@@ -5,17 +5,13 @@ import { useAuth } from '../hooks/useAuth';
 import { useScore } from '../hooks/useScore';
 import { shortenAddress } from '../utils/address';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import TranslateIcon from '@mui/icons-material/Translate';
-import { useTranslation } from 'react-i18next';
-import { useLocalStorage } from '../hooks/useLocalStorage';
+import { ThemeToggle } from './ThemeToggle';
+import { LanguageToggle } from './LanguageToggle';
+import PropTypes from 'prop-types';
 
-export const Navbar = () => {
+export const Navbar = ({ onThemeToggle }) => {
     const { user } = useAuth();
     const { scoreDoc } = useScore(user?.uid);
-    const { t, i18n } = useTranslation();
-    const [mode, setMode] = useLocalStorage('theme', 'light');
     const [anchorEl, setAnchorEl] = useState(null);
 
     const handleClick = event => {
@@ -26,14 +22,8 @@ export const Navbar = () => {
         setAnchorEl(null);
     };
 
-    const handleThemeToggle = () => {
-        const newMode = mode === 'dark' ? 'light' : 'dark';
-        setMode(newMode);
-        handleClose();
-    };
-
-    const handleLanguageChange = lang => {
-        i18n.changeLanguage(lang);
+    const handleThemeToggleAndClose = () => {
+        onThemeToggle();
         handleClose();
     };
 
@@ -44,11 +34,13 @@ export const Navbar = () => {
                 alignItems: 'center',
                 justifyContent: 'flex-start',
                 p: 2,
-                bgcolor: 'primary.main',
+                bgcolor: theme => (theme.palette.mode === 'dark' ? '#0E244D' : 'primary.main'),
                 color: 'white',
                 height: '160px',
                 flexDirection: 'column',
                 position: 'relative',
+                borderBottomLeftRadius: 20,
+                borderBottomRightRadius: 20,
             }}
         >
             {/* Top Section */}
@@ -58,7 +50,7 @@ export const Navbar = () => {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     width: '100%',
-                    mb: 4,
+                    mb: 0,
                 }}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -101,29 +93,11 @@ export const Navbar = () => {
                         horizontal: 'right',
                     }}
                 >
-                    <MenuItem onClick={handleThemeToggle}>
-                        {mode === 'dark' ? (
-                            <LightModeIcon sx={{ mr: 1 }} />
-                        ) : (
-                            <DarkModeIcon sx={{ mr: 1 }} />
-                        )}
-                        {t('darkMode')}
+                    <MenuItem>
+                        <ThemeToggle onToggle={handleThemeToggleAndClose} />
                     </MenuItem>
-                    <MenuItem onClick={() => handleLanguageChange('en')}>
-                        <TranslateIcon sx={{ mr: 1 }} />
-                        English
-                    </MenuItem>
-                    <MenuItem onClick={() => handleLanguageChange('es')}>
-                        <TranslateIcon sx={{ mr: 1 }} />
-                        Español
-                    </MenuItem>
-                    <MenuItem onClick={() => handleLanguageChange('fr')}>
-                        <TranslateIcon sx={{ mr: 1 }} />
-                        Français
-                    </MenuItem>
-                    <MenuItem onClick={() => handleLanguageChange('ar')}>
-                        <TranslateIcon sx={{ mr: 1 }} />
-                        العربية
+                    <MenuItem>
+                        <LanguageToggle />
                     </MenuItem>
                 </Menu>
             </Box>
@@ -131,32 +105,54 @@ export const Navbar = () => {
             {/* Points Card */}
             <Box
                 sx={{
-                    bgcolor: 'white',
+                    bgcolor: theme =>
+                        theme.palette.mode === 'dark' ? '#000000' : 'background.paper',
                     borderRadius: 4,
-                    p: 3,
+                    py: 2,
+                    px: 3,
                     width: '100%',
                     maxWidth: '90%',
                     position: 'absolute',
-                    top: '100%',
+                    top: '45%',
                     left: '50%',
-                    transform: 'translate(-50%, -50%)',
-                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                    transform: 'translate(-50%, -10%)',
+                    boxShadow: theme =>
+                        theme.palette.mode === 'dark'
+                            ? '0px 4px 12px rgba(0, 0, 0, 0.25)'
+                            : '0px 4px 12px rgba(0, 0, 0, 0.1)',
+                    zIndex: 1,
                 }}
             >
                 <Typography
                     variant="h4"
                     sx={{
                         fontWeight: 700,
-                        color: 'text.primary',
+                        color: theme => (theme.palette.mode === 'dark' ? 'white' : 'text.primary'),
                         mb: 0.5,
+                        fontSize: { xs: '2rem', sm: '2.5rem' },
+                        lineHeight: 1,
                     }}
                 >
                     {scoreDoc?.points?.toFixed(2) || '0.00'}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Typography
+                    variant="body2"
+                    sx={{
+                        color: theme =>
+                            theme.palette.mode === 'dark'
+                                ? 'rgba(255, 255, 255, 0.5)'
+                                : 'text.secondary',
+                        opacity: theme => (theme.palette.mode === 'dark' ? 0.8 : 1),
+                        lineHeight: 1.2,
+                    }}
+                >
                     Points available
                 </Typography>
             </Box>
         </Box>
     );
+};
+
+Navbar.propTypes = {
+    onThemeToggle: PropTypes.func.isRequired,
 };

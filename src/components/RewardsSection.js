@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import { useRewards } from '../hooks/useRewards';
 import { useAuth } from '../hooks/useAuth';
 import { Fireworks } from './Fireworks';
@@ -53,17 +52,6 @@ export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, s
         <Box sx={{ mb: 1.5, ...sx }}>
             {showFireworks && <Fireworks />}
             {/* Header */}
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 1.5, gap: 1 }}>
-                <CalendarTodayIcon
-                    sx={{
-                        color: 'primary.main',
-                        fontSize: '1.5rem',
-                    }}
-                />
-                <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                    {t('rewards')}
-                </Typography>
-            </Box>
 
             {/* Card */}
             <Box

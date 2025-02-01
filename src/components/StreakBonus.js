@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Typography, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 export const StreakBonus = ({ currentStreak = 0, lastClaimDate, sx }) => {
     const { t } = useTranslation();
@@ -19,13 +18,6 @@ export const StreakBonus = ({ currentStreak = 0, lastClaimDate, sx }) => {
     if (!isStreakActive) {
         currentStreak = 0;
     }
-
-    // Calculate current bonus
-    const getCurrentBonus = () => {
-        if (!isStreakActive) return 0;
-        if (currentStreak >= maxDays) return dailyBonus * (maxDays - 1) + finalBonus;
-        return currentStreak * dailyBonus;
-    };
 
     const renderDayIndicator = day => {
         const isCompleted = day < currentStreak;
@@ -113,22 +105,6 @@ export const StreakBonus = ({ currentStreak = 0, lastClaimDate, sx }) => {
 
     return (
         <Box>
-            {/* Header outside the card */}
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 1 }}>
-                <TrendingUpIcon
-                    sx={{
-                        color: 'primary.main',
-                        fontSize: '1.5rem',
-                    }}
-                />
-                <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-                    Streak Bonus
-                </Typography>
-                <Typography variant="subtitle1" color="warning.main" sx={{ fontWeight: 500 }}>
-                    +{getCurrentBonus()}%
-                </Typography>
-            </Box>
-
             {/* Card with streak circles */}
             <Box
                 sx={{

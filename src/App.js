@@ -63,10 +63,10 @@ function App() {
         [mode]
     );
 
-    // const handleThemeToggle = () => {
-    //     const newMode = mode === 'dark' ? 'light' : 'dark';
-    //     setMode(newMode);
-    // };
+    const handleThemeToggle = () => {
+        const newMode = mode === 'dark' ? 'light' : 'dark';
+        setMode(newMode);
+    };
 
     useEffect(() => {
         // Update document direction when language changes
@@ -158,19 +158,18 @@ function App() {
                     position: 'relative',
                 }}
             >
-                <Navbar />
+                <Navbar onThemeToggle={handleThemeToggle} />
                 <Box
                     sx={{
                         flex: 1,
                         overflowY: 'auto',
                         pb: '72px', // Tab menu height
-                        pt: '40px', // Space for points card overflow
                     }}
                 >
                     <Container
                         maxWidth="lg"
                         sx={{
-                            pt: 4, // Added more top padding to separate points card from disclaimer
+                            pt: 0, // Added more top padding to separate points card from disclaimer
                             px: 2, // Horizontal padding
                         }}
                     >

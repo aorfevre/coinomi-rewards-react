@@ -187,4 +187,5 @@ export const en = {
 
     // Theme Toggle
     darkMode: 'Dark Mode',
+    lightMode: 'Light Mode',
 };
