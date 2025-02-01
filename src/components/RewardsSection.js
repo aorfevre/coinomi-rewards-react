@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -6,46 +6,135 @@ import { useRewards } from '../hooks/useRewards';
 import { useAuth } from '../hooks/useAuth';
 import { Fireworks } from './Fireworks';
 
-export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, sx }) => {
+export const RewardsSection = ({ weeklyTimeLeft, sx }) => {
     const { t } = useTranslation();
     const { user } = useAuth();
-    const { loading, error, claimDailyReward } = useRewards(user?.uid);
+    const { loading, error, claimDailyReward, lastClaim } = useRewards(user?.uid);
     const [showFireworks, setShowFireworks] = useState(false);
+    const [isClaimingDaily, setIsClaimingDaily] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(null);
+    const cooldownSeconds = parseInt(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS, 10);
+
+    useEffect(() => {
+        const updateTimeLeft = () => {
+            // Add debug logging
+            console.log('lastClaim:', lastClaim);
+            console.log('cooldownSeconds:', cooldownSeconds);
+
+            if (!lastClaim) {
+                console.log('No last claim, can claim now');
+                setTimeLeft(null);
+                return;
+            }
+
+            const now = Date.now();
+            // Ensure lastClaim is in milliseconds
+            const lastClaimMs = typeof lastClaim === 'number' ? lastClaim : Date.parse(lastClaim);
+            const nextClaimTime = lastClaimMs + cooldownSeconds * 1000;
+            const diff = nextClaimTime - now;
+
+            console.log('Time diff:', diff);
+
+            if (diff <= 0) {
+                console.log('Cooldown expired, can claim now');
+                setTimeLeft(null);
+                setIsClaimingDaily(false);
+                return;
+            }
+
+            const seconds = Math.floor((diff / 1000) % 60);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+
+            console.log('Calculated time:', { hours, minutes, seconds });
+            setTimeLeft({ hours, minutes, seconds });
+        };
+
+        updateTimeLeft();
+        const interval = setInterval(updateTimeLeft, 1000);
+        return () => clearInterval(interval);
+    }, [lastClaim, cooldownSeconds]);
+
+    const canClaimDaily = !timeLeft && !loading && !isClaimingDaily;
 
     const formatTime = timeLeft => {
-        // Ensure all values exist with defaults
-        const days = timeLeft?.days ?? 0;
-        const hours = timeLeft?.hours ?? 0;
-        const minutes = timeLeft?.minutes ?? 0;
-        const seconds = timeLeft?.seconds ?? 0;
+        if (!timeLeft) return '00:00:00';
 
-        // For daily timer, we only show HH:MM:SS
-        if (!timeLeft.days) {
-            return [
-                hours.toString().padStart(2, '0'),
-                minutes.toString().padStart(2, '0'),
-                seconds.toString().padStart(2, '0'),
-            ].join(':');
-        }
-
-        // For weekly timer, we show DD:HH:MM:SS
         return [
-            days.toString().padStart(2, '0'),
-            hours.toString().padStart(2, '0'),
-            minutes.toString().padStart(2, '0'),
-            seconds.toString().padStart(2, '0'),
+            timeLeft.hours.toString().padStart(2, '0'),
+            timeLeft.minutes.toString().padStart(2, '0'),
+            timeLeft.seconds.toString().padStart(2, '0'),
         ].join(':');
     };
 
     const handleClaimDaily = async () => {
         if (!user) return;
         try {
+            setIsClaimingDaily(true);
             await claimDailyReward(user.uid);
             setShowFireworks(true);
             setTimeout(() => setShowFireworks(false), 5000);
         } catch (err) {
             console.error('Error claiming daily reward:', err);
+            setIsClaimingDaily(false);
         }
+    };
+
+    const renderDailyButton = () => {
+        // Loading state
+        if (loading) {
+            return (
+                <Button
+                    variant="contained"
+                    fullWidth
+                    disabled
+                    sx={{
+                        height: 40,
+                        textTransform: 'none',
+                        borderRadius: 2,
+                    }}
+                >
+                    {t('claiming')}
+                </Button>
+            );
+        }
+
+        // Can claim state
+        if (canClaimDaily) {
+            return (
+                <Button
+                    variant="contained"
+                    fullWidth
+                    onClick={handleClaimDaily}
+                    sx={{
+                        height: 40,
+                        textTransform: 'none',
+                        borderRadius: 2,
+                        whiteSpace: 'nowrap',
+                    }}
+                >
+                    {t('claimRewards')}
+                </Button>
+            );
+        }
+
+        // Cooldown state
+        return (
+            <Button
+                variant="contained"
+                fullWidth
+                disabled
+                sx={{
+                    height: 40,
+                    textTransform: 'none',
+                    borderRadius: 2,
+                    bgcolor: 'action.disabledBackground',
+                    color: 'text.secondary',
+                }}
+            >
+                {formatTime(timeLeft)}
+            </Button>
+        );
     };
 
     return (
@@ -75,39 +164,7 @@ export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, s
 
                 {/* Buttons */}
                 <Box sx={{ display: 'flex', gap: 1.5 }}>
-                    <Box sx={{ flex: 1 }}>
-                        {canClaimDaily ? (
-                            <Button
-                                variant="contained"
-                                fullWidth
-                                onClick={handleClaimDaily}
-                                disabled={loading}
-                                sx={{
-                                    height: 40,
-                                    textTransform: 'none',
-                                    borderRadius: 2,
-                                    whiteSpace: 'nowrap',
-                                }}
-                            >
-                                {loading ? t('claiming') : t('claimRewards')}
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="contained"
-                                fullWidth
-                                disabled
-                                sx={{
-                                    height: 40,
-                                    textTransform: 'none',
-                                    borderRadius: 2,
-                                    bgcolor: 'action.disabledBackground',
-                                    color: 'text.secondary',
-                                }}
-                            >
-                                {formatTime(dailyTimeLeft)}
-                            </Button>
-                        )}
-                    </Box>
+                    <Box sx={{ flex: 1 }}>{renderDailyButton()}</Box>
 
                     <Box sx={{ flex: 1 }}>
                         <Button
@@ -137,12 +194,6 @@ export const RewardsSection = ({ canClaimDaily, dailyTimeLeft, weeklyTimeLeft, s
 };
 
 RewardsSection.propTypes = {
-    canClaimDaily: PropTypes.bool.isRequired,
-    dailyTimeLeft: PropTypes.shape({
-        hours: PropTypes.number.isRequired,
-        minutes: PropTypes.number.isRequired,
-        seconds: PropTypes.number.isRequired,
-    }).isRequired,
     weeklyTimeLeft: PropTypes.shape({
         days: PropTypes.number.isRequired,
         hours: PropTypes.number.isRequired,
