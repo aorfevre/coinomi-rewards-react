@@ -161,4 +161,7 @@ export const hu = {
     shareOn: 'Megosztás {{network}}-on',
     shareInviteText:
         '🚀 Csatlakozz hozzám a Coinomi Wallet-ben és szerezz bónusz jutalmakat! Töltsd le az alkalmazást innen: {{appUrl}} és használd az ajánlási kódomat: {{referralCode}} regisztrációkor. #Coinomi #Crypto',
+    yourStatsThisWeek: 'Statisztikáid ezen a héten',
+    pointsMultiplier: 'Pontszorzó',
+    yourRank: 'Helyezésed',
 };

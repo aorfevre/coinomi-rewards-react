@@ -167,4 +167,7 @@ export const el = {
     shareOn: 'Κοινοποίηση στο {{network}}',
     shareInviteText:
         '🚀 Ελάτε μαζί μου στο Coinomi Wallet και λάβετε μπόνους ανταμοιβές! Κατεβάστε την εφαρμογή από το {{appUrl}} και χρησιμοποιήστε τον κωδικό παραπομπής μου: {{referralCode}} κατά την εγγραφή. #Coinomi #Crypto',
+    yourStatsThisWeek: 'Τα στατιστικά σας αυτήν την εβδομάδα',
+    pointsMultiplier: 'Πολλαπλασιαστής πόντων',
+    yourRank: 'Η κατάταξή σας',
 };

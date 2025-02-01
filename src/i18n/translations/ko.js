@@ -161,4 +161,7 @@ export const ko = {
     shareOn: '{{network}}에서 공유',
     shareInviteText:
         '🚀 Coinomi Wallet에서 저와 함께 보너스 보상을 받아보세요! {{appUrl}}에서 앱을 다운로드하고 가입 시 제 추천 코드: {{referralCode}}를 사용하세요. #Coinomi #Crypto',
+    yourStatsThisWeek: '이번 주 통계',
+    pointsMultiplier: '포인트 배율',
+    yourRank: '내 순위',
 };

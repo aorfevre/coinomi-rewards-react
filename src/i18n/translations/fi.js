@@ -165,4 +165,7 @@ export const fi = {
     shareOn: 'Jaa {{network}}issä',
     shareInviteText:
         '🚀 Liity minun kanssani Coinomi Walletissa ja saa bonuspalkintoja! Lataa sovellus osoitteesta {{appUrl}} ja käytä suosittelukoodiani: {{referralCode}} rekisteröityessäsi. #Coinomi #Crypto',
+    yourStatsThisWeek: 'Tilastosi tällä viikolla',
+    pointsMultiplier: 'Pistekerroin',
+    yourRank: 'Sijoituksesi',
 };

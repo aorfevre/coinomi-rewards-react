@@ -32,5 +32,8 @@ export const ka = {
     rules: 'წესები',
     profile: 'პროფილი',
     comingSoon: 'მალე...',
+    yourStatsThisWeek: 'თქვენი სტატისტიკა ამ კვირაში',
+    pointsMultiplier: 'ქულების გამრავლება',
+    yourRank: 'თქვენი რანგი',
     // ... add all other translations
 };

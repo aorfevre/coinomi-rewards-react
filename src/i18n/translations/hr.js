@@ -163,4 +163,7 @@ export const hr = {
     shareOn: 'Podijeli na {{network}}',
     shareInviteText:
         '🚀 Pridružite mi se na Coinomi novčaniku i dobijte bonus nagrade! Preuzmite aplikaciju s {{appUrl}} i koristite moj kod za preporuke: {{referralCode}} pri registraciji. #Coinomi #Crypto',
+    yourStatsThisWeek: 'Vaše statistike ovaj tjedan',
+    pointsMultiplier: 'Množitelj bodova',
+    yourRank: 'Vaš rang',
 };

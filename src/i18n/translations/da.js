@@ -161,4 +161,7 @@ export const da = {
     shareOn: 'Del på {{network}}',
     shareInviteText:
         '🚀 Tilslut dig mig på Coinomi Wallet og få bonusbelønninger! Download appen fra {{appUrl}} og brug min henvisningskode: {{referralCode}} når du tilmelder dig. #Coinomi #Crypto',
+    yourStatsThisWeek: 'Dine statistikker denne uge',
+    pointsMultiplier: 'Pointmultiplikator',
+    yourRank: 'Din rang',
 };

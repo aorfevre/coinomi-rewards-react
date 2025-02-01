@@ -170,4 +170,7 @@ export const fr = {
     shareOn: 'Partager sur {{network}}',
     shareInviteText:
         "🚀 Rejoignez-moi sur Coinomi Wallet et obtenez des récompenses bonus ! Téléchargez l'app depuis {{appUrl}} et utilisez mon code de parrainage : {{referralCode}} lors de votre inscription. #Coinomi #Crypto",
+    yourStatsThisWeek: 'Vos statistiques cette semaine',
+    pointsMultiplier: 'Multiplicateur de points',
+    yourRank: 'Votre rang',
 };

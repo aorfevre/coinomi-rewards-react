@@ -2,9 +2,9 @@ import React from 'react';
 import { Box, Typography, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import ShowChartIcon from '@mui/icons-material/ShowChart';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
-export const StreakBonus = ({ currentStreak = 0, lastClaimDate }) => {
+export const StreakBonus = ({ currentStreak = 0, lastClaimDate, sx }) => {
     const { t } = useTranslation();
     const maxDays = 5;
     const dailyBonus = 2;
@@ -112,94 +112,69 @@ export const StreakBonus = ({ currentStreak = 0, lastClaimDate }) => {
     };
 
     return (
-        <Box
-            sx={{
-                width: '100%',
-                p: 3,
-                bgcolor: 'background.paper',
-                borderRadius: 3,
-                border: theme =>
-                    `1px solid ${
-                        theme.palette.mode === 'light'
-                            ? 'rgba(0, 0, 0, 0.08)'
-                            : 'rgba(255, 255, 255, 0.08)'
-                    }`,
-            }}
-        >
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 1,
-                    mb: 3,
-                }}
-            >
-                <ShowChartIcon
+        <Box>
+            {/* Header outside the card */}
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 1 }}>
+                <TrendingUpIcon
                     sx={{
-                        color: theme =>
-                            theme.palette.mode === 'light'
-                                ? theme.palette.primary.main
-                                : theme.palette.primary.light,
+                        color: 'primary.main',
+                        fontSize: '1.5rem',
                     }}
                 />
-                <Typography variant="h6" color="text.primary">
-                    {t('streakBonus')}
+                <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+                    Streak Bonus
                 </Typography>
-                <Typography
-                    variant="h6"
-                    sx={{
-                        color: theme =>
-                            theme.palette.mode === 'light'
-                                ? theme.palette.warning.main
-                                : theme.palette.warning.light,
-                        ml: 'auto',
-                    }}
-                >
+                <Typography variant="subtitle1" color="warning.main" sx={{ fontWeight: 500 }}>
                     +{getCurrentBonus()}%
                 </Typography>
             </Box>
 
+            {/* Card with streak circles */}
             <Box
                 sx={{
-                    display: 'grid',
-                    gridTemplateColumns: `repeat(${maxDays}, 1fr)`,
-                    gap: 1,
-                    mb: 2,
+                    p: 3,
+                    borderRadius: 2,
+                    boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+                    bgcolor: 'background.paper',
+                    mb: 1,
+                    ...sx,
                 }}
             >
-                {[...Array(maxDays)].map((_, index) => (
-                    <Box
-                        key={index}
-                        sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            gap: 1,
-                        }}
-                    >
-                        {renderDayIndicator(index)}
-                        <Typography
-                            variant="caption"
+                <Box
+                    sx={{
+                        display: 'grid',
+                        gridTemplateColumns: `repeat(${maxDays}, 1fr)`,
+                        gap: 1,
+                    }}
+                >
+                    {[...Array(maxDays)].map((_, index) => (
+                        <Box
+                            key={index}
                             sx={{
-                                color: 'text.secondary',
-                                mt: 2,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                gap: 1,
                             }}
                         >
-                            +{index === maxDays - 1 ? finalBonus : dailyBonus}%
-                        </Typography>
-                    </Box>
-                ))}
+                            {renderDayIndicator(index)}
+                            <Typography
+                                variant="caption"
+                                sx={{
+                                    color: 'text.secondary',
+                                    mt: 2,
+                                }}
+                            >
+                                +{index === maxDays - 1 ? finalBonus : dailyBonus}%
+                            </Typography>
+                        </Box>
+                    ))}
+                </Box>
             </Box>
 
-            <Typography
-                variant="caption"
-                sx={{
-                    color: 'text.secondary',
-                    display: 'block',
-                    textAlign: 'center',
-                }}
-            >
-                {t('streakDescription')}
+            {/* Description text moved outside the card */}
+            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 1 }}>
+                Claim 5 days in a row for maximum bonus
             </Typography>
         </Box>
     );
@@ -208,9 +183,11 @@ export const StreakBonus = ({ currentStreak = 0, lastClaimDate }) => {
 StreakBonus.propTypes = {
     currentStreak: PropTypes.number,
     lastClaimDate: PropTypes.string,
+    sx: PropTypes.object,
 };
 
 StreakBonus.defaultProps = {
     currentStreak: 0,
     lastClaimDate: null,
+    sx: {},
 };

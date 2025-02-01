@@ -161,4 +161,7 @@ export const cs = {
     shareOn: 'Sdílet na {{network}}',
     shareInviteText:
         '🚀 Připojte se ke mně na Coinomi Wallet a získejte bonusové odměny! Stáhněte si aplikaci z {{appUrl}} a při registraci použijte můj doporučující kód: {{referralCode}}. #Coinomi #Crypto',
+    yourStatsThisWeek: 'Vaše statistiky tento týden',
+    pointsMultiplier: 'Násobitel bodů',
+    yourRank: 'Vaše pořadí',
 };

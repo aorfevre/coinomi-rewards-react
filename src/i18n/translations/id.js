@@ -164,4 +164,7 @@ export const id = {
     shareOn: 'Bagikan di {{network}}',
     shareInviteText:
         '🚀 Bergabunglah dengan saya di Coinomi Wallet dan dapatkan hadiah bonus! Unduh aplikasi dari {{appUrl}} dan gunakan kode referral saya: {{referralCode}} saat mendaftar. #Coinomi #Crypto',
+    yourStatsThisWeek: 'Statistik Anda minggu ini',
+    pointsMultiplier: 'Pengali poin',
+    yourRank: 'Peringkat Anda',
 };
