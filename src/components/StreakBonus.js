@@ -2,10 +2,7 @@ import React from 'react';
 import { Box, Typography, Tooltip } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import CancelIcon from '@mui/icons-material/Cancel';
-import CircleIcon from '@mui/icons-material/Circle';
-import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import ShowChartIcon from '@mui/icons-material/ShowChart';
 
 export const StreakBonus = ({ currentStreak = 0, lastClaimDate }) => {
     const { t } = useTranslation();
@@ -22,6 +19,7 @@ export const StreakBonus = ({ currentStreak = 0, lastClaimDate }) => {
     if (!isStreakActive) {
         currentStreak = 0;
     }
+
     // Calculate current bonus
     const getCurrentBonus = () => {
         if (!isStreakActive) return 0;
@@ -30,59 +28,86 @@ export const StreakBonus = ({ currentStreak = 0, lastClaimDate }) => {
     };
 
     const renderDayIndicator = day => {
-        if (day < currentStreak) {
-            return (
-                <Tooltip title={t('streakComplete')}>
-                    <CheckCircleIcon
-                        sx={{
-                            color: 'success.main',
-                            fontSize: 24,
-                        }}
-                    />
-                </Tooltip>
-            );
-        }
-
-        if (day === currentStreak && isStreakActive) {
-            return (
-                <Tooltip title={t('streakToday')}>
-                    <LocalFireDepartmentIcon
-                        sx={{
-                            color: 'warning.main',
-                            fontSize: 24,
-                            animation: 'flame 1.5s ease-in-out infinite',
-                            '@keyframes flame': {
-                                '0%, 100%': { transform: 'scale(1)' },
-                                '50%': { transform: 'scale(1.1)' },
-                            },
-                        }}
-                    />
-                </Tooltip>
-            );
-        }
-
-        if (day === currentStreak && !isStreakActive) {
-            return (
-                <Tooltip title={t('streakLost')}>
-                    <CancelIcon
-                        sx={{
-                            color: 'error.main',
-                            fontSize: 24,
-                        }}
-                    />
-                </Tooltip>
-            );
-        }
+        const isCompleted = day < currentStreak;
+        const isActive = day === currentStreak && isStreakActive;
+        // const isFailed = day === currentStreak && !isStreakActive;
+        // const isUpcoming = day > currentStreak;
 
         return (
-            <Tooltip title={t('streakNext')}>
-                <CircleIcon
+            <Box
+                sx={{
+                    position: 'relative',
+                    width: '100%',
+                    height: 4,
+                    bgcolor: theme =>
+                        isCompleted || isActive
+                            ? theme.palette.mode === 'light'
+                                ? 'rgba(255, 180, 67, 0.3)'
+                                : 'rgba(255, 180, 67, 0.2)'
+                            : theme.palette.mode === 'light'
+                              ? 'rgba(0, 0, 0, 0.08)'
+                              : 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: 1,
+                    '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        left: 0,
+                        top: 0,
+                        height: '100%',
+                        width: isCompleted ? '100%' : isActive ? '50%' : '0%',
+                        bgcolor: 'warning.main',
+                        borderRadius: 1,
+                        transition: 'width 0.3s ease-in-out',
+                    },
+                }}
+            >
+                <Box
                     sx={{
-                        color: 'text.disabled',
-                        fontSize: 24,
+                        position: 'absolute',
+                        top: -14,
+                        left: '50%',
+                        transform: 'translateX(-50%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
                     }}
-                />
-            </Tooltip>
+                >
+                    <Tooltip
+                        title={
+                            isCompleted
+                                ? t('streakComplete')
+                                : isActive
+                                  ? t('streakToday')
+                                  : t('streakNext')
+                        }
+                    >
+                        <Box
+                            sx={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: '50%',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                bgcolor: theme =>
+                                    isCompleted
+                                        ? theme.palette.warning.main
+                                        : theme.palette.mode === 'light'
+                                          ? 'rgba(0, 0, 0, 0.08)'
+                                          : 'rgba(255, 255, 255, 0.08)',
+                                color: theme =>
+                                    isCompleted
+                                        ? '#FFF'
+                                        : theme.palette.mode === 'light'
+                                          ? 'rgba(0, 0, 0, 0.38)'
+                                          : 'rgba(255, 255, 255, 0.38)',
+                            }}
+                        >
+                            ✓
+                        </Box>
+                    </Tooltip>
+                </Box>
+            </Box>
         );
     };
 
@@ -90,42 +115,56 @@ export const StreakBonus = ({ currentStreak = 0, lastClaimDate }) => {
         <Box
             sx={{
                 width: '100%',
-                p: 2,
-                bgcolor: theme =>
-                    theme.palette.mode === 'light'
-                        ? 'rgba(25, 118, 210, 0.08)'
-                        : 'rgba(91, 180, 255, 0.08)',
-                borderRadius: 2,
+                p: 3,
+                bgcolor: 'background.paper',
+                borderRadius: 3,
                 border: theme =>
                     `1px solid ${
                         theme.palette.mode === 'light'
-                            ? 'rgba(25, 118, 210, 0.2)'
-                            : 'rgba(91, 180, 255, 0.2)'
+                            ? 'rgba(0, 0, 0, 0.08)'
+                            : 'rgba(255, 255, 255, 0.08)'
                     }`,
             }}
         >
             <Box
                 sx={{
                     display: 'flex',
-                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    mb: 2,
+                    gap: 1,
+                    mb: 3,
                 }}
             >
+                <ShowChartIcon
+                    sx={{
+                        color: theme =>
+                            theme.palette.mode === 'light'
+                                ? theme.palette.primary.main
+                                : theme.palette.primary.light,
+                    }}
+                />
                 <Typography variant="h6" color="text.primary">
                     {t('streakBonus')}
                 </Typography>
-                <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
-                    {t('streakBonusValue', { percent: getCurrentBonus() })}
+                <Typography
+                    variant="h6"
+                    sx={{
+                        color: theme =>
+                            theme.palette.mode === 'light'
+                                ? theme.palette.warning.main
+                                : theme.palette.warning.light,
+                        ml: 'auto',
+                    }}
+                >
+                    +{getCurrentBonus()}%
                 </Typography>
             </Box>
 
             <Box
                 sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    mb: 1,
+                    display: 'grid',
+                    gridTemplateColumns: `repeat(${maxDays}, 1fr)`,
+                    gap: 1,
+                    mb: 2,
                 }}
             >
                 {[...Array(maxDays)].map((_, index) => (
@@ -135,18 +174,31 @@ export const StreakBonus = ({ currentStreak = 0, lastClaimDate }) => {
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
-                            gap: 0.5,
+                            gap: 1,
                         }}
                     >
                         {renderDayIndicator(index)}
-                        <Typography variant="caption" color="text.secondary" sx={{ mt: 0.5 }}>
-                            {index === maxDays - 1 ? `+${finalBonus}%` : `+${dailyBonus}%`}
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                color: 'text.secondary',
+                                mt: 2,
+                            }}
+                        >
+                            +{index === maxDays - 1 ? finalBonus : dailyBonus}%
                         </Typography>
                     </Box>
                 ))}
             </Box>
 
-            <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', mt: 1 }}>
+            <Typography
+                variant="caption"
+                sx={{
+                    color: 'text.secondary',
+                    display: 'block',
+                    textAlign: 'center',
+                }}
+            >
                 {t('streakDescription')}
             </Typography>
         </Box>
