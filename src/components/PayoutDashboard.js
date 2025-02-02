@@ -22,7 +22,7 @@ import { ChainSelector } from './ChainSelector';
 import { usePayouts } from '../hooks/usePayouts';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { shortenAddress } from '../utils/address';
-import { formatDate, calculateWeek } from '../utils/date';
+import { calculateWeek } from '../utils/date';
 import { useWeb3 } from '../hooks/useWeb3';
 import { TokenSelector } from './TokenSelector';
 import { KPICard } from './KPICard';
@@ -46,7 +46,6 @@ const generateYearOptions = () => {
 
 export const PayoutDashboard = () => {
     const {
-        payouts,
         loading: payoutsLoading,
         error: payoutsError,
         // fetchPayouts,
@@ -271,14 +270,12 @@ export const PayoutDashboard = () => {
                                     <TableCell>Wallet Address</TableCell>
                                     <TableCell align="right">Points</TableCell>
                                     <TableCell align="right">Token Amount</TableCell>
-                                    <TableCell>Status</TableCell>
-                                    <TableCell>Last Updated</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
                                 {loading ? (
                                     <TableRow>
-                                        <TableCell colSpan={5} align="center">
+                                        <TableCell colSpan={3} align="center">
                                             <CircularProgress size={24} />
                                         </TableCell>
                                     </TableRow>
@@ -295,13 +292,6 @@ export const PayoutDashboard = () => {
                                                 {(
                                                     participant.points * parseFloat(tokensPerPoint)
                                                 ).toFixed(6)}
-                                            </TableCell>
-                                            <TableCell>
-                                                {payouts?.find(p => p.wallet === participant.wallet)
-                                                    ?.status || 'Pending'}
-                                            </TableCell>
-                                            <TableCell>
-                                                {formatDate(participant.lastUpdated)}
                                             </TableCell>
                                         </TableRow>
                                     ))
