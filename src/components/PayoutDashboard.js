@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -31,6 +31,7 @@ import { formatUnits } from 'ethers';
 import PropTypes from 'prop-types';
 import { CHAIN_CONFIGS } from '../hooks/useWeb3';
 import { CHAIN_ICONS } from './ChainSelector';
+import { Contract } from 'ethers';
 
 const steps = ['Select Chain', 'Select Token', 'Set Amount'];
 
@@ -42,6 +43,18 @@ const TokenPropType = PropTypes.shape({
     decimals: PropTypes.number.isRequired,
 });
 
+// Add prop types for the leaderboard participant
+const ParticipantPropType = PropTypes.shape({
+    walletAddress: PropTypes.string.isRequired,
+    points: PropTypes.number.isRequired,
+});
+
+// ERC20 ABI for allowance and approve functions
+const ERC20_ABI = [
+    'function allowance(address owner, address spender) view returns (uint256)',
+    'function approve(address spender, uint256 amount) returns (bool)',
+];
+
 const StepContent = ({
     step,
     chainId,
@@ -49,6 +62,8 @@ const StepContent = ({
     totalTokens,
     setSelectedToken,
     setTotalTokens,
+    leaderboard,
+    tokensPerPoint,
 }) => {
     switch (step) {
         case 0:
@@ -93,6 +108,14 @@ const StepContent = ({
                                 </Typography>
                             ),
                         }}
+                        sx={{ mb: 2 }}
+                    />
+                    <DisperseButtons
+                        chainId={chainId}
+                        selectedToken={selectedToken}
+                        totalTokens={totalTokens}
+                        leaderboard={leaderboard}
+                        tokensPerPoint={tokensPerPoint}
                     />
                 </Box>
             );
@@ -108,6 +131,8 @@ StepContent.propTypes = {
     totalTokens: PropTypes.string,
     setSelectedToken: PropTypes.func.isRequired,
     setTotalTokens: PropTypes.func.isRequired,
+    leaderboard: PropTypes.array,
+    tokensPerPoint: PropTypes.string,
 };
 
 const StepSummary = ({ step, chainId, selectedToken, totalTokens }) => {
@@ -153,6 +178,128 @@ StepSummary.propTypes = {
     chainId: PropTypes.string,
     selectedToken: TokenPropType,
     totalTokens: PropTypes.string,
+};
+
+// Add prop types for the DisperseButtons component
+const DisperseButtons = ({ chainId, selectedToken, totalTokens, leaderboard, tokensPerPoint }) => {
+    const [loading, setLoading] = useState(false);
+    const [allowance, setAllowance] = useState('0');
+    const { getProvider, account } = useWeb3();
+
+    // Check allowance when component mounts or when relevant props change
+    useEffect(() => {
+        const checkAllowance = async () => {
+            if (!selectedToken?.address || !chainId) return;
+
+            const provider = getProvider();
+            const tokenContract = new Contract(selectedToken.address, ERC20_ABI, provider);
+            const disperseAddress = CHAIN_CONFIGS[chainId].disperseContract;
+
+            try {
+                const currentAllowance = await tokenContract.allowance(account, disperseAddress);
+                setAllowance(currentAllowance.toString());
+            } catch (error) {
+                console.error('Error checking allowance:', error);
+            }
+        };
+
+        checkAllowance();
+    }, [chainId, selectedToken, getProvider, account]);
+
+    const handleApprove = async () => {
+        if (!selectedToken?.address || !chainId) return;
+
+        setLoading(true);
+        try {
+            const provider = getProvider();
+            const tokenContract = new Contract(
+                selectedToken.address,
+                ERC20_ABI,
+                provider.getSigner()
+            );
+            const disperseAddress = CHAIN_CONFIGS[chainId].disperseContract;
+
+            const tx = await tokenContract.approve(disperseAddress, totalTokens);
+            await tx.wait();
+
+            // Refresh allowance
+            const newAllowance = await tokenContract.allowance(account, disperseAddress);
+            setAllowance(newAllowance.toString());
+        } catch (error) {
+            console.error('Error approving tokens:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDisperse = async () => {
+        if (!selectedToken?.address || !chainId || !leaderboard?.length) return;
+
+        setLoading(true);
+        try {
+            const provider = getProvider();
+            const disperseContract = new Contract(
+                CHAIN_CONFIGS[chainId].disperseContract,
+                ['function disperseToken(address token, address[] recipients, uint256[] values)'],
+                provider.getSigner()
+            );
+
+            const recipients = leaderboard.map(p => p.walletAddress);
+            const values = leaderboard.map(p =>
+                (
+                    (BigInt(p.points) * BigInt(parseFloat(tokensPerPoint) * 1e6)) /
+                    BigInt(1e6)
+                ).toString()
+            );
+
+            const tx = await disperseContract.disperseToken(
+                selectedToken.address,
+                recipients,
+                values
+            );
+            await tx.wait();
+        } catch (error) {
+            console.error('Error dispersing tokens:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const needsAllowance = BigInt(allowance) < BigInt(totalTokens);
+
+    return (
+        <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+                variant="contained"
+                onClick={handleApprove}
+                disabled={loading || !needsAllowance}
+            >
+                {loading ? <CircularProgress size={24} /> : 'Approve Tokens'}
+            </Button>
+            <Button
+                variant="contained"
+                color="success"
+                onClick={handleDisperse}
+                disabled={loading || needsAllowance}
+            >
+                {loading ? <CircularProgress size={24} /> : 'Disperse Tokens'}
+            </Button>
+        </Box>
+    );
+};
+
+DisperseButtons.propTypes = {
+    chainId: PropTypes.string.isRequired,
+    selectedToken: PropTypes.shape({
+        address: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        symbol: PropTypes.string.isRequired,
+        balance: PropTypes.string.isRequired,
+        decimals: PropTypes.number.isRequired,
+    }),
+    totalTokens: PropTypes.string.isRequired,
+    leaderboard: PropTypes.arrayOf(ParticipantPropType),
+    tokensPerPoint: PropTypes.string.isRequired,
 };
 
 export const PayoutDashboard = () => {
@@ -205,7 +352,7 @@ export const PayoutDashboard = () => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    }, []);
+    }, [leaderboard, tokensPerPoint, selectedWeek, selectedYear]);
 
     return (
         <Box sx={{ p: 3, maxWidth: 1200, margin: '0 auto' }}>
@@ -256,6 +403,8 @@ export const PayoutDashboard = () => {
                                 totalTokens={totalTokens}
                                 setSelectedToken={setSelectedToken}
                                 setTotalTokens={setTotalTokens}
+                                leaderboard={leaderboard}
+                                tokensPerPoint={tokensPerPoint}
                             />
 
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
