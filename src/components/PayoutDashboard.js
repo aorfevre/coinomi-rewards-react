@@ -512,12 +512,17 @@ export const PayoutDashboard = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [payouts, setPayouts] = useState([]);
     const [payoutsLoading, setPayoutsLoading] = useState(true);
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success',
+    });
 
-    const { leaderboard, loading: leaderboardLoading } = useLeaderboard(
-        account ? 1000 : 0,
-        selectedWeek,
-        selectedYear
-    );
+    const {
+        leaderboard,
+        loading: leaderboardLoading,
+        refetch: refetchLeaderboard,
+    } = useLeaderboard(account ? 1000 : 0, selectedWeek, selectedYear);
 
     // Calculate KPI values
     const totalPoints = leaderboard?.reduce((sum, p) => sum + (p.points || 0), 0) || 0;
@@ -590,6 +595,38 @@ export const PayoutDashboard = () => {
         } catch (error) {
             console.error('Error switching chain:', error);
         }
+    };
+
+    const handleGenerateFakeScores = async () => {
+        try {
+            const functions = getFunctions();
+            const generateFakes = httpsCallable(functions, 'createFakeScores');
+
+            await generateFakes({
+                weekNumber: selectedWeek,
+                yearNumber: selectedYear,
+            });
+
+            // Refresh the leaderboard
+            await refetchLeaderboard();
+
+            showSnackbar('Successfully generated fake scores', 'success');
+        } catch (error) {
+            console.error('Error generating fake scores:', error);
+            showSnackbar('Failed to generate fake scores', 'error');
+        }
+    };
+
+    const handleCloseSnackbar = () => {
+        setSnackbar(prev => ({ ...prev, open: false }));
+    };
+
+    const showSnackbar = (message, severity = 'success') => {
+        setSnackbar({
+            open: true,
+            message,
+            severity,
+        });
     };
 
     return (
@@ -764,14 +801,25 @@ export const PayoutDashboard = () => {
                                         {'>'}
                                     </Button>
                                 </Box>
-                                <Button
-                                    variant="outlined"
-                                    startIcon={<FileDownloadIcon />}
-                                    onClick={handleDownloadCSV}
-                                    disabled={!leaderboard || leaderboardLoading}
-                                >
-                                    Download CSV
-                                </Button>
+                                <Box sx={{ display: 'flex', gap: 2 }}>
+                                    {chainId === '0xaa36a7' && ( // Sepolia chainId
+                                        <Button
+                                            variant="outlined"
+                                            onClick={handleGenerateFakeScores}
+                                            disabled={leaderboardLoading}
+                                        >
+                                            Generate Test Data
+                                        </Button>
+                                    )}
+                                    <Button
+                                        variant="outlined"
+                                        startIcon={<FileDownloadIcon />}
+                                        onClick={handleDownloadCSV}
+                                        disabled={!leaderboard || leaderboardLoading}
+                                    >
+                                        Download CSV
+                                    </Button>
+                                </Box>
                             </Box>
 
                             <Tabs
@@ -851,6 +899,23 @@ export const PayoutDashboard = () => {
                     </Card>
                 </>
             )}
+
+            {/* Add Snackbar at the end of the component */}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbar.severity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };

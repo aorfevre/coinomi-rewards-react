@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import { admin } from './config/firebase';
 import { getWeek, getYear } from 'date-fns';
+import { db } from './config/firebase';
 
 // Add options for consistent week calculation
 const WEEK_OPTIONS = {
@@ -92,3 +93,30 @@ export const getLeaderboard = functions.https.onCall(async data => {
         );
     }
 });
+
+export const generateFakeScores = async (data: { weekNumber: number; yearNumber: number }) => {
+    const { weekNumber, yearNumber } = data;
+    const scoresRef = db.collection('scores');
+    const batch = db.batch();
+
+    // Generate 10 fake entries
+    for (let i = 0; i < 10; i++) {
+        const points = Math.floor(Math.random() * 4999) + 1; // Random between 1-5000
+        const walletAddress = `0x${Array.from({ length: 40 }, () =>
+            Math.floor(Math.random() * 16).toString(16)
+        ).join('')}`;
+
+        const docRef = scoresRef.doc();
+        batch.set(docRef, {
+            points,
+            walletAddress,
+            weekNumber,
+            yearNumber,
+            source: 'fake',
+            createdAt: new Date().toISOString(),
+        });
+    }
+
+    await batch.commit();
+    return { success: true };
+};

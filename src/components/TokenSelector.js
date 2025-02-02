@@ -19,33 +19,56 @@ export const TokenSelector = ({ onTokenSelect }) => {
 
     const validateAndLoadToken = useCallback(
         async address => {
-            if (!address || address.length !== 42 || !address.startsWith('0x')) return;
-
-            setLoading(true);
+            // Clear previous error first
             setError('');
 
+            // Basic address format validation
+            if (!address) return;
+            if (address.length !== 42) return;
+            if (!address.startsWith('0x')) return;
+            if (!/^0x[0-9a-fA-F]{40}$/.test(address)) {
+                setError('Invalid address format');
+                onTokenSelect(null);
+                return;
+            }
+
+            setLoading(true);
             try {
                 const provider = getProvider();
                 if (!provider) throw new Error('No provider available');
 
-                const tokenContract = new Contract(address, ERC20_ABI, provider);
+                // Try to create contract instance
+                let tokenContract;
+                try {
+                    tokenContract = new Contract(address, ERC20_ABI, provider);
+                } catch (error) {
+                    setError('Invalid token address format');
+                    onTokenSelect(null);
+                    setLoading(false);
+                    return;
+                }
 
                 // Get token details
-                const [name, symbol, decimals, balance] = await Promise.all([
-                    tokenContract.name(),
-                    tokenContract.symbol(),
-                    tokenContract.decimals(),
-                    tokenContract.balanceOf(account),
-                ]);
+                try {
+                    const [name, symbol, decimals, balance] = await Promise.all([
+                        tokenContract.name(),
+                        tokenContract.symbol(),
+                        tokenContract.decimals(),
+                        tokenContract.balanceOf(account),
+                    ]);
 
-                onTokenSelect({
-                    address,
-                    name,
-                    symbol,
-                    decimals,
-                    balance: balance.toString(),
-                });
-                setError('');
+                    onTokenSelect({
+                        address,
+                        name,
+                        symbol,
+                        decimals,
+                        balance: balance.toString(),
+                    });
+                    setError('');
+                } catch (error) {
+                    setError('Address is not a valid ERC20 token');
+                    onTokenSelect(null);
+                }
             } catch (error) {
                 console.error('Error loading token:', error);
                 setError('Invalid token address or not an ERC20 token');
