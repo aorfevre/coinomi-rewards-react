@@ -21,6 +21,8 @@ import {
     InputAdornment,
     Snackbar,
     Alert,
+    Tabs,
+    Tab,
 } from '@mui/material';
 import { ChainSelector } from './ChainSelector';
 import { TokenSelector } from './TokenSelector';
@@ -36,6 +38,8 @@ import { CHAIN_CONFIGS } from '../hooks/useWeb3';
 import { CHAIN_ICONS } from './ChainSelector';
 import { Contract } from 'ethers';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getFirestore, collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { Link } from '@mui/material';
 
 const steps = ['Select Chain', 'Select Token', 'Set Amount'];
 
@@ -386,6 +390,91 @@ DisperseButtons.propTypes = {
     selectedYear: PropTypes.number.isRequired,
 };
 
+// Add this new component for the Payouts table
+const PayoutsTable = ({ selectedWeek, selectedYear }) => {
+    const [payouts, setPayouts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchPayouts = async () => {
+            setLoading(true);
+            try {
+                const db = getFirestore();
+                const payoutsRef = collection(db, 'payouts');
+                const q = query(
+                    payoutsRef,
+                    where('weekNumber', '==', selectedWeek),
+                    where('yearNumber', '==', selectedYear),
+                    orderBy('timestamp', 'desc')
+                );
+
+                const snapshot = await getDocs(q);
+                setPayouts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            } catch (error) {
+                console.error('Error fetching payouts:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPayouts();
+    }, [selectedWeek, selectedYear]);
+
+    return (
+        <TableContainer>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Date</TableCell>
+                        <TableCell>Token</TableCell>
+                        <TableCell align="right">Amount</TableCell>
+                        <TableCell>Transaction</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {loading ? (
+                        <TableRow>
+                            <TableCell colSpan={4} align="center">
+                                <CircularProgress size={24} />
+                            </TableCell>
+                        </TableRow>
+                    ) : payouts.length === 0 ? (
+                        <TableRow>
+                            <TableCell colSpan={4} align="center">
+                                No payouts found for this period
+                            </TableCell>
+                        </TableRow>
+                    ) : (
+                        payouts.map(payout => (
+                            <TableRow key={payout.id}>
+                                <TableCell>
+                                    {new Date(payout.timestamp).toLocaleDateString()}
+                                </TableCell>
+                                <TableCell>{payout.tokenSymbol}</TableCell>
+                                <TableCell align="right">{payout.tokenAmount}</TableCell>
+                                <TableCell>
+                                    <Link
+                                        href={`https://sepolia.etherscan.io/tx/${payout.transactionHash}`}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                    >
+                                        {shortenAddress(payout.transactionHash)}
+                                    </Link>
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    )}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
+};
+
+PayoutsTable.propTypes = {
+    selectedWeek: PropTypes.number.isRequired,
+    selectedYear: PropTypes.number.isRequired,
+};
+
 export const PayoutDashboard = () => {
     const [activeStep, setActiveStep] = useState(0);
     const { connect, disconnect, account, chainId, switchChain } = useWeb3();
@@ -393,6 +482,7 @@ export const PayoutDashboard = () => {
     const [totalTokens, setTotalTokens] = useState('');
     const [selectedWeek, setSelectedWeek] = useState(calculateWeek(new Date()));
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [activeTab, setActiveTab] = useState(0);
 
     const { leaderboard, loading: leaderboardLoading } = useLeaderboard(
         account ? 1000 : 0,
@@ -546,7 +636,7 @@ export const PayoutDashboard = () => {
                         </Grid>
                     </Grid>
 
-                    {/* Period Selection and Table */}
+                    {/* Period Selection and Tables */}
                     <Card sx={{ mb: 4 }}>
                         <Box sx={{ p: 3 }}>
                             <Box
@@ -594,43 +684,61 @@ export const PayoutDashboard = () => {
                                 </Button>
                             </Box>
 
-                            <TableContainer>
-                                <Table>
-                                    <TableHead>
-                                        <TableRow>
-                                            <TableCell>Wallet Address</TableCell>
-                                            <TableCell align="right">Points</TableCell>
-                                            <TableCell align="right">Token Amount</TableCell>
-                                        </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {leaderboardLoading ? (
+                            <Tabs
+                                value={activeTab}
+                                onChange={(e, newValue) => setActiveTab(newValue)}
+                                sx={{ mb: 2 }}
+                            >
+                                <Tab label="Participants" />
+                                <Tab label="Payouts" />
+                            </Tabs>
+
+                            {activeTab === 0 ? (
+                                <TableContainer>
+                                    <Table>
+                                        <TableHead>
                                             <TableRow>
-                                                <TableCell colSpan={3} align="center">
-                                                    <CircularProgress size={24} />
-                                                </TableCell>
+                                                <TableCell>Wallet Address</TableCell>
+                                                <TableCell align="right">Points</TableCell>
+                                                <TableCell align="right">Token Amount</TableCell>
                                             </TableRow>
-                                        ) : (
-                                            leaderboard?.map(participant => (
-                                                <TableRow key={participant.walletAddress}>
-                                                    <TableCell>
-                                                        {shortenAddress(participant.walletAddress)}
-                                                    </TableCell>
-                                                    <TableCell align="right">
-                                                        {participant.points?.toLocaleString()}
-                                                    </TableCell>
-                                                    <TableCell align="right">
-                                                        {(
-                                                            participant.points *
-                                                            parseFloat(tokensPerPoint)
-                                                        ).toFixed(6)}
+                                        </TableHead>
+                                        <TableBody>
+                                            {leaderboardLoading ? (
+                                                <TableRow>
+                                                    <TableCell colSpan={3} align="center">
+                                                        <CircularProgress size={24} />
                                                     </TableCell>
                                                 </TableRow>
-                                            ))
-                                        )}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
+                                            ) : (
+                                                leaderboard?.map(participant => (
+                                                    <TableRow key={participant.walletAddress}>
+                                                        <TableCell>
+                                                            {shortenAddress(
+                                                                participant.walletAddress
+                                                            )}
+                                                        </TableCell>
+                                                        <TableCell align="right">
+                                                            {participant.points?.toLocaleString()}
+                                                        </TableCell>
+                                                        <TableCell align="right">
+                                                            {(
+                                                                participant.points *
+                                                                parseFloat(tokensPerPoint)
+                                                            ).toFixed(6)}
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                </TableContainer>
+                            ) : (
+                                <PayoutsTable
+                                    selectedWeek={selectedWeek}
+                                    selectedYear={selectedYear}
+                                />
+                            )}
                         </Box>
                     </Card>
                 </>
