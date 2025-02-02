@@ -22,20 +22,15 @@ import { ChainSelector } from './ChainSelector';
 import { usePayouts } from '../hooks/usePayouts';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { shortenAddress } from '../utils/address';
-import { formatDate } from '../utils/date';
+import { formatDate, calculateWeek } from '../utils/date';
 import { useWeb3 } from '../hooks/useWeb3';
 import { TokenSelector } from './TokenSelector';
 import { KPICard } from './KPICard';
-import { getWeek } from 'date-fns';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 
 // Utility function to get current week
 const getCurrentWeek = () => {
-    const now = new Date();
-    // Use the same options as the backend
-    return getWeek(now, {
-        weekStartsOn: 1,
-        firstWeekContainsDate: 4,
-    });
+    return calculateWeek(new Date());
 };
 
 // Utility function to generate week options
@@ -69,7 +64,7 @@ export const PayoutDashboard = () => {
         loading: leaderboardLoading,
         error: leaderboardError,
     } = useLeaderboard(
-        account ? 1000 : 0,
+        account ? 1000 : 0, // Pass 1000 to get all participants when connected
         account ? selectedWeek : null,
         account ? selectedYear : null
     );
@@ -88,6 +83,30 @@ export const PayoutDashboard = () => {
     const handleTokenSelect = tokenInfo => {
         setSelectedToken(tokenInfo);
     };
+
+    const handleDownloadCSV = useCallback(async () => {
+        if (!leaderboard) return;
+
+        // Create CSV content
+        const headers = ['Wallet Address', 'Points', 'Token Amount'];
+        const rows = leaderboard.map(participant => [
+            participant.walletAddress,
+            participant.points,
+            (participant.points * parseFloat(tokensPerPoint)).toFixed(6),
+        ]);
+
+        const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+
+        // Create and download the file
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `payout-week${selectedWeek}-${selectedYear}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }, [leaderboard, tokensPerPoint, selectedWeek, selectedYear]);
 
     const loading = payoutsLoading || leaderboardLoading;
     const error = payoutsError || leaderboardError;
@@ -219,6 +238,18 @@ export const PayoutDashboard = () => {
                             />
                         </Grid>
                     </Grid>
+
+                    {/* Add Download CSV button before the table */}
+                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+                        <Button
+                            variant="outlined"
+                            startIcon={<FileDownloadIcon />}
+                            onClick={handleDownloadCSV}
+                            disabled={!leaderboard || loading}
+                        >
+                            Download CSV
+                        </Button>
+                    </Box>
 
                     {/* Generate Payout Button */}
                     <Box sx={{ mb: 4 }}>

@@ -1,3 +1,14 @@
+import { getWeek } from 'date-fns';
+
+const WEEK_OPTIONS = {
+    weekStartsOn: 1, // Monday as week start
+    firstWeekContainsDate: 4, // ISO week numbering
+};
+
+export const calculateWeek = date => {
+    return getWeek(date, WEEK_OPTIONS);
+};
+
 export const getWeekOptions = () => {
     const options = [];
     const now = new Date();
