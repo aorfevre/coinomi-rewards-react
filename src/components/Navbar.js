@@ -29,6 +29,9 @@ export const Navbar = ({ onThemeToggle }) => {
         handleClose();
     };
 
+    // get query params token
+    const token = new URLSearchParams(window.location.search).get('token');
+
     return (
         <Box
             sx={{
@@ -77,7 +80,7 @@ export const Navbar = ({ onThemeToggle }) => {
                     }}
                 >
                     <Typography variant="body2" sx={{ color: 'white' }}>
-                        {shortenAddress(user?.walletAddress)}
+                        {shortenAddress(token)}
                     </Typography>
                     <KeyboardArrowDownIcon sx={{ fontSize: 20 }} />
                 </Box>
