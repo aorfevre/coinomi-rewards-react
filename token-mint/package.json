@@ -1,0 +1,20 @@
+{
+    "name": "token-mint",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "compile": "node compile.js",
+        "deploy": "node deployContract.js",
+        "mint": "node mintTokens.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@openzeppelin/contracts": "^5.0.0",
+        "dotenv": "^16.4.7",
+        "ethers": "^6.13.5",
+        "solc": "^0.8.20"
+    }
+}

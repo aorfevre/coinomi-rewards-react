@@ -1,110 +1,93 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Box, TextField, CircularProgress, Typography, InputAdornment } from '@mui/material';
+import { Contract } from 'ethers';
+import { useWeb3 } from '../hooks/useWeb3';
 import PropTypes from 'prop-types';
-import {
-    Box,
-    TextField,
-    Typography,
-    CircularProgress,
-    InputAdornment,
-    IconButton,
-    Card,
-    Grid,
-} from '@mui/material';
-import ContentPasteIcon from '@mui/icons-material/ContentPaste';
-import { useTokenValidation } from '../hooks/useTokenValidation';
-import { formatUnits } from 'ethers';
 
-export const TokenSelector = ({ onSelect, chainId }) => {
+const ERC20_ABI = [
+    'function name() view returns (string)',
+    'function symbol() view returns (string)',
+    'function decimals() view returns (uint8)',
+    'function balanceOf(address) view returns (uint256)',
+];
+
+export const TokenSelector = ({ onTokenSelect }) => {
     const [tokenAddress, setTokenAddress] = useState('');
-    const { token, loading, error, validateToken } = useTokenValidation(chainId);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const { getProvider, account } = useWeb3();
 
-    const handleTokenAddressChange = async value => {
-        setTokenAddress(value);
-        if (value.length === 42) {
-            // Valid Ethereum address length
-            const tokenInfo = await validateToken(value);
-            if (tokenInfo) {
-                onSelect(tokenInfo);
-            }
-        }
-    };
+    const validateAndLoadToken = async address => {
+        if (!address || address.length !== 42 || !address.startsWith('0x')) return;
 
-    const handlePaste = async () => {
+        setLoading(true);
+        setError('');
+
         try {
-            const text = await navigator.clipboard.readText();
-            handleTokenAddressChange(text);
-        } catch (err) {
-            console.error('Failed to read clipboard:', err);
-        }
-    };
+            const provider = getProvider();
+            if (!provider) throw new Error('No provider available');
 
-    const formatBalance = (balance, decimals) => {
-        try {
-            return formatUnits(balance, decimals);
+            const tokenContract = new Contract(address, ERC20_ABI, provider);
+
+            // Get token details
+            const [name, symbol, decimals, balance] = await Promise.all([
+                tokenContract.name(),
+                tokenContract.symbol(),
+                tokenContract.decimals(),
+                tokenContract.balanceOf(account),
+            ]);
+
+            onTokenSelect({
+                address,
+                name,
+                symbol,
+                decimals,
+                balance: balance.toString(),
+            });
+            setError('');
         } catch (error) {
-            console.error('Error formatting balance:', error);
-            return '0';
+            console.error('Error loading token:', error);
+            setError('Invalid token address or not an ERC20 token');
+            onTokenSelect(null);
+        } finally {
+            setLoading(false);
         }
     };
+
+    // Debounce the validation
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            validateAndLoadToken(tokenAddress);
+        }, 500); // Wait 500ms after last keystroke
+
+        return () => clearTimeout(timer);
+    }, [tokenAddress]);
 
     return (
-        <Box>
-            <Box sx={{ mb: 2 }}>
-                <TextField
-                    fullWidth
-                    label="Token"
-                    placeholder="Enter token contract address"
-                    value={tokenAddress}
-                    onChange={e => handleTokenAddressChange(e.target.value)}
-                    error={!!error}
-                    helperText={error}
-                    InputProps={{
-                        startAdornment: (
-                            <InputAdornment position="start">
-                                <IconButton onClick={handlePaste} size="small">
-                                    <ContentPasteIcon />
-                                </IconButton>
-                            </InputAdornment>
-                        ),
-                        endAdornment: loading && (
-                            <InputAdornment position="end">
-                                <CircularProgress size={20} />
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-            </Box>
-
-            {token && (
-                <Card variant="outlined" sx={{ mt: 2 }}>
-                    <Box sx={{ p: 2 }}>
-                        <Typography variant="h6" gutterBottom>
-                            {token.name} ({token.symbol})
-                        </Typography>
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <Typography variant="caption" color="text.secondary">
-                                    Decimals
-                                </Typography>
-                                <Typography variant="body1">{token.decimals}</Typography>
-                            </Grid>
-                            <Grid item xs={6}>
-                                <Typography variant="caption" color="text.secondary">
-                                    Your Balance
-                                </Typography>
-                                <Typography variant="body1">
-                                    {formatBalance(token.balance, token.decimals)} {token.symbol}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Card>
-            )}
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <TextField
+                fullWidth
+                label="Token Address"
+                value={tokenAddress}
+                onChange={e => setTokenAddress(e.target.value)}
+                error={!!error}
+                helperText={error}
+                placeholder="0x..."
+                InputProps={{
+                    endAdornment: loading && (
+                        <InputAdornment position="end">
+                            <CircularProgress size={20} />
+                        </InputAdornment>
+                    ),
+                }}
+            />
+            <Typography variant="caption" color="text.secondary">
+                Enter any ERC20 token address to load its details
+            </Typography>
         </Box>
     );
 };
 
 TokenSelector.propTypes = {
-    onSelect: PropTypes.func.isRequired,
-    chainId: PropTypes.string.isRequired,
+    onTokenSelect: PropTypes.func.isRequired,
 };

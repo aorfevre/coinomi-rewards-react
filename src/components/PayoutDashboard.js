@@ -11,13 +11,14 @@ import {
     CircularProgress,
     Button,
     Grid,
-    TextField,
     Select,
     MenuItem,
     Stepper,
     Step,
     StepLabel,
     Card,
+    TextField,
+    InputAdornment,
 } from '@mui/material';
 import { ChainSelector } from './ChainSelector';
 import { TokenSelector } from './TokenSelector';
@@ -27,7 +28,7 @@ import { useWeb3 } from '../hooks/useWeb3';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { shortenAddress } from '../utils/address';
 import { calculateWeek } from '../utils/date';
-import { formatUnits } from 'ethers';
+import { formatUnits, parseUnits } from 'ethers';
 import PropTypes from 'prop-types';
 import { CHAIN_CONFIGS } from '../hooks/useWeb3';
 import { CHAIN_ICONS } from './ChainSelector';
@@ -64,6 +65,7 @@ const StepContent = ({
     setTotalTokens,
     leaderboard,
     tokensPerPoint,
+    onChainSelect,
 }) => {
     switch (step) {
         case 0:
@@ -72,12 +74,7 @@ const StepContent = ({
                     <Typography variant="h6" gutterBottom>
                         Select Chain
                     </Typography>
-                    <ChainSelector
-                        currentChainId={chainId}
-                        onChainSelect={id => {
-                            console.log('chainId', id);
-                        }}
-                    />
+                    <ChainSelector currentChainId={chainId} onChainSelect={onChainSelect} />
                 </Box>
             );
         case 1:
@@ -86,14 +83,18 @@ const StepContent = ({
                     <Typography variant="h6" gutterBottom>
                         Select Token
                     </Typography>
-                    <TokenSelector onSelect={setSelectedToken} chainId={chainId} />
+                    <TokenSelector
+                        chainId={chainId}
+                        selectedToken={selectedToken}
+                        onTokenSelect={setSelectedToken}
+                    />
                 </Box>
             );
         case 2:
             return (
                 <Box>
                     <Typography variant="h6" gutterBottom>
-                        Set Distribution Amount
+                        Set Amount
                     </Typography>
                     <TextField
                         fullWidth
@@ -103,9 +104,9 @@ const StepContent = ({
                         onChange={e => setTotalTokens(e.target.value)}
                         InputProps={{
                             endAdornment: selectedToken && (
-                                <Typography variant="caption" color="text.secondary">
+                                <InputAdornment position="end">
                                     {selectedToken.symbol}
-                                </Typography>
+                                </InputAdornment>
                             ),
                         }}
                         sx={{ mb: 2 }}
@@ -133,6 +134,7 @@ StepContent.propTypes = {
     setTotalTokens: PropTypes.func.isRequired,
     leaderboard: PropTypes.array,
     tokensPerPoint: PropTypes.string,
+    onChainSelect: PropTypes.func.isRequired,
 };
 
 const StepSummary = ({ step, chainId, selectedToken, totalTokens }) => {
@@ -189,13 +191,15 @@ const DisperseButtons = ({ chainId, selectedToken, totalTokens, leaderboard, tok
     // Check allowance when component mounts or when relevant props change
     useEffect(() => {
         const checkAllowance = async () => {
-            if (!selectedToken?.address || !chainId) return;
-
-            const provider = getProvider();
-            const tokenContract = new Contract(selectedToken.address, ERC20_ABI, provider);
-            const disperseAddress = CHAIN_CONFIGS[chainId].disperseContract;
+            if (!selectedToken?.address || !chainId || !account) return;
 
             try {
+                const provider = getProvider();
+                if (!provider) throw new Error('No provider available');
+
+                const tokenContract = new Contract(selectedToken.address, ERC20_ABI, provider);
+                const disperseAddress = CHAIN_CONFIGS[chainId].disperseContract;
+
                 const currentAllowance = await tokenContract.allowance(account, disperseAddress);
                 setAllowance(currentAllowance.toString());
             } catch (error) {
@@ -207,19 +211,21 @@ const DisperseButtons = ({ chainId, selectedToken, totalTokens, leaderboard, tok
     }, [chainId, selectedToken, getProvider, account]);
 
     const handleApprove = async () => {
-        if (!selectedToken?.address || !chainId) return;
+        if (!selectedToken?.address || !chainId || !account) return;
 
         setLoading(true);
         try {
             const provider = getProvider();
-            const tokenContract = new Contract(
-                selectedToken.address,
-                ERC20_ABI,
-                provider.getSigner()
-            );
+            if (!provider) throw new Error('No provider available');
+
+            const signer = await provider.getSigner();
+            const tokenContract = new Contract(selectedToken.address, ERC20_ABI, signer);
             const disperseAddress = CHAIN_CONFIGS[chainId].disperseContract;
 
-            const tx = await tokenContract.approve(disperseAddress, totalTokens);
+            // Convert totalTokens to proper decimal places
+            const amount = parseUnits(totalTokens, selectedToken.decimals);
+
+            const tx = await tokenContract.approve(disperseAddress, amount);
             await tx.wait();
 
             // Refresh allowance
@@ -233,24 +239,26 @@ const DisperseButtons = ({ chainId, selectedToken, totalTokens, leaderboard, tok
     };
 
     const handleDisperse = async () => {
-        if (!selectedToken?.address || !chainId || !leaderboard?.length) return;
+        if (!selectedToken?.address || !chainId || !leaderboard?.length || !account) return;
 
         setLoading(true);
         try {
             const provider = getProvider();
+            if (!provider) throw new Error('No provider available');
+
+            const signer = await provider.getSigner();
             const disperseContract = new Contract(
                 CHAIN_CONFIGS[chainId].disperseContract,
                 ['function disperseToken(address token, address[] recipients, uint256[] values)'],
-                provider.getSigner()
+                signer
             );
 
             const recipients = leaderboard.map(p => p.walletAddress);
-            const values = leaderboard.map(p =>
-                (
-                    (BigInt(p.points) * BigInt(parseFloat(tokensPerPoint) * 1e6)) /
-                    BigInt(1e6)
-                ).toString()
-            );
+            const values = leaderboard.map(p => {
+                const amount =
+                    (BigInt(p.points) * BigInt(parseFloat(tokensPerPoint) * 1e6)) / BigInt(1e6);
+                return parseUnits(amount.toString(), selectedToken.decimals).toString();
+            });
 
             const tx = await disperseContract.disperseToken(
                 selectedToken.address,
@@ -265,7 +273,8 @@ const DisperseButtons = ({ chainId, selectedToken, totalTokens, leaderboard, tok
         }
     };
 
-    const needsAllowance = BigInt(allowance) < BigInt(totalTokens);
+    const needsAllowance =
+        BigInt(allowance) < parseUnits(totalTokens || '0', selectedToken?.decimals || 18);
 
     return (
         <Box sx={{ display: 'flex', gap: 2 }}>
@@ -304,7 +313,7 @@ DisperseButtons.propTypes = {
 
 export const PayoutDashboard = () => {
     const [activeStep, setActiveStep] = useState(0);
-    const { connect, disconnect, account, chainId } = useWeb3();
+    const { connect, disconnect, account, chainId, switchChain } = useWeb3();
     const [selectedToken, setSelectedToken] = useState(null);
     const [totalTokens, setTotalTokens] = useState('');
     const [selectedWeek, setSelectedWeek] = useState(calculateWeek(new Date()));
@@ -353,6 +362,15 @@ export const PayoutDashboard = () => {
         link.click();
         document.body.removeChild(link);
     }, [leaderboard, tokensPerPoint, selectedWeek, selectedYear]);
+
+    const handleChainSelect = async selectedChainId => {
+        try {
+            await switchChain(selectedChainId);
+            handleNext();
+        } catch (error) {
+            console.error('Error switching chain:', error);
+        }
+    };
 
     return (
         <Box sx={{ p: 3, maxWidth: 1200, margin: '0 auto' }}>
@@ -405,6 +423,7 @@ export const PayoutDashboard = () => {
                                 setTotalTokens={setTotalTokens}
                                 leaderboard={leaderboard}
                                 tokensPerPoint={tokensPerPoint}
+                                onChainSelect={handleChainSelect}
                             />
 
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>

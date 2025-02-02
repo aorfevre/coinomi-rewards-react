@@ -32,3 +32,6 @@ functions/lib
 .env
 
 functions/coverage
+token-mint/.env
+token-mint/coverage
+token-mint/node_modules

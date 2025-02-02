@@ -16,11 +16,19 @@ export const CHAIN_CONFIGS = {
         chainId: '0xaa36a7',
         chainName: 'Sepolia',
         nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-        rpcUrls: ['https://rpc.sepolia.org'],
+        rpcUrls: ['https://eth-sepolia.public.blastapi.io'],
         blockExplorerUrls: ['https://sepolia.etherscan.io'],
         disperseContract: '0xD152f549545093347A162Dce210e7293f1452150',
         testnet: true,
         icon: 'sepolia.svg',
+        tokens: [
+            {
+                address: process.env.REACT_APP_TEST_TOKEN_ADDRESS,
+                symbol: 'TEST',
+                name: 'Test Token',
+                decimals: 18,
+            },
+        ],
     },
     '0x38': {
         chainId: '0x38',
