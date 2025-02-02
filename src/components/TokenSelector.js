@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box, TextField, CircularProgress, Typography, InputAdornment } from '@mui/material';
 import { Contract } from 'ethers';
 import { useWeb3 } from '../hooks/useWeb3';
@@ -17,51 +17,54 @@ export const TokenSelector = ({ onTokenSelect }) => {
     const [error, setError] = useState('');
     const { getProvider, account } = useWeb3();
 
-    const validateAndLoadToken = async address => {
-        if (!address || address.length !== 42 || !address.startsWith('0x')) return;
+    const validateAndLoadToken = useCallback(
+        async address => {
+            if (!address || address.length !== 42 || !address.startsWith('0x')) return;
 
-        setLoading(true);
-        setError('');
-
-        try {
-            const provider = getProvider();
-            if (!provider) throw new Error('No provider available');
-
-            const tokenContract = new Contract(address, ERC20_ABI, provider);
-
-            // Get token details
-            const [name, symbol, decimals, balance] = await Promise.all([
-                tokenContract.name(),
-                tokenContract.symbol(),
-                tokenContract.decimals(),
-                tokenContract.balanceOf(account),
-            ]);
-
-            onTokenSelect({
-                address,
-                name,
-                symbol,
-                decimals,
-                balance: balance.toString(),
-            });
+            setLoading(true);
             setError('');
-        } catch (error) {
-            console.error('Error loading token:', error);
-            setError('Invalid token address or not an ERC20 token');
-            onTokenSelect(null);
-        } finally {
-            setLoading(false);
-        }
-    };
+
+            try {
+                const provider = getProvider();
+                if (!provider) throw new Error('No provider available');
+
+                const tokenContract = new Contract(address, ERC20_ABI, provider);
+
+                // Get token details
+                const [name, symbol, decimals, balance] = await Promise.all([
+                    tokenContract.name(),
+                    tokenContract.symbol(),
+                    tokenContract.decimals(),
+                    tokenContract.balanceOf(account),
+                ]);
+
+                onTokenSelect({
+                    address,
+                    name,
+                    symbol,
+                    decimals,
+                    balance: balance.toString(),
+                });
+                setError('');
+            } catch (error) {
+                console.error('Error loading token:', error);
+                setError('Invalid token address or not an ERC20 token');
+                onTokenSelect(null);
+            } finally {
+                setLoading(false);
+            }
+        },
+        [getProvider, account, onTokenSelect]
+    );
 
     // Debounce the validation
     useEffect(() => {
         const timer = setTimeout(() => {
             validateAndLoadToken(tokenAddress);
-        }, 500); // Wait 500ms after last keystroke
+        }, 500);
 
         return () => clearTimeout(timer);
-    }, [tokenAddress]);
+    }, [tokenAddress, validateAndLoadToken]);
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>

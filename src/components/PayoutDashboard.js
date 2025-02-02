@@ -23,6 +23,7 @@ import {
     Alert,
     Tabs,
     Tab,
+    Badge,
 } from '@mui/material';
 import { ChainSelector } from './ChainSelector';
 import { TokenSelector } from './TokenSelector';
@@ -390,36 +391,8 @@ DisperseButtons.propTypes = {
     selectedYear: PropTypes.number.isRequired,
 };
 
-// Add this new component for the Payouts table
-const PayoutsTable = ({ selectedWeek, selectedYear }) => {
-    const [payouts, setPayouts] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchPayouts = async () => {
-            setLoading(true);
-            try {
-                const db = getFirestore();
-                const payoutsRef = collection(db, 'payouts');
-                const q = query(
-                    payoutsRef,
-                    where('weekNumber', '==', selectedWeek),
-                    where('yearNumber', '==', selectedYear),
-                    orderBy('timestamp', 'desc')
-                );
-
-                const snapshot = await getDocs(q);
-                setPayouts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-            } catch (error) {
-                console.error('Error fetching payouts:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchPayouts();
-    }, [selectedWeek, selectedYear]);
-
+// Update PayoutsTable component to remove unused props
+const PayoutsTable = ({ payouts, loading }) => {
     return (
         <TableContainer>
             <Table>
@@ -470,9 +443,63 @@ const PayoutsTable = ({ selectedWeek, selectedYear }) => {
     );
 };
 
+// Update PropTypes for PayoutsTable
 PayoutsTable.propTypes = {
-    selectedWeek: PropTypes.number.isRequired,
-    selectedYear: PropTypes.number.isRequired,
+    payouts: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            timestamp: PropTypes.number.isRequired,
+            tokenSymbol: PropTypes.string.isRequired,
+            tokenAmount: PropTypes.string.isRequired,
+            transactionHash: PropTypes.string.isRequired,
+        })
+    ).isRequired,
+    loading: PropTypes.bool.isRequired,
+};
+
+// Add this helper function at the top level
+const adjustWeekAndYear = (currentWeek, currentYear, increment) => {
+    if (increment) {
+        // Moving forward
+        if (currentWeek === 53) {
+            return { week: 1, year: currentYear + 1 };
+        }
+        return { week: currentWeek + 1, year: currentYear };
+    } else {
+        // Moving backward
+        if (currentWeek === 1) {
+            return { week: 53, year: currentYear - 1 };
+        }
+        return { week: currentWeek - 1, year: currentYear };
+    }
+};
+
+// Update the TabWithBadge component
+const TabWithBadge = ({ label, count }) => (
+    <Box sx={{ display: 'inline-flex', alignItems: 'center', position: 'relative', pr: 3 }}>
+        {label}
+        <Badge
+            badgeContent={count}
+            color="primary"
+            sx={{
+                '& .MuiBadge-badge': {
+                    right: -16,
+                    top: -8,
+                    minWidth: '20px',
+                    height: '20px',
+                    padding: '0 6px',
+                    fontSize: '0.75rem',
+                    backgroundColor: '#1976d2',
+                    color: 'white',
+                },
+            }}
+        />
+    </Box>
+);
+
+TabWithBadge.propTypes = {
+    label: PropTypes.string.isRequired,
+    count: PropTypes.number.isRequired,
 };
 
 export const PayoutDashboard = () => {
@@ -483,6 +510,8 @@ export const PayoutDashboard = () => {
     const [selectedWeek, setSelectedWeek] = useState(calculateWeek(new Date()));
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [activeTab, setActiveTab] = useState(0);
+    const [payouts, setPayouts] = useState([]);
+    const [payoutsLoading, setPayoutsLoading] = useState(true);
 
     const { leaderboard, loading: leaderboardLoading } = useLeaderboard(
         account ? 1000 : 0,
@@ -495,6 +524,32 @@ export const PayoutDashboard = () => {
     const totalParticipants = leaderboard?.length || 0;
     const tokensPerPoint =
         totalTokens && totalPoints ? (parseFloat(totalTokens) / totalPoints).toFixed(6) : '0';
+
+    // Add effect to fetch payouts
+    useEffect(() => {
+        const fetchPayouts = async () => {
+            setPayoutsLoading(true);
+            try {
+                const db = getFirestore();
+                const payoutsRef = collection(db, 'payouts');
+                const q = query(
+                    payoutsRef,
+                    where('weekNumber', '==', selectedWeek),
+                    where('yearNumber', '==', selectedYear),
+                    orderBy('timestamp', 'desc')
+                );
+
+                const snapshot = await getDocs(q);
+                setPayouts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+            } catch (error) {
+                console.error('Error fetching payouts:', error);
+            } finally {
+                setPayoutsLoading(false);
+            }
+        };
+
+        fetchPayouts();
+    }, [selectedWeek, selectedYear]);
 
     const handleNext = () => {
         setActiveStep(prevStep => prevStep + 1);
@@ -648,6 +703,20 @@ export const PayoutDashboard = () => {
                                 }}
                             >
                                 <Box sx={{ display: 'flex', gap: 2 }}>
+                                    <Button
+                                        onClick={() => {
+                                            const { week, year } = adjustWeekAndYear(
+                                                selectedWeek,
+                                                selectedYear,
+                                                false
+                                            );
+                                            setSelectedWeek(week);
+                                            setSelectedYear(year);
+                                        }}
+                                        size="small"
+                                    >
+                                        {'<'}
+                                    </Button>
                                     <Select
                                         value={selectedWeek}
                                         onChange={e => setSelectedWeek(e.target.value)}
@@ -673,6 +742,20 @@ export const PayoutDashboard = () => {
                                             </MenuItem>
                                         ))}
                                     </Select>
+                                    <Button
+                                        onClick={() => {
+                                            const { week, year } = adjustWeekAndYear(
+                                                selectedWeek,
+                                                selectedYear,
+                                                true
+                                            );
+                                            setSelectedWeek(week);
+                                            setSelectedYear(year);
+                                        }}
+                                        size="small"
+                                    >
+                                        {'>'}
+                                    </Button>
                                 </Box>
                                 <Button
                                     variant="outlined"
@@ -687,10 +770,31 @@ export const PayoutDashboard = () => {
                             <Tabs
                                 value={activeTab}
                                 onChange={(e, newValue) => setActiveTab(newValue)}
-                                sx={{ mb: 2 }}
+                                sx={{
+                                    mb: 2,
+                                    '& .MuiTab-root': {
+                                        minHeight: 48,
+                                        textTransform: 'none',
+                                        fontSize: '1rem',
+                                    },
+                                }}
                             >
-                                <Tab label="Participants" />
-                                <Tab label="Payouts" />
+                                <Tab
+                                    label={
+                                        <TabWithBadge
+                                            label="Participants"
+                                            count={leaderboard?.length || 0}
+                                        />
+                                    }
+                                />
+                                <Tab
+                                    label={
+                                        <TabWithBadge
+                                            label="Payouts"
+                                            count={payouts?.length || 0}
+                                        />
+                                    }
+                                />
                             </Tabs>
 
                             {activeTab === 0 ? (
@@ -734,10 +838,7 @@ export const PayoutDashboard = () => {
                                     </Table>
                                 </TableContainer>
                             ) : (
-                                <PayoutsTable
-                                    selectedWeek={selectedWeek}
-                                    selectedYear={selectedYear}
-                                />
+                                <PayoutsTable payouts={payouts} loading={payoutsLoading} />
                             )}
                         </Box>
                     </Card>
