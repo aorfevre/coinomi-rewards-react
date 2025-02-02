@@ -242,6 +242,7 @@ const DisperseButtons = ({
     };
 
     const showSnackbar = (message, severity = 'success') => {
+        console.log('Showing snackbar:', { message, severity });
         setSnackbar({
             open: true,
             message,
@@ -358,15 +359,40 @@ const DisperseButtons = ({
             </Box>
             <Snackbar
                 open={snackbar.open}
-                autoHideDuration={6000}
+                autoHideDuration={10000}
                 onClose={handleCloseSnackbar}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                sx={{
+                    '& .MuiAlert-root': {
+                        width: '100%',
+                        minWidth: '300px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        '& .MuiAlert-message': {
+                            fontSize: '1rem',
+                        },
+                    },
+                }}
             >
                 <Alert
                     onClose={handleCloseSnackbar}
                     severity={snackbar.severity}
                     variant="filled"
-                    sx={{ width: '100%' }}
+                    elevation={6}
+                    sx={{
+                        backgroundColor: theme => {
+                            switch (snackbar.severity) {
+                                case 'success':
+                                    return theme.palette.success.main;
+                                case 'error':
+                                    return theme.palette.error.main;
+                                case 'info':
+                                    return theme.palette.info.main;
+                                default:
+                                    return theme.palette.primary.main;
+                            }
+                        },
+                        color: 'white',
+                    }}
                 >
                     {snackbar.message}
                 </Alert>
@@ -517,16 +543,30 @@ export const PayoutDashboard = () => {
         message: '',
         severity: 'success',
     });
+    const [lastDocId, setLastDocId] = useState(null);
+    const [hasMore, setHasMore] = useState(false);
 
     const {
         leaderboard,
         loading: leaderboardLoading,
         refetch: refetchLeaderboard,
-    } = useLeaderboard(account ? 1000 : 0, selectedWeek, selectedYear);
+        totalParticipants,
+    } = useLeaderboard({
+        pageSize: 100,
+        lastDocId: null,
+        week: selectedWeek,
+        year: selectedYear,
+    });
+
+    useEffect(() => {
+        if (leaderboard?.totalParticipants) {
+            setHasMore(leaderboard.hasMore);
+            setLastDocId(leaderboard.lastDocId);
+        }
+    }, [leaderboard]);
 
     // Calculate KPI values
     const totalPoints = leaderboard?.reduce((sum, p) => sum + (p.points || 0), 0) || 0;
-    const totalParticipants = leaderboard?.length || 0;
     const tokensPerPoint =
         totalTokens && totalPoints ? (parseFloat(totalTokens) / totalPoints).toFixed(6) : '0';
 
@@ -564,29 +604,121 @@ export const PayoutDashboard = () => {
         setActiveStep(prevStep => prevStep - 1);
     };
 
-    const handleDownloadCSV = useCallback(() => {
+    const handleCloseSnackbar = () => {
+        setSnackbar(prev => ({ ...prev, open: false }));
+    };
+
+    const showSnackbar = (message, severity = 'success') => {
+        console.log('Showing snackbar:', { message, severity });
+        setSnackbar({
+            open: true,
+            message,
+            severity,
+        });
+    };
+
+    const handleDownloadCSV = useCallback(async () => {
         if (!leaderboard) return;
 
-        // Create CSV content
-        const headers = ['Wallet Address', 'Points', 'Token Amount'];
-        const rows = leaderboard.map(participant => [
-            participant.walletAddress,
-            participant.points,
-            (participant.points * parseFloat(tokensPerPoint)).toFixed(6),
-        ]);
+        try {
+            console.log('Starting CSV download process...');
+            showSnackbar('Preparing CSV download...', 'info');
 
-        const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+            // Fetch all participants recursively
+            let allParticipants = [...leaderboard];
+            let currentLastDocId = lastDocId;
+            let remainingCount = totalParticipants - allParticipants.length;
 
-        // Create and download the file
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement('a');
-        const url = URL.createObjectURL(blob);
-        link.setAttribute('href', url);
-        link.setAttribute('download', `payout-week${selectedWeek}-${selectedYear}.csv`);
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }, [leaderboard, tokensPerPoint, selectedWeek, selectedYear]);
+            console.log('Starting pagination loop...');
+
+            // Keep fetching while we haven't got all participants
+            while (remainingCount > 0) {
+                console.log('Fetching next page...', {
+                    currentCount: allParticipants.length,
+                    remainingCount,
+                    currentLastDocId,
+                });
+
+                showSnackbar(
+                    `Fetching participants: ${allParticipants.length}/${totalParticipants}...`,
+                    'info'
+                );
+
+                const nextPage = await refetchLeaderboard({
+                    pageSize: 1000,
+                    lastDocId: currentLastDocId,
+                    week: selectedWeek,
+                    year: selectedYear,
+                    isForDownload: true, // Add this flag
+                });
+
+                if (!nextPage?.leaderboard?.length) {
+                    console.log('No more participants received, breaking loop');
+                    break;
+                }
+
+                allParticipants = [...allParticipants, ...nextPage.leaderboard];
+                currentLastDocId = nextPage.lastDocId;
+                remainingCount = totalParticipants - allParticipants.length;
+
+                console.log('Updated pagination state:', {
+                    totalCollected: allParticipants.length,
+                    remainingCount,
+                    currentLastDocId,
+                });
+            }
+
+            console.log('Finished collecting participants:', {
+                finalCount: allParticipants.length,
+                expectedTotal: totalParticipants,
+            });
+
+            // Create CSV content
+            const headers = ['Wallet Address', 'Points', 'Token Amount'];
+            const rows = allParticipants.map(participant => [
+                participant.walletAddress,
+                participant.points,
+                (participant.points * parseFloat(tokensPerPoint)).toFixed(6),
+            ]);
+
+            console.log('Created CSV content:', {
+                headerCount: headers.length,
+                rowCount: rows.length,
+            });
+
+            const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
+
+            // Create and download the file
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', `payout-week${selectedWeek}-${selectedYear}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            console.log('CSV file created and download triggered');
+
+            showSnackbar(
+                `Successfully downloaded CSV with ${allParticipants.length} participants`,
+                'success'
+            );
+        } catch (error) {
+            console.error('Error in CSV download process:', error);
+            showSnackbar('Failed to generate CSV', 'error');
+        }
+    }, [
+        leaderboard,
+        lastDocId,
+        hasMore,
+        totalParticipants,
+        refetchLeaderboard,
+        selectedWeek,
+        selectedYear,
+        tokensPerPoint,
+        showSnackbar,
+    ]);
 
     const handleChainSelect = async selectedChainId => {
         try {
@@ -607,26 +739,37 @@ export const PayoutDashboard = () => {
                 yearNumber: selectedYear,
             });
 
-            // Refresh the leaderboard
-            await refetchLeaderboard();
-
-            showSnackbar('Successfully generated fake scores', 'success');
+            // Refresh the leaderboard using the returned function
+            const result = await refetchLeaderboard();
+            if (result?.leaderboard) {
+                // No need to setLeaderboard directly as the hook handles it
+                showSnackbar('Successfully generated fake scores', 'success');
+            }
         } catch (error) {
             console.error('Error generating fake scores:', error);
             showSnackbar('Failed to generate fake scores', 'error');
         }
     };
 
-    const handleCloseSnackbar = () => {
-        setSnackbar(prev => ({ ...prev, open: false }));
-    };
+    const handleLoadMore = async () => {
+        if (!hasMore || leaderboardLoading) return;
 
-    const showSnackbar = (message, severity = 'success') => {
-        setSnackbar({
-            open: true,
-            message,
-            severity,
-        });
+        try {
+            const nextPage = await refetchLeaderboard({
+                pageSize: 100,
+                lastDocId,
+                week: selectedWeek,
+                year: selectedYear,
+            });
+
+            if (nextPage?.leaderboard) {
+                // The hook will handle updating the leaderboard state
+                showSnackbar('Successfully loaded more participants', 'success');
+            }
+        } catch (error) {
+            console.error('Error loading more participants:', error);
+            showSnackbar('Failed to load more participants', 'error');
+        }
     };
 
     return (
@@ -814,7 +957,7 @@ export const PayoutDashboard = () => {
                                     <Button
                                         variant="outlined"
                                         startIcon={<FileDownloadIcon />}
-                                        onClick={handleDownloadCSV}
+                                        onClick={() => handleDownloadCSV()}
                                         disabled={!leaderboard || leaderboardLoading}
                                     >
                                         Download CSV
@@ -838,7 +981,7 @@ export const PayoutDashboard = () => {
                                     label={
                                         <TabWithBadge
                                             label="Participants"
-                                            count={leaderboard?.length || 0}
+                                            count={totalParticipants}
                                         />
                                     }
                                 />
@@ -853,45 +996,70 @@ export const PayoutDashboard = () => {
                             </Tabs>
 
                             {activeTab === 0 ? (
-                                <TableContainer>
-                                    <Table>
-                                        <TableHead>
-                                            <TableRow>
-                                                <TableCell>Wallet Address</TableCell>
-                                                <TableCell align="right">Points</TableCell>
-                                                <TableCell align="right">Token Amount</TableCell>
-                                            </TableRow>
-                                        </TableHead>
-                                        <TableBody>
-                                            {leaderboardLoading ? (
+                                <>
+                                    <TableContainer>
+                                        <Table>
+                                            <TableHead>
                                                 <TableRow>
-                                                    <TableCell colSpan={3} align="center">
-                                                        <CircularProgress size={24} />
+                                                    <TableCell>Wallet Address</TableCell>
+                                                    <TableCell align="right">Points</TableCell>
+                                                    <TableCell align="right">
+                                                        Token Amount
                                                     </TableCell>
                                                 </TableRow>
-                                            ) : (
-                                                leaderboard?.map(participant => (
-                                                    <TableRow key={participant.walletAddress}>
-                                                        <TableCell>
-                                                            {shortenAddress(
-                                                                participant.walletAddress
-                                                            )}
-                                                        </TableCell>
-                                                        <TableCell align="right">
-                                                            {participant.points?.toLocaleString()}
-                                                        </TableCell>
-                                                        <TableCell align="right">
-                                                            {(
-                                                                participant.points *
-                                                                parseFloat(tokensPerPoint)
-                                                            ).toFixed(6)}
+                                            </TableHead>
+                                            <TableBody>
+                                                {leaderboardLoading && !leaderboard?.length ? (
+                                                    <TableRow>
+                                                        <TableCell colSpan={3} align="center">
+                                                            <CircularProgress size={24} />
                                                         </TableCell>
                                                     </TableRow>
-                                                ))
-                                            )}
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
+                                                ) : (
+                                                    leaderboard?.map(participant => (
+                                                        <TableRow key={participant.walletAddress}>
+                                                            <TableCell>
+                                                                {shortenAddress(
+                                                                    participant.walletAddress
+                                                                )}
+                                                            </TableCell>
+                                                            <TableCell align="right">
+                                                                {participant.points?.toLocaleString()}
+                                                            </TableCell>
+                                                            <TableCell align="right">
+                                                                {(
+                                                                    participant.points *
+                                                                    parseFloat(tokensPerPoint)
+                                                                ).toFixed(6)}
+                                                            </TableCell>
+                                                        </TableRow>
+                                                    ))
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </TableContainer>
+                                    {hasMore && (
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                justifyContent: 'center',
+                                                mt: 2,
+                                            }}
+                                        >
+                                            <Button
+                                                variant="outlined"
+                                                onClick={handleLoadMore}
+                                                disabled={leaderboardLoading}
+                                            >
+                                                {leaderboardLoading ? (
+                                                    <CircularProgress size={24} />
+                                                ) : (
+                                                    'Load More'
+                                                )}
+                                            </Button>
+                                        </Box>
+                                    )}
+                                </>
                             ) : (
                                 <PayoutsTable payouts={payouts} loading={payoutsLoading} />
                             )}
@@ -903,15 +1071,40 @@ export const PayoutDashboard = () => {
             {/* Add Snackbar at the end of the component */}
             <Snackbar
                 open={snackbar.open}
-                autoHideDuration={6000}
+                autoHideDuration={10000}
                 onClose={handleCloseSnackbar}
-                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                sx={{
+                    '& .MuiAlert-root': {
+                        width: '100%',
+                        minWidth: '300px',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                        '& .MuiAlert-message': {
+                            fontSize: '1rem',
+                        },
+                    },
+                }}
             >
                 <Alert
                     onClose={handleCloseSnackbar}
                     severity={snackbar.severity}
                     variant="filled"
-                    sx={{ width: '100%' }}
+                    elevation={6}
+                    sx={{
+                        backgroundColor: theme => {
+                            switch (snackbar.severity) {
+                                case 'success':
+                                    return theme.palette.success.main;
+                                case 'error':
+                                    return theme.palette.error.main;
+                                case 'info':
+                                    return theme.palette.info.main;
+                                default:
+                                    return theme.palette.primary.main;
+                            }
+                        },
+                        color: 'white',
+                    }}
                 >
                     {snackbar.message}
                 </Alert>
