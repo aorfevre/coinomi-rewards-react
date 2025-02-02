@@ -2,6 +2,17 @@ import * as functions from 'firebase-functions';
 import { admin } from './config/firebase';
 import { getWeek, getYear } from 'date-fns';
 
+// Add options for consistent week calculation
+const WEEK_OPTIONS = {
+    weekStartsOn: 1 as 0 | 1 | 2 | 3 | 4 | 5 | 6, // Monday as week start
+    firstWeekContainsDate: 4 as 1 | 4, // ISO week numbering
+};
+
+// Add a helper function to ensure consistent week calculation
+export const calculateWeek = (date: Date) => {
+    return getWeek(date, WEEK_OPTIONS);
+};
+
 export const getUserRank = functions.https.onCall(async (data, context) => {
     try {
         if (!context.auth) {
@@ -39,27 +50,26 @@ export const getUserRank = functions.https.onCall(async (data, context) => {
     }
 });
 
-export const getLeaderboard = functions.https.onCall(async (data, context) => {
+export const getLeaderboard = functions.https.onCall(async data => {
     try {
-        if (!context.auth) {
-            throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-        }
-
         const limit = data.limit || 10;
         const now = new Date();
-        const currentWeek = getWeek(now);
-        const currentYear = getYear(now);
+        // Use the options for consistent week calculation
+        const week = data.week || getWeek(now, WEEK_OPTIONS);
+        const year = data.year || getYear(now);
 
         functions.logger.info('📊 Getting leaderboard:', {
             limit,
-            week: currentWeek,
-            year: currentYear,
+            week,
+            year,
+            currentDate: now.toISOString(),
+            calculatedWeek: getWeek(now, WEEK_OPTIONS),
         });
 
         const scoresRef = admin.firestore().collection('scores');
         const snapshot = await scoresRef
-            .where('weekNumber', '==', currentWeek)
-            .where('yearNumber', '==', currentYear)
+            .where('weekNumber', '==', week)
+            .where('yearNumber', '==', year)
             .orderBy('points', 'desc')
             .limit(limit)
             .get();
@@ -71,8 +81,8 @@ export const getLeaderboard = functions.https.onCall(async (data, context) => {
 
         return {
             leaderboard,
-            weekNumber: currentWeek,
-            yearNumber: currentYear,
+            weekNumber: week,
+            yearNumber: year,
         };
     } catch (error) {
         functions.logger.error('❌ Error getting leaderboard:', { error });

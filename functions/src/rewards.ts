@@ -2,6 +2,12 @@ import * as functions from 'firebase-functions';
 import { db } from './config/firebase';
 import { getWeek, getYear } from 'date-fns';
 
+// Add the consistent week options
+const WEEK_OPTIONS = {
+    weekStartsOn: 1 as 0 | 1 | 2 | 3 | 4 | 5 | 6,
+    firstWeekContainsDate: 4 as 1 | 4,
+};
+
 interface UserScore {
     userId: string;
     points: number;
@@ -12,6 +18,7 @@ interface UserScore {
     currentStreak?: number;
     weekNumber?: number;
     yearNumber?: number;
+    walletAddress?: string;
 }
 
 export const claimDailyReward = functions.https.onCall(async (data, context) => {
@@ -78,7 +85,7 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
 
         const totalPoints = Math.round(basePoints * (1 + telegramBonus + emailBonus + streakBonus));
 
-        // Add reward document
+        // Add reward document with week and year
         const rewardRef = await db.collection('rewards').add({
             userId,
             points: totalPoints,
@@ -86,10 +93,14 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
             telegramBonus: userData?.telegramConnected ? 0.1 : 0,
             emailBonus: userData?.emailConnected ? 0.1 : 0,
             streakBonus: streakBonus,
-            timestamp: new Date().toISOString(),
+            timestamp: now.toISOString(),
             type: 'daily',
+            weekNumber: getWeek(now, WEEK_OPTIONS),
+            yearNumber: getYear(now),
+            walletAddress: userData?.walletAddress,
         });
-        // if the user is reffered by another user, add a new reward document
+
+        // Update referral reward to include week and year if exists
         if (userData?.referredBy) {
             await db.collection('rewards').add({
                 userId: userData.referredBy,
@@ -97,8 +108,11 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
                 points: Math.round(totalPoints * 0.1),
                 multiplier: 0.1,
                 type: 'referral-bonus',
-                timestamp: new Date().toISOString(),
+                timestamp: now.toISOString(),
                 rewardId: rewardRef.id,
+                weekNumber: getWeek(now, WEEK_OPTIONS),
+                yearNumber: getYear(now),
+                walletAddress: userData?.walletAddress,
             });
         }
 
@@ -138,16 +152,23 @@ export const onRewardCreated = functions.firestore
                 functions.logger.error('No userId found in reward document');
                 return;
             }
-            const userScoreRef = db.collection('scores').doc(userId);
+            const userScoreRef = db
+                .collection('scores')
+                .where('userId', '==', userId)
+                .where('weekNumber', '==', getWeek(new Date(), WEEK_OPTIONS))
+                .where('yearNumber', '==', getYear(new Date()))
+                .limit(1);
 
-            const scoreDoc = await userScoreRef.get();
+            const scoreSnapshot = await userScoreRef.get();
             const defaultData: UserScore = {
                 userId,
                 points: 0,
                 tasksCompleted: 0,
                 multiplier: 1,
             };
-            const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
+            const currentData = !scoreSnapshot.empty
+                ? (scoreSnapshot.docs[0].data() as UserScore)
+                : defaultData;
 
             const lastClaimDate = currentData.lastTaskTimestamp
                 ? new Date(currentData.lastTaskTimestamp)
@@ -169,8 +190,9 @@ export const onRewardCreated = functions.firestore
                 lastUpdated: new Date().toISOString(),
                 currentStreak:
                     isStreakActive && currentData.currentStreak ? currentData.currentStreak + 1 : 1,
-                weekNumber: getWeek(new Date()),
+                weekNumber: getWeek(new Date(), WEEK_OPTIONS),
                 yearNumber: getYear(new Date()),
+                walletAddress: rewardData?.walletAddress,
             };
             if (type === 'daily') {
                 // Calculate new points with multiplier
@@ -180,7 +202,15 @@ export const onRewardCreated = functions.firestore
                 insertScore.tasksCompleted = currentData.tasksCompleted + 1 || 0;
                 insertScore.multiplier = currentData.multiplier || 1;
 
-                await userScoreRef.set(insertScore, { merge: true });
+                // Create or update score document
+                if (!scoreSnapshot.empty) {
+                    await db
+                        .collection('scores')
+                        .doc(scoreSnapshot.docs[0].id)
+                        .set(insertScore, { merge: true });
+                } else {
+                    await db.collection('scores').add(insertScore);
+                }
             } else if (type === 'new-referral') {
                 const userScoreRef = db.collection('scores').doc(userId);
                 const scoreDoc = await userScoreRef.get();

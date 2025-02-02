@@ -40,14 +40,6 @@ export const useWeb3 = () => {
     const [chainId, setChainId] = useState(null);
     const [error, setError] = useState(null);
 
-    // Auto-connect on mount if previously connected
-    React.useEffect(() => {
-        const wasConnected = localStorage.getItem(WALLET_CONNECTED_KEY);
-        if (wasConnected === 'true' && window.ethereum) {
-            connect();
-        }
-    }, []);
-
     const getProvider = useCallback(() => {
         if (!window.ethereum) return null;
         return new BrowserProvider(window.ethereum);
@@ -154,6 +146,13 @@ export const useWeb3 = () => {
         },
         [getProvider, switchChain]
     );
+    // Auto-connect on mount if previously connected
+    React.useEffect(() => {
+        const wasConnected = localStorage.getItem(WALLET_CONNECTED_KEY);
+        if (wasConnected === 'true' && window.ethereum) {
+            connect();
+        }
+    }, [connect]);
 
     const disconnect = useCallback(() => {
         if (window.ethereum) {

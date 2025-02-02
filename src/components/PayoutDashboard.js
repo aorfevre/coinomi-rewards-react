@@ -11,44 +11,98 @@ import {
     Paper,
     CircularProgress,
     Button,
+    Grid,
+    TextField,
+    MenuItem,
+    Select,
+    FormControl,
+    InputLabel,
 } from '@mui/material';
 import { ChainSelector } from './ChainSelector';
 import { usePayouts } from '../hooks/usePayouts';
+import { useLeaderboard } from '../hooks/useLeaderboard';
 import { shortenAddress } from '../utils/address';
 import { formatDate } from '../utils/date';
 import { useWeb3 } from '../hooks/useWeb3';
 import { TokenSelector } from './TokenSelector';
+import { KPICard } from './KPICard';
+import { getWeek } from 'date-fns';
+
+// Utility function to get current week
+const getCurrentWeek = () => {
+    const now = new Date();
+    // Use the same options as the backend
+    return getWeek(now, {
+        weekStartsOn: 1,
+        firstWeekContainsDate: 4,
+    });
+};
+
+// Utility function to generate week options
+const generateWeekOptions = () => {
+    return Array.from({ length: 53 }, (_, i) => i + 1);
+};
+
+// Utility function to generate year options (last 5 years)
+const generateYearOptions = () => {
+    const currentYear = new Date().getFullYear();
+    return Array.from({ length: 5 }, (_, i) => currentYear - i);
+};
 
 export const PayoutDashboard = () => {
-    const { payouts, loading, error, fetchPayouts, generatePayout } = usePayouts();
+    const {
+        payouts,
+        loading: payoutsLoading,
+        error: payoutsError,
+        // fetchPayouts,
+        generatePayout,
+    } = usePayouts();
     const { connect, disconnect, account, chainId } = useWeb3();
     const [selectedToken, setSelectedToken] = useState(null);
+    const [totalTokens, setTotalTokens] = useState('');
+    const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-    // const currentChain = SUPPORTED_CHAINS.find(chain => chain.id === chainId);
+    // Only fetch leaderboard when connected and pass week/year
+    const {
+        leaderboard,
+        loading: leaderboardLoading,
+        error: leaderboardError,
+    } = useLeaderboard(
+        account ? 1000 : 0,
+        account ? selectedWeek : null,
+        account ? selectedYear : null
+    );
 
-    React.useMemo(() => {
-        fetchPayouts();
-    }, []);
+    // Calculate KPI values using leaderboard data
+    const totalPoints = leaderboard?.reduce((sum, p) => sum + (p.points || 0), 0) || 0;
+    const totalParticipants = leaderboard?.length || 0;
+    const tokensPerPoint =
+        totalTokens && totalPoints ? (parseFloat(totalTokens) / totalPoints).toFixed(6) : '0';
 
     const handleGeneratePayout = useCallback(async () => {
-        if (!account || !selectedToken || !chainId) return;
-        await generatePayout(selectedToken.address, chainId);
-    }, [account, selectedToken, chainId, generatePayout]);
+        if (!account || !selectedToken || !chainId || !totalTokens) return;
+        await generatePayout(selectedToken.address, chainId, totalTokens);
+    }, [account, selectedToken, chainId, generatePayout, totalTokens]);
 
     const handleTokenSelect = tokenInfo => {
         setSelectedToken(tokenInfo);
     };
 
+    const loading = payoutsLoading || leaderboardLoading;
+    const error = payoutsError || leaderboardError;
+
     if (error) {
         return (
             <Box sx={{ p: 3 }}>
-                <Typography color="error">Error loading payouts: {error.message}</Typography>
+                <Typography color="error">Error: {error.message}</Typography>
             </Box>
         );
     }
 
     return (
         <Box sx={{ p: 3 }}>
+            {/* Header with connect button */}
             <Box
                 sx={{
                     display: 'flex',
@@ -73,65 +127,159 @@ export const PayoutDashboard = () => {
             </Box>
 
             {account && (
-                <Box sx={{ mb: 3, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    <ChainSelector
-                        currentChainId={chainId}
-                        onChainSelect={async newChainId => {
-                            if (newChainId !== chainId) {
-                                try {
-                                    await connect(newChainId);
-                                } catch (error) {
-                                    console.error('Failed to switch chain:', error);
+                <>
+                    {/* Chain and Token Selection */}
+                    <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                        <ChainSelector
+                            currentChainId={chainId}
+                            onChainSelect={async newChainId => {
+                                if (newChainId !== chainId) {
+                                    try {
+                                        await connect(newChainId);
+                                    } catch (error) {
+                                        console.error('Failed to switch chain:', error);
+                                    }
                                 }
-                            }
-                        }}
-                    />
+                            }}
+                        />
+                        <TokenSelector onTokenSelect={handleTokenSelect} />
 
-                    <TokenSelector onTokenSelect={handleTokenSelect} />
+                        {/* Week and Year Selection */}
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <FormControl sx={{ minWidth: 120 }}>
+                                <InputLabel>Week</InputLabel>
+                                <Select
+                                    value={selectedWeek}
+                                    label="Week"
+                                    onChange={e => setSelectedWeek(e.target.value)}
+                                    size="small"
+                                >
+                                    {generateWeekOptions().map(week => (
+                                        <MenuItem key={week} value={week}>
+                                            Week {week}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
 
-                    <Button
-                        variant="contained"
-                        onClick={handleGeneratePayout}
-                        disabled={!selectedToken || !chainId}
-                    >
-                        Generate Payout
-                    </Button>
-                </Box>
-            )}
+                            <FormControl sx={{ minWidth: 120 }}>
+                                <InputLabel>Year</InputLabel>
+                                <Select
+                                    value={selectedYear}
+                                    label="Year"
+                                    onChange={e => setSelectedYear(e.target.value)}
+                                    size="small"
+                                >
+                                    {generateYearOptions().map(year => (
+                                        <MenuItem key={year} value={year}>
+                                            {year}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Box>
+                    </Box>
 
-            {/* Payouts table */}
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Wallet Address</TableCell>
-                            <TableCell>Points</TableCell>
-                            <TableCell>USD Value</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Date</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {loading ? (
-                            <TableRow>
-                                <TableCell colSpan={5} align="center">
-                                    <CircularProgress />
-                                </TableCell>
-                            </TableRow>
-                        ) : (
-                            payouts?.map(payout => (
-                                <TableRow key={payout.id}>
-                                    <TableCell>{shortenAddress(payout.walletAddress)}</TableCell>
-                                    <TableCell>{payout.points.toFixed(2)}</TableCell>
-                                    <TableCell>${payout.usdValue.toFixed(2)}</TableCell>
-                                    <TableCell>{payout.status}</TableCell>
-                                    <TableCell>{formatDate(payout.timestamp)}</TableCell>
+                    {/* KPI Cards */}
+                    <Grid container spacing={2} sx={{ mb: 4 }}>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <TextField
+                                fullWidth
+                                label="Total Tokens to Distribute"
+                                type="number"
+                                value={totalTokens}
+                                onChange={e => setTotalTokens(e.target.value)}
+                                InputProps={{
+                                    endAdornment: selectedToken && (
+                                        <Typography variant="caption" color="text.secondary">
+                                            {selectedToken.symbol}
+                                        </Typography>
+                                    ),
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <KPICard title="Total Points" value={totalPoints.toLocaleString()} />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <KPICard
+                                title="Tokens per Point"
+                                value={tokensPerPoint}
+                                subtitle={selectedToken?.symbol}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <KPICard title="Total Participants" value={totalParticipants} />
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <KPICard
+                                title="Selected Period"
+                                value={`Week ${selectedWeek}`}
+                                subtitle={selectedYear.toString()}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    {/* Generate Payout Button */}
+                    <Box sx={{ mb: 4 }}>
+                        <Button
+                            variant="contained"
+                            onClick={handleGeneratePayout}
+                            disabled={!selectedToken || !chainId || !totalTokens}
+                            fullWidth
+                        >
+                            Generate Payout
+                        </Button>
+                    </Box>
+
+                    {/* Payouts Table - Now using leaderboard data */}
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Wallet Address</TableCell>
+                                    <TableCell align="right">Points</TableCell>
+                                    <TableCell align="right">Token Amount</TableCell>
+                                    <TableCell>Status</TableCell>
+                                    <TableCell>Last Updated</TableCell>
                                 </TableRow>
-                            ))
-                        )}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {loading ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} align="center">
+                                            <CircularProgress size={24} />
+                                        </TableCell>
+                                    </TableRow>
+                                ) : (
+                                    leaderboard?.map(participant => (
+                                        <TableRow key={participant.walletAddress}>
+                                            <TableCell>
+                                                {shortenAddress(participant.walletAddress)}
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                {participant.points?.toLocaleString()}
+                                            </TableCell>
+                                            <TableCell align="right">
+                                                {(
+                                                    participant.points * parseFloat(tokensPerPoint)
+                                                ).toFixed(6)}
+                                            </TableCell>
+                                            <TableCell>
+                                                {payouts?.find(p => p.wallet === participant.wallet)
+                                                    ?.status || 'Pending'}
+                                            </TableCell>
+                                            <TableCell>
+                                                {formatDate(participant.lastUpdated)}
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </>
+            )}
         </Box>
     );
 };
