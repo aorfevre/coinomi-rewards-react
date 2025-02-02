@@ -9,6 +9,8 @@ import {
     updateReferralCode,
     onReferralUpdate,
 } from './referrals';
+import * as functions from 'firebase-functions';
+import { createPayout } from './payouts';
 
 // Export the functions
 export {
@@ -24,3 +26,15 @@ export {
     updateReferralCode,
     onReferralUpdate,
 };
+
+export const recordPayout = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+
+    try {
+        return await createPayout(data);
+    } catch (error) {
+        throw new functions.https.HttpsError('internal', 'Failed to record payout');
+    }
+});

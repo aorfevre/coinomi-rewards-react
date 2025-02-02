@@ -19,6 +19,8 @@ import {
     Card,
     TextField,
     InputAdornment,
+    Snackbar,
+    Alert,
 } from '@mui/material';
 import { ChainSelector } from './ChainSelector';
 import { TokenSelector } from './TokenSelector';
@@ -33,6 +35,7 @@ import PropTypes from 'prop-types';
 import { CHAIN_CONFIGS } from '../hooks/useWeb3';
 import { CHAIN_ICONS } from './ChainSelector';
 import { Contract } from 'ethers';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 const steps = ['Select Chain', 'Select Token', 'Set Amount'];
 
@@ -66,6 +69,8 @@ const StepContent = ({
     leaderboard,
     tokensPerPoint,
     onChainSelect,
+    selectedWeek,
+    selectedYear,
 }) => {
     switch (step) {
         case 0:
@@ -117,6 +122,8 @@ const StepContent = ({
                         totalTokens={totalTokens}
                         leaderboard={leaderboard}
                         tokensPerPoint={tokensPerPoint}
+                        selectedWeek={selectedWeek}
+                        selectedYear={selectedYear}
                     />
                 </Box>
             );
@@ -135,6 +142,8 @@ StepContent.propTypes = {
     leaderboard: PropTypes.array,
     tokensPerPoint: PropTypes.string,
     onChainSelect: PropTypes.func.isRequired,
+    selectedWeek: PropTypes.number.isRequired,
+    selectedYear: PropTypes.number.isRequired,
 };
 
 const StepSummary = ({ step, chainId, selectedToken, totalTokens }) => {
@@ -183,9 +192,22 @@ StepSummary.propTypes = {
 };
 
 // Add prop types for the DisperseButtons component
-const DisperseButtons = ({ chainId, selectedToken, totalTokens, leaderboard, tokensPerPoint }) => {
+const DisperseButtons = ({
+    chainId,
+    selectedToken,
+    totalTokens,
+    leaderboard,
+    tokensPerPoint,
+    selectedWeek,
+    selectedYear,
+}) => {
     const [loading, setLoading] = useState(false);
     const [allowance, setAllowance] = useState('0');
+    const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: '',
+        severity: 'success',
+    });
     const { getProvider, account } = useWeb3();
 
     // Check allowance when component mounts or when relevant props change
@@ -210,6 +232,18 @@ const DisperseButtons = ({ chainId, selectedToken, totalTokens, leaderboard, tok
         checkAllowance();
     }, [chainId, selectedToken, getProvider, account]);
 
+    const handleCloseSnackbar = () => {
+        setSnackbar(prev => ({ ...prev, open: false }));
+    };
+
+    const showSnackbar = (message, severity = 'success') => {
+        setSnackbar({
+            open: true,
+            message,
+            severity,
+        });
+    };
+
     const handleApprove = async () => {
         if (!selectedToken?.address || !chainId || !account) return;
 
@@ -231,8 +265,11 @@ const DisperseButtons = ({ chainId, selectedToken, totalTokens, leaderboard, tok
             // Refresh allowance
             const newAllowance = await tokenContract.allowance(account, disperseAddress);
             setAllowance(newAllowance.toString());
+
+            showSnackbar(`Successfully approved ${totalTokens} ${selectedToken.symbol}`);
         } catch (error) {
             console.error('Error approving tokens:', error);
+            showSnackbar(`Failed to approve tokens: ${error.message || 'Unknown error'}`, 'error');
         } finally {
             setLoading(false);
         }
@@ -265,9 +302,28 @@ const DisperseButtons = ({ chainId, selectedToken, totalTokens, leaderboard, tok
                 recipients,
                 values
             );
-            await tx.wait();
+            const receipt = await tx.wait();
+
+            // Record the payout in Firebase
+            const functions = getFunctions();
+            const recordPayout = httpsCallable(functions, 'recordPayout');
+            await recordPayout({
+                weekNumber: selectedWeek,
+                yearNumber: selectedYear,
+                timestamp: Date.now(),
+                transactionHash: receipt.hash,
+                chainId,
+                tokenAddress: selectedToken.address,
+                tokenSymbol: selectedToken.symbol,
+                tokenAmount: totalTokens,
+            });
+
+            showSnackbar(
+                `Successfully dispersed ${totalTokens} ${selectedToken.symbol} to ${recipients.length} recipients`
+            );
         } catch (error) {
             console.error('Error dispersing tokens:', error);
+            showSnackbar(`Failed to disperse tokens: ${error.message || 'Unknown error'}`, 'error');
         } finally {
             setLoading(false);
         }
@@ -277,23 +333,40 @@ const DisperseButtons = ({ chainId, selectedToken, totalTokens, leaderboard, tok
         BigInt(allowance) < parseUnits(totalTokens || '0', selectedToken?.decimals || 18);
 
     return (
-        <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button
-                variant="contained"
-                onClick={handleApprove}
-                disabled={loading || !needsAllowance}
+        <>
+            <Box sx={{ display: 'flex', gap: 2 }}>
+                <Button
+                    variant="contained"
+                    onClick={handleApprove}
+                    disabled={loading || !needsAllowance}
+                >
+                    {loading ? <CircularProgress size={24} /> : 'Approve Tokens'}
+                </Button>
+                <Button
+                    variant="contained"
+                    color="success"
+                    onClick={handleDisperse}
+                    disabled={loading || needsAllowance}
+                >
+                    {loading ? <CircularProgress size={24} /> : 'Disperse Tokens'}
+                </Button>
+            </Box>
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             >
-                {loading ? <CircularProgress size={24} /> : 'Approve Tokens'}
-            </Button>
-            <Button
-                variant="contained"
-                color="success"
-                onClick={handleDisperse}
-                disabled={loading || needsAllowance}
-            >
-                {loading ? <CircularProgress size={24} /> : 'Disperse Tokens'}
-            </Button>
-        </Box>
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbar.severity}
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
+        </>
     );
 };
 
@@ -309,6 +382,8 @@ DisperseButtons.propTypes = {
     totalTokens: PropTypes.string.isRequired,
     leaderboard: PropTypes.arrayOf(ParticipantPropType),
     tokensPerPoint: PropTypes.string.isRequired,
+    selectedWeek: PropTypes.number.isRequired,
+    selectedYear: PropTypes.number.isRequired,
 };
 
 export const PayoutDashboard = () => {
@@ -424,6 +499,8 @@ export const PayoutDashboard = () => {
                                 leaderboard={leaderboard}
                                 tokensPerPoint={tokensPerPoint}
                                 onChainSelect={handleChainSelect}
+                                selectedWeek={selectedWeek}
+                                selectedYear={selectedYear}
                             />
 
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
