@@ -8,82 +8,182 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Paper,
     CircularProgress,
     Button,
     Grid,
     TextField,
-    MenuItem,
     Select,
-    FormControl,
-    InputLabel,
+    MenuItem,
+    Stepper,
+    Step,
+    StepLabel,
+    Card,
 } from '@mui/material';
 import { ChainSelector } from './ChainSelector';
-import { usePayouts } from '../hooks/usePayouts';
-import { useLeaderboard } from '../hooks/useLeaderboard';
-import { shortenAddress } from '../utils/address';
-import { calculateWeek } from '../utils/date';
-import { useWeb3 } from '../hooks/useWeb3';
 import { TokenSelector } from './TokenSelector';
 import { KPICard } from './KPICard';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { useWeb3 } from '../hooks/useWeb3';
+import { useLeaderboard } from '../hooks/useLeaderboard';
+import { shortenAddress } from '../utils/address';
+import { calculateWeek } from '../utils/date';
+import { formatUnits } from 'ethers';
+import PropTypes from 'prop-types';
+import { CHAIN_CONFIGS } from '../hooks/useWeb3';
+import { CHAIN_ICONS } from './ChainSelector';
 
-// Utility function to get current week
-const getCurrentWeek = () => {
-    return calculateWeek(new Date());
+const steps = ['Select Chain', 'Select Token', 'Set Amount'];
+
+// Define prop types for the token object
+const TokenPropType = PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    symbol: PropTypes.string.isRequired,
+    balance: PropTypes.string.isRequired,
+    decimals: PropTypes.number.isRequired,
+});
+
+const StepContent = ({
+    step,
+    chainId,
+    selectedToken,
+    totalTokens,
+    setSelectedToken,
+    setTotalTokens,
+}) => {
+    switch (step) {
+        case 0:
+            return (
+                <Box>
+                    <Typography variant="h6" gutterBottom>
+                        Select Chain
+                    </Typography>
+                    <ChainSelector
+                        currentChainId={chainId}
+                        onChainSelect={id => {
+                            console.log('chainId', id);
+                        }}
+                    />
+                </Box>
+            );
+        case 1:
+            return (
+                <Box>
+                    <Typography variant="h6" gutterBottom>
+                        Select Token
+                    </Typography>
+                    <TokenSelector onSelect={setSelectedToken} chainId={chainId} />
+                </Box>
+            );
+        case 2:
+            return (
+                <Box>
+                    <Typography variant="h6" gutterBottom>
+                        Set Distribution Amount
+                    </Typography>
+                    <TextField
+                        fullWidth
+                        label="Total Tokens to Distribute"
+                        type="number"
+                        value={totalTokens}
+                        onChange={e => setTotalTokens(e.target.value)}
+                        InputProps={{
+                            endAdornment: selectedToken && (
+                                <Typography variant="caption" color="text.secondary">
+                                    {selectedToken.symbol}
+                                </Typography>
+                            ),
+                        }}
+                    />
+                </Box>
+            );
+        default:
+            return null;
+    }
 };
 
-// Utility function to generate week options
-const generateWeekOptions = () => {
-    return Array.from({ length: 53 }, (_, i) => i + 1);
+StepContent.propTypes = {
+    step: PropTypes.number.isRequired,
+    chainId: PropTypes.string,
+    selectedToken: TokenPropType,
+    totalTokens: PropTypes.string,
+    setSelectedToken: PropTypes.func.isRequired,
+    setTotalTokens: PropTypes.func.isRequired,
 };
 
-// Utility function to generate year options (last 5 years)
-const generateYearOptions = () => {
-    const currentYear = new Date().getFullYear();
-    return Array.from({ length: 5 }, (_, i) => currentYear - i);
+const StepSummary = ({ step, chainId, selectedToken, totalTokens }) => {
+    const chainConfig = CHAIN_CONFIGS[chainId];
+
+    return (
+        <Box sx={{ mt: 1 }}>
+            {step > 0 && chainConfig && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                    <img
+                        src={CHAIN_ICONS[chainConfig.icon]}
+                        alt={chainConfig.chainName}
+                        style={{ width: 20, height: 20 }}
+                    />
+                    <Typography variant="body2">
+                        Chain: {chainConfig.chainName} ({chainConfig.nativeCurrency.symbol})
+                    </Typography>
+                </Box>
+            )}
+            {step > 1 && selectedToken && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1 }}>
+                    <Typography variant="body2">
+                        Token: {selectedToken.name} ({selectedToken.symbol})
+                        <br />
+                        Balance: {formatUnits(selectedToken.balance, selectedToken.decimals)}{' '}
+                        {selectedToken.symbol}
+                    </Typography>
+                </Box>
+            )}
+            {step > 2 && totalTokens && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Typography variant="body2">
+                        Amount to distribute: {totalTokens} {selectedToken?.symbol}
+                    </Typography>
+                </Box>
+            )}
+        </Box>
+    );
+};
+
+StepSummary.propTypes = {
+    step: PropTypes.number.isRequired,
+    chainId: PropTypes.string,
+    selectedToken: TokenPropType,
+    totalTokens: PropTypes.string,
 };
 
 export const PayoutDashboard = () => {
-    const {
-        loading: payoutsLoading,
-        error: payoutsError,
-        // fetchPayouts,
-        generatePayout,
-    } = usePayouts();
+    const [activeStep, setActiveStep] = useState(0);
     const { connect, disconnect, account, chainId } = useWeb3();
     const [selectedToken, setSelectedToken] = useState(null);
     const [totalTokens, setTotalTokens] = useState('');
-    const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
+    const [selectedWeek, setSelectedWeek] = useState(calculateWeek(new Date()));
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-    // Only fetch leaderboard when connected and pass week/year
-    const {
-        leaderboard,
-        loading: leaderboardLoading,
-        error: leaderboardError,
-    } = useLeaderboard(
-        account ? 1000 : 0, // Pass 1000 to get all participants when connected
-        account ? selectedWeek : null,
-        account ? selectedYear : null
+    const { leaderboard, loading: leaderboardLoading } = useLeaderboard(
+        account ? 1000 : 0,
+        selectedWeek,
+        selectedYear
     );
 
-    // Calculate KPI values using leaderboard data
+    // Calculate KPI values
     const totalPoints = leaderboard?.reduce((sum, p) => sum + (p.points || 0), 0) || 0;
     const totalParticipants = leaderboard?.length || 0;
     const tokensPerPoint =
         totalTokens && totalPoints ? (parseFloat(totalTokens) / totalPoints).toFixed(6) : '0';
 
-    const handleGeneratePayout = useCallback(async () => {
-        if (!account || !selectedToken || !chainId || !totalTokens) return;
-        await generatePayout(selectedToken.address, chainId, totalTokens);
-    }, [account, selectedToken, chainId, generatePayout, totalTokens]);
-
-    const handleTokenSelect = tokenInfo => {
-        setSelectedToken(tokenInfo);
+    const handleNext = () => {
+        setActiveStep(prevStep => prevStep + 1);
     };
 
-    const handleDownloadCSV = useCallback(async () => {
+    const handleBack = () => {
+        setActiveStep(prevStep => prevStep - 1);
+    };
+
+    const handleDownloadCSV = useCallback(() => {
         if (!leaderboard) return;
 
         // Create CSV content
@@ -105,117 +205,80 @@ export const PayoutDashboard = () => {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-    }, [leaderboard, tokensPerPoint, selectedWeek, selectedYear]);
-
-    const loading = payoutsLoading || leaderboardLoading;
-    const error = payoutsError || leaderboardError;
-
-    if (error) {
-        return (
-            <Box sx={{ p: 3 }}>
-                <Typography color="error">Error: {error.message}</Typography>
-            </Box>
-        );
-    }
+    }, []);
 
     return (
-        <Box sx={{ p: 3 }}>
-            {/* Header with connect button */}
+        <Box sx={{ p: 3, maxWidth: 1200, margin: '0 auto' }}>
+            {/* Header with Connect/Disconnect */}
             <Box
                 sx={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
-                    mb: 3,
+                    mb: 4,
                 }}
             >
                 <Typography variant="h4">Payout Dashboard</Typography>
-                {!account ? (
-                    <Button variant="contained" onClick={connect}>
-                        Connect Wallet
-                    </Button>
-                ) : (
-                    <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                        <Typography>{shortenAddress(account)}</Typography>
-                        <Button variant="outlined" onClick={disconnect}>
-                            Disconnect
-                        </Button>
-                    </Box>
-                )}
+                <Button
+                    variant="contained"
+                    onClick={account ? disconnect : connect}
+                    color={account ? 'error' : 'primary'}
+                >
+                    {account ? 'Disconnect' : 'Connect Wallet'}
+                </Button>
             </Box>
 
             {account && (
                 <>
-                    {/* Chain and Token Selection */}
-                    <Box sx={{ mb: 4, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        <ChainSelector
-                            currentChainId={chainId}
-                            onChainSelect={async newChainId => {
-                                if (newChainId !== chainId) {
-                                    try {
-                                        await connect(newChainId);
-                                    } catch (error) {
-                                        console.error('Failed to switch chain:', error);
+                    <Card sx={{ mb: 4, p: 3 }}>
+                        <Stepper activeStep={activeStep} sx={{ mb: 4 }}>
+                            {steps.map(label => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+
+                        <Box sx={{ mt: 2 }}>
+                            {/* Show summary of previous steps */}
+                            <StepSummary
+                                step={activeStep}
+                                chainId={chainId}
+                                selectedToken={selectedToken}
+                                totalTokens={totalTokens}
+                            />
+
+                            {/* Show current step content */}
+                            <StepContent
+                                step={activeStep}
+                                chainId={chainId}
+                                selectedToken={selectedToken}
+                                totalTokens={totalTokens}
+                                setSelectedToken={setSelectedToken}
+                                setTotalTokens={setTotalTokens}
+                            />
+
+                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                                <Button disabled={activeStep === 0} onClick={handleBack}>
+                                    Back
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    onClick={handleNext}
+                                    disabled={
+                                        (activeStep === 0 && !chainId) ||
+                                        (activeStep === 1 && !selectedToken) ||
+                                        (activeStep === 2 && !totalTokens)
                                     }
-                                }
-                            }}
-                        />
-                        <TokenSelector onTokenSelect={handleTokenSelect} />
-
-                        {/* Week and Year Selection */}
-                        <Box sx={{ display: 'flex', gap: 2 }}>
-                            <FormControl sx={{ minWidth: 120 }}>
-                                <InputLabel>Week</InputLabel>
-                                <Select
-                                    value={selectedWeek}
-                                    label="Week"
-                                    onChange={e => setSelectedWeek(e.target.value)}
-                                    size="small"
                                 >
-                                    {generateWeekOptions().map(week => (
-                                        <MenuItem key={week} value={week}>
-                                            Week {week}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-
-                            <FormControl sx={{ minWidth: 120 }}>
-                                <InputLabel>Year</InputLabel>
-                                <Select
-                                    value={selectedYear}
-                                    label="Year"
-                                    onChange={e => setSelectedYear(e.target.value)}
-                                    size="small"
-                                >
-                                    {generateYearOptions().map(year => (
-                                        <MenuItem key={year} value={year}>
-                                            {year}
-                                        </MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
+                                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                </Button>
+                            </Box>
                         </Box>
-                    </Box>
+                    </Card>
 
                     {/* KPI Cards */}
                     <Grid container spacing={2} sx={{ mb: 4 }}>
-                        <Grid item xs={12} sm={6} md={3}>
-                            <TextField
-                                fullWidth
-                                label="Total Tokens to Distribute"
-                                type="number"
-                                value={totalTokens}
-                                onChange={e => setTotalTokens(e.target.value)}
-                                InputProps={{
-                                    endAdornment: selectedToken && (
-                                        <Typography variant="caption" color="text.secondary">
-                                            {selectedToken.symbol}
-                                        </Typography>
-                                    ),
-                                }}
-                            />
-                        </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <KPICard title="Total Points" value={totalPoints.toLocaleString()} />
                         </Grid>
@@ -238,67 +301,93 @@ export const PayoutDashboard = () => {
                         </Grid>
                     </Grid>
 
-                    {/* Add Download CSV button before the table */}
-                    <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
-                        <Button
-                            variant="outlined"
-                            startIcon={<FileDownloadIcon />}
-                            onClick={handleDownloadCSV}
-                            disabled={!leaderboard || loading}
-                        >
-                            Download CSV
-                        </Button>
-                    </Box>
+                    {/* Period Selection and Table */}
+                    <Card sx={{ mb: 4 }}>
+                        <Box sx={{ p: 3 }}>
+                            <Box
+                                sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    mb: 3,
+                                }}
+                            >
+                                <Box sx={{ display: 'flex', gap: 2 }}>
+                                    <Select
+                                        value={selectedWeek}
+                                        onChange={e => setSelectedWeek(e.target.value)}
+                                        size="small"
+                                    >
+                                        {Array.from({ length: 53 }, (_, i) => (
+                                            <MenuItem key={i + 1} value={i + 1}>
+                                                Week {i + 1}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                    <Select
+                                        value={selectedYear}
+                                        onChange={e => setSelectedYear(e.target.value)}
+                                        size="small"
+                                    >
+                                        {Array.from({ length: 5 }, (_, i) => (
+                                            <MenuItem
+                                                key={new Date().getFullYear() - i}
+                                                value={new Date().getFullYear() - i}
+                                            >
+                                                {new Date().getFullYear() - i}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </Box>
+                                <Button
+                                    variant="outlined"
+                                    startIcon={<FileDownloadIcon />}
+                                    onClick={handleDownloadCSV}
+                                    disabled={!leaderboard || leaderboardLoading}
+                                >
+                                    Download CSV
+                                </Button>
+                            </Box>
 
-                    {/* Generate Payout Button */}
-                    <Box sx={{ mb: 4 }}>
-                        <Button
-                            variant="contained"
-                            onClick={handleGeneratePayout}
-                            disabled={!selectedToken || !chainId || !totalTokens}
-                            fullWidth
-                        >
-                            Generate Payout
-                        </Button>
-                    </Box>
-
-                    {/* Payouts Table - Now using leaderboard data */}
-                    <TableContainer component={Paper}>
-                        <Table>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Wallet Address</TableCell>
-                                    <TableCell align="right">Points</TableCell>
-                                    <TableCell align="right">Token Amount</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {loading ? (
-                                    <TableRow>
-                                        <TableCell colSpan={3} align="center">
-                                            <CircularProgress size={24} />
-                                        </TableCell>
-                                    </TableRow>
-                                ) : (
-                                    leaderboard?.map(participant => (
-                                        <TableRow key={participant.walletAddress}>
-                                            <TableCell>
-                                                {shortenAddress(participant.walletAddress)}
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                {participant.points?.toLocaleString()}
-                                            </TableCell>
-                                            <TableCell align="right">
-                                                {(
-                                                    participant.points * parseFloat(tokensPerPoint)
-                                                ).toFixed(6)}
-                                            </TableCell>
+                            <TableContainer>
+                                <Table>
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Wallet Address</TableCell>
+                                            <TableCell align="right">Points</TableCell>
+                                            <TableCell align="right">Token Amount</TableCell>
                                         </TableRow>
-                                    ))
-                                )}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                                    </TableHead>
+                                    <TableBody>
+                                        {leaderboardLoading ? (
+                                            <TableRow>
+                                                <TableCell colSpan={3} align="center">
+                                                    <CircularProgress size={24} />
+                                                </TableCell>
+                                            </TableRow>
+                                        ) : (
+                                            leaderboard?.map(participant => (
+                                                <TableRow key={participant.walletAddress}>
+                                                    <TableCell>
+                                                        {shortenAddress(participant.walletAddress)}
+                                                    </TableCell>
+                                                    <TableCell align="right">
+                                                        {participant.points?.toLocaleString()}
+                                                    </TableCell>
+                                                    <TableCell align="right">
+                                                        {(
+                                                            participant.points *
+                                                            parseFloat(tokensPerPoint)
+                                                        ).toFixed(6)}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </Box>
+                    </Card>
                 </>
             )}
         </Box>

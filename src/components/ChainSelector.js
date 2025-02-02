@@ -12,7 +12,7 @@ import avalancheIcon from '../assets/icons/avalanche.svg';
 import arbitrumIcon from '../assets/icons/arbitrum.svg';
 import sepoliaIcon from '../assets/icons/sepolia.svg';
 
-const CHAIN_ICONS = {
+export const CHAIN_ICONS = {
     'ethereum.svg': ethereumIcon,
     'bnb.svg': bnbIcon,
     'polygon.svg': polygonIcon,

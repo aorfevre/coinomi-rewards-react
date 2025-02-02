@@ -1,139 +1,110 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { TextField, Box, CircularProgress, Typography, InputAdornment } from '@mui/material';
-import { isValidAddress } from '../utils/validation';
-import { validateToken } from '../utils/token';
-import { useWeb3 } from '../hooks/useWeb3';
+import {
+    Box,
+    TextField,
+    Typography,
+    CircularProgress,
+    InputAdornment,
+    IconButton,
+    Card,
+    Grid,
+} from '@mui/material';
+import ContentPasteIcon from '@mui/icons-material/ContentPaste';
+import { useTokenValidation } from '../hooks/useTokenValidation';
+import { formatUnits } from 'ethers';
 
-export const TokenSelector = ({ onTokenSelect }) => {
+export const TokenSelector = ({ onSelect, chainId }) => {
     const [tokenAddress, setTokenAddress] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(null);
-    const [tokenInfo, setTokenInfo] = useState(null);
-    const { getProvider, account } = useWeb3();
+    const { token, loading, error, validateToken } = useTokenValidation(chainId);
 
-    const handleTokenAddressChange = async event => {
-        const address = event.target.value;
-        setTokenAddress(address);
-        setError(null);
-        setTokenInfo(null);
-
-        if (!address) return;
-
-        if (!isValidAddress(address)) {
-            setError('Invalid address format');
-            return;
-        }
-
-        setLoading(true);
-        try {
-            const provider = getProvider();
-            const tokenData = await validateToken(address, provider, account);
-
-            if (tokenData.isValid) {
-                setTokenInfo(tokenData);
-                onTokenSelect(tokenData);
-            } else {
-                setError(tokenData.error);
+    const handleTokenAddressChange = async value => {
+        setTokenAddress(value);
+        if (value.length === 42) {
+            // Valid Ethereum address length
+            const tokenInfo = await validateToken(value);
+            if (tokenInfo) {
+                onSelect(tokenInfo);
             }
+        }
+    };
+
+    const handlePaste = async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            handleTokenAddressChange(text);
         } catch (err) {
-            setError('Failed to validate token');
-            console.error('Token validation error:', err);
-        } finally {
-            setLoading(false);
+            console.error('Failed to read clipboard:', err);
+        }
+    };
+
+    const formatBalance = (balance, decimals) => {
+        try {
+            return formatUnits(balance, decimals);
+        } catch (error) {
+            console.error('Error formatting balance:', error);
+            return '0';
         }
     };
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Box sx={{ width: '600px', maxWidth: '100%' }}>
+        <Box>
+            <Box sx={{ mb: 2 }}>
                 <TextField
                     fullWidth
-                    size="small"
+                    label="Token"
                     placeholder="Enter token contract address"
                     value={tokenAddress}
-                    onChange={handleTokenAddressChange}
+                    onChange={e => handleTokenAddressChange(e.target.value)}
                     error={!!error}
                     helperText={error}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">
-                                <Typography
-                                    variant="caption"
-                                    color="text.secondary"
-                                    sx={{ whiteSpace: 'nowrap' }}
-                                >
-                                    Token:
-                                </Typography>
+                                <IconButton onClick={handlePaste} size="small">
+                                    <ContentPasteIcon />
+                                </IconButton>
                             </InputAdornment>
                         ),
                         endAdornment: loading && (
                             <InputAdornment position="end">
-                                <CircularProgress size={16} />
+                                <CircularProgress size={20} />
                             </InputAdornment>
                         ),
                     }}
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            backgroundColor: 'background.paper',
-                        },
-                    }}
                 />
-                {tokenInfo && (
-                    <Box
-                        sx={{
-                            mt: 1,
-                            p: 1.5,
-                            bgcolor: 'background.paper',
-                            borderRadius: 1,
-                            border: '1px solid',
-                            borderColor: 'divider',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 2,
-                            width: '100%',
-                        }}
-                    >
-                        <Box sx={{ flex: 1 }}>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                {tokenInfo.name}
-                                <Typography
-                                    component="span"
-                                    variant="caption"
-                                    color="text.secondary"
-                                    sx={{ ml: 0.5 }}
-                                >
-                                    ({tokenInfo.symbol})
-                                </Typography>
-                            </Typography>
-                        </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5 }}>
-                            <Typography variant="body2" color="text.secondary">
-                                Balance:
-                            </Typography>
-                            <Typography variant="subtitle2" sx={{ fontWeight: 600 }}>
-                                {tokenInfo.formattedBalance}
-                            </Typography>
-                        </Box>
-                        <Typography
-                            variant="caption"
-                            color="text.secondary"
-                            sx={{
-                                bgcolor: 'action.hover',
-                                px: 1,
-                                py: 0.5,
-                                borderRadius: 1,
-                            }}
-                        >
-                            {tokenInfo.decimals} decimals
-                        </Typography>
-                    </Box>
-                )}
             </Box>
+
+            {token && (
+                <Card variant="outlined" sx={{ mt: 2 }}>
+                    <Box sx={{ p: 2 }}>
+                        <Typography variant="h6" gutterBottom>
+                            {token.name} ({token.symbol})
+                        </Typography>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <Typography variant="caption" color="text.secondary">
+                                    Decimals
+                                </Typography>
+                                <Typography variant="body1">{token.decimals}</Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                <Typography variant="caption" color="text.secondary">
+                                    Your Balance
+                                </Typography>
+                                <Typography variant="body1">
+                                    {formatBalance(token.balance, token.decimals)} {token.symbol}
+                                </Typography>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Card>
+            )}
         </Box>
     );
 };
 
 TokenSelector.propTypes = {
-    onTokenSelect: PropTypes.func.isRequired,
+    onSelect: PropTypes.func.isRequired,
+    chainId: PropTypes.string.isRequired,
 };
