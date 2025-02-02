@@ -594,7 +594,7 @@ export const PayoutDashboard = () => {
 
     return (
         <Box sx={{ p: 3, maxWidth: 1200, margin: '0 auto' }}>
-            {/* Header with Connect/Disconnect */}
+            {/* Header with Connect/Disconnect and Wallet Address */}
             <Box
                 sx={{
                     display: 'flex',
@@ -604,13 +604,20 @@ export const PayoutDashboard = () => {
                 }}
             >
                 <Typography variant="h4">Payout Dashboard</Typography>
-                <Button
-                    variant="contained"
-                    onClick={account ? disconnect : connect}
-                    color={account ? 'error' : 'primary'}
-                >
-                    {account ? 'Disconnect' : 'Connect Wallet'}
-                </Button>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    {account && (
+                        <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                            {shortenAddress(account)}
+                        </Typography>
+                    )}
+                    <Button
+                        variant="contained"
+                        onClick={account ? disconnect : connect}
+                        color={account ? 'error' : 'primary'}
+                    >
+                        {account ? 'Disconnect' : 'Connect Wallet'}
+                    </Button>
+                </Box>
             </Box>
 
             {account && (
