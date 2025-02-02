@@ -62,7 +62,7 @@ export const ChainSelector = ({ currentChainId, onChainSelect }) => {
     }
 
     return (
-        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'center' }}>
             {SUPPORTED_CHAINS.map(chain => (
                 <Box
                     key={chain.id}
@@ -71,20 +71,24 @@ export const ChainSelector = ({ currentChainId, onChainSelect }) => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: 1,
-                        p: 1,
+                        p: 1.5,
                         borderRadius: 2,
                         cursor: 'pointer',
+                        minWidth: '120px',
                         border: theme =>
                             chain.id === currentChainId
                                 ? `2px solid ${theme.palette.primary.main}`
-                                : '2px solid transparent',
+                                : '1px solid rgba(0, 0, 0, 0.12)',
                         bgcolor: 'background.paper',
+                        transition: 'all 0.2s ease-in-out',
                         '&:hover': {
                             bgcolor: 'action.hover',
+                            transform: 'translateY(-2px)',
+                            boxShadow: 1,
                         },
                     }}
                 >
-                    <Box sx={{ width: 24, height: 24 }}>
+                    <Box sx={{ width: 24, height: 24, flexShrink: 0 }}>
                         <chain.Icon width="100%" height="100%" />
                     </Box>
                     <Box>
@@ -101,7 +105,6 @@ export const ChainSelector = ({ currentChainId, onChainSelect }) => {
     );
 };
 
-// Add PropTypes validation
 ChainSelector.propTypes = {
     currentChainId: PropTypes.string,
     onChainSelect: PropTypes.func.isRequired,

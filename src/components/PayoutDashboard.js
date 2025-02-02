@@ -11,23 +11,20 @@ import {
     Paper,
     CircularProgress,
     Button,
-    Select,
-    MenuItem,
-    FormControl,
-    InputLabel,
 } from '@mui/material';
-import { ChainSelector, SUPPORTED_CHAINS } from './ChainSelector';
+import { ChainSelector } from './ChainSelector';
 import { usePayouts } from '../hooks/usePayouts';
 import { shortenAddress } from '../utils/address';
 import { formatDate } from '../utils/date';
 import { useWeb3 } from '../hooks/useWeb3';
+import { TokenSelector } from './TokenSelector';
 
 export const PayoutDashboard = () => {
     const { payouts, loading, error, fetchPayouts, generatePayout } = usePayouts();
     const { connect, disconnect, account, chainId } = useWeb3();
-    const [selectedToken, setSelectedToken] = useState('');
+    const [selectedToken, setSelectedToken] = useState(null);
 
-    const currentChain = SUPPORTED_CHAINS.find(chain => chain.id === chainId);
+    // const currentChain = SUPPORTED_CHAINS.find(chain => chain.id === chainId);
 
     React.useMemo(() => {
         fetchPayouts();
@@ -35,8 +32,12 @@ export const PayoutDashboard = () => {
 
     const handleGeneratePayout = useCallback(async () => {
         if (!account || !selectedToken || !chainId) return;
-        await generatePayout(selectedToken, chainId);
+        await generatePayout(selectedToken.address, chainId);
     }, [account, selectedToken, chainId, generatePayout]);
+
+    const handleTokenSelect = tokenInfo => {
+        setSelectedToken(tokenInfo);
+    };
 
     if (error) {
         return (
@@ -86,22 +87,7 @@ export const PayoutDashboard = () => {
                         }}
                     />
 
-                    {currentChain && (
-                        <FormControl sx={{ minWidth: 200 }}>
-                            <InputLabel>Select Token</InputLabel>
-                            <Select
-                                value={selectedToken}
-                                label="Select Token"
-                                onChange={e => setSelectedToken(e.target.value)}
-                            >
-                                {currentChain.tokens.map(token => (
-                                    <MenuItem key={token} value={token}>
-                                        {token}
-                                    </MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    )}
+                    <TokenSelector onTokenSelect={handleTokenSelect} />
 
                     <Button
                         variant="contained"

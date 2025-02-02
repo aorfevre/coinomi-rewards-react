@@ -49,81 +49,106 @@ export const useWeb3 = () => {
     }, []);
 
     const getProvider = useCallback(() => {
-        if (window.ethereum) {
-            return new BrowserProvider(window.ethereum);
-        }
-        return null;
+        if (!window.ethereum) return null;
+        return new BrowserProvider(window.ethereum);
     }, []);
 
     const switchChain = useCallback(async targetChainId => {
         if (!window.ethereum) return;
 
         try {
+            // Reset error state
+            setError(null);
+
             // Try to switch to the chain
             await window.ethereum.request({
                 method: 'wallet_switchEthereumChain',
                 params: [{ chainId: targetChainId }],
             });
+
+            // Update chainId state after successful switch
+            setChainId(targetChainId);
         } catch (switchError) {
-            // This error code indicates that the chain has not been added to MetaMask
-            if (switchError.code === 4902) {
+            // Handle chain not added to MetaMask
+            if (switchError?.code === 4902 || switchError?.code === -32603) {
+                const config = CHAIN_CONFIGS[targetChainId];
+                if (!config) {
+                    throw new Error(`Chain configuration not found for chainId: ${targetChainId}`);
+                }
+
                 try {
                     await window.ethereum.request({
                         method: 'wallet_addEthereumChain',
-                        params: [CHAIN_CONFIGS[targetChainId]],
+                        params: [config],
                     });
+
+                    // After adding the chain, try switching again
+                    await window.ethereum.request({
+                        method: 'wallet_switchEthereumChain',
+                        params: [{ chainId: targetChainId }],
+                    });
+
+                    // Update chainId state after successful switch
+                    setChainId(targetChainId);
                 } catch (addError) {
-                    setError('Failed to add network to MetaMask');
                     console.error('Error adding chain:', addError);
+                    throw addError;
                 }
             } else {
-                setError('Failed to switch network');
                 console.error('Error switching chain:', switchError);
+                throw switchError;
             }
         }
     }, []);
 
     const connect = useCallback(
-        async (targetChainId = null) => {
+        async targetChainId => {
             if (!window.ethereum) {
-                setError('Please install MetaMask!');
-                return;
+                setError('Please install MetaMask');
+                return null;
             }
 
             try {
-                // Request account access
-                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                setError(null);
+                const accounts = await window.ethereum.request({
+                    method: 'eth_requestAccounts',
+                });
+
                 setAccount(accounts[0]);
 
-                // Switch chain if specified
-                if (targetChainId) {
-                    await switchChain(targetChainId);
-                }
-
-                // Get current chain
-                const chainId = await window.ethereum.request({ method: 'eth_chainId' });
-                setChainId(chainId);
+                // Get current chain ID
+                const currentChainId = await window.ethereum.request({
+                    method: 'eth_chainId',
+                });
+                setChainId(currentChainId);
 
                 // Setup event listeners
-                window.ethereum.on('accountsChanged', accounts => {
-                    setAccount(accounts[0] || null);
-                    if (!accounts[0]) {
+                window.ethereum.on('accountsChanged', newAccounts => {
+                    setAccount(newAccounts[0] || null);
+                    if (!newAccounts[0]) {
                         localStorage.removeItem(WALLET_CONNECTED_KEY);
                     }
                 });
 
                 window.ethereum.on('chainChanged', newChainId => {
                     setChainId(newChainId);
-                    window.location.reload(); // Recommended by MetaMask
                 });
 
-                // Store connection state
-                localStorage.setItem(WALLET_CONNECTED_KEY, 'true');
+                // Switch chain if specified
+                if (targetChainId && targetChainId !== currentChainId) {
+                    try {
+                        await switchChain(targetChainId);
+                    } catch (error) {
+                        console.error('Failed to switch chain:', error);
+                        // Continue with connection even if chain switch fails
+                    }
+                }
 
+                localStorage.setItem(WALLET_CONNECTED_KEY, 'true');
                 return getProvider();
             } catch (error) {
-                setError('Error connecting to MetaMask');
                 console.error('Error connecting to MetaMask:', error);
+                setError('Failed to connect to MetaMask');
                 return null;
             }
         },
