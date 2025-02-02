@@ -2,34 +2,70 @@ import { useState, useCallback } from 'react';
 import { BrowserProvider } from 'ethers';
 import React from 'react';
 
-const CHAIN_CONFIGS = {
+export const CHAIN_CONFIGS = {
     '0x1': {
         chainId: '0x1',
-        chainName: 'Ethereum Mainnet',
+        chainName: 'Ethereum',
         nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
         rpcUrls: ['https://eth-mainnet.public.blastapi.io'],
         blockExplorerUrls: ['https://etherscan.io'],
+        disperseContract: '0xD152f549545093347A162Dce210e7293f1452150',
+        icon: 'ethereum.svg',
+    },
+    '0xaa36a7': {
+        chainId: '0xaa36a7',
+        chainName: 'Sepolia',
+        nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+        rpcUrls: ['https://rpc.sepolia.org'],
+        blockExplorerUrls: ['https://sepolia.etherscan.io'],
+        disperseContract: '0xD152f549545093347A162Dce210e7293f1452150',
+        testnet: true,
+        icon: 'sepolia.svg',
     },
     '0x38': {
         chainId: '0x38',
-        chainName: 'BNB Smart Chain',
+        chainName: 'BNB Chain',
         nativeCurrency: { name: 'BNB', symbol: 'BNB', decimals: 18 },
         rpcUrls: ['https://bsc-dataseed.binance.org'],
         blockExplorerUrls: ['https://bscscan.com'],
+        disperseContract: '0xD152f549545093347A162Dce210e7293f1452150',
+        icon: 'bnb.svg',
     },
     '0x89': {
         chainId: '0x89',
-        chainName: 'Polygon Mainnet',
+        chainName: 'Polygon',
         nativeCurrency: { name: 'MATIC', symbol: 'MATIC', decimals: 18 },
         rpcUrls: ['https://polygon-rpc.com'],
         blockExplorerUrls: ['https://polygonscan.com'],
+        disperseContract: '0xD152f549545093347A162Dce210e7293f1452150',
+        icon: 'polygon.svg',
     },
     '0x2105': {
         chainId: '0x2105',
-        chainName: 'Base Mainnet',
+        chainName: 'Base',
         nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
         rpcUrls: ['https://mainnet.base.org'],
         blockExplorerUrls: ['https://basescan.org'],
+        disperseContract: '0xD152f549545093347A162Dce210e7293f1452150',
+        icon: 'base.svg',
+    },
+    '0xa86a': {
+        chainId: '0xa86a',
+        chainName: 'Avalanche',
+        nativeCurrency: { name: 'AVAX', symbol: 'AVAX', decimals: 18 },
+        rpcUrls: ['https://api.avax.network/ext/bc/C/rpc'],
+        blockExplorerUrls: ['https://snowtrace.io'],
+        disperseContract: '0xD152f549545093347A162Dce210e7293f1452150',
+        icon: 'avalanche.svg',
+    },
+    '0xa4b1': {
+        chainId: '0xa4b1',
+        chainName: 'Arbitrum',
+        nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+        rpcUrls: ['https://arb1.arbitrum.io/rpc'],
+        blockExplorerUrls: ['https://arbiscan.io'],
+        disperseContract: '0xD152f549545093347A162Dce210e7293f1452150',
+        icon: 'arbitrum.svg',
     },
 };
 
