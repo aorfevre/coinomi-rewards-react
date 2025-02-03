@@ -10,6 +10,7 @@ export const usePayoutDashboard = () => {
     const [selectedYear, setSelectedYear] = useState(getYear(new Date()));
     const [chainId, setChainId] = useState('');
     const [selectedToken, setSelectedToken] = useState(null);
+    const [totalTokens, setTotalTokens] = useState('');
     const showMessage = useCallback((message, severity = 'info') => {
         setSnackbar({
             open: true,
@@ -92,5 +93,7 @@ export const usePayoutDashboard = () => {
         handleChainSelect,
         selectedToken,
         handleTokenSelect,
+        totalTokens,
+        setTotalTokens,
     };
 };

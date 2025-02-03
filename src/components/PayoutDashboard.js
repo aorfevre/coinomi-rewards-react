@@ -100,20 +100,22 @@ export const PayoutDashboard = () => {
                         />
                     </PayoutStepper>
 
-                    <PayoutContent
-                        selectedWeek={selectedWeek}
-                        selectedYear={selectedYear}
-                        onWeekChange={handleWeekChange}
-                        leaderboard={leaderboard}
-                        leaderboardLoading={leaderboardLoading}
-                        payouts={payouts}
-                        payoutsLoading={payoutsLoading}
-                        onDownloadCSV={handleDownloadCSV}
-                        onGenerateTest={handleGenerateTest}
-                        chainId={chainId}
-                        activeTab={activeTab}
-                        onTabChange={handleTabChange}
-                    />
+                    {activeStep === 0 && (
+                        <PayoutContent
+                            selectedWeek={selectedWeek}
+                            selectedYear={selectedYear}
+                            onWeekChange={handleWeekChange}
+                            leaderboard={leaderboard}
+                            leaderboardLoading={leaderboardLoading}
+                            payouts={payouts}
+                            payoutsLoading={payoutsLoading}
+                            onDownloadCSV={handleDownloadCSV}
+                            onGenerateTest={handleGenerateTest}
+                            chainId={chainId}
+                            activeTab={activeTab}
+                            onTabChange={handleTabChange}
+                        />
+                    )}
                 </Box>
             </Box>
             <FeedbackSnackbar {...snackbar} onClose={handleCloseSnackbar} />
