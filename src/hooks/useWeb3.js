@@ -83,10 +83,13 @@ export const useWeb3 = () => {
     const [account, setAccount] = useState(null);
     const [chainId, setChainId] = useState(null);
     const [error, setError] = useState(null);
+    const [provider, setProvider] = useState(null);
 
     const getProvider = useCallback(() => {
         if (!window.ethereum) return null;
-        return new BrowserProvider(window.ethereum);
+        const provider = new BrowserProvider(window.ethereum);
+        setProvider(provider);
+        return provider;
     }, []);
 
     const switchChain = useCallback(async targetChainId => {
@@ -152,6 +155,9 @@ export const useWeb3 = () => {
 
                 setAccount(accounts[0]);
 
+                // Initialize provider
+                const provider = getProvider();
+
                 // Get current chain ID
                 const currentChainId = await window.ethereum.request({
                     method: 'eth_chainId',
@@ -163,11 +169,13 @@ export const useWeb3 = () => {
                     setAccount(newAccounts[0] || null);
                     if (!newAccounts[0]) {
                         localStorage.removeItem(WALLET_CONNECTED_KEY);
+                        setProvider(null);
                     }
                 });
 
                 window.ethereum.on('chainChanged', newChainId => {
                     setChainId(newChainId);
+                    getProvider(); // Reinitialize provider on chain change
                 });
 
                 // Switch chain if specified
@@ -181,7 +189,7 @@ export const useWeb3 = () => {
                 }
 
                 localStorage.setItem(WALLET_CONNECTED_KEY, 'true');
-                return getProvider();
+                return provider;
             } catch (error) {
                 console.error('Error connecting to MetaMask:', error);
                 setError('Failed to connect to MetaMask');
@@ -206,6 +214,7 @@ export const useWeb3 = () => {
         setAccount(null);
         setChainId(null);
         setError(null);
+        setProvider(null);
         localStorage.removeItem(WALLET_CONNECTED_KEY);
     }, []);
 
@@ -216,6 +225,7 @@ export const useWeb3 = () => {
         account,
         chainId,
         error,
+        provider,
         getProvider,
     };
 };
