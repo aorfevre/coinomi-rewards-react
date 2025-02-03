@@ -11,6 +11,12 @@ export const usePayoutDashboard = () => {
     const [chainId, setChainId] = useState('');
     const [selectedToken, setSelectedToken] = useState(null);
     const [totalTokens, setTotalTokens] = useState('');
+    const [batchStatus, setBatchStatus] = useState({
+        preparing: false,
+        processing: false,
+        completed: false,
+        failed: false,
+    });
     const showMessage = useCallback((message, severity = 'info') => {
         setSnackbar({
             open: true,
@@ -95,5 +101,7 @@ export const usePayoutDashboard = () => {
         handleTokenSelect,
         totalTokens,
         setTotalTokens,
+        batchStatus,
+        setBatchStatus,
     };
 };
