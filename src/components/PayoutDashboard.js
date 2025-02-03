@@ -621,13 +621,37 @@ export const PayoutDashboard = () => {
         error: null,
     });
 
+    console.log('PayoutDashboard rendering with:', {
+        selectedWeek,
+        selectedYear,
+        weekType: typeof selectedWeek,
+        yearType: typeof selectedYear,
+        weekIsNaN: isNaN(selectedWeek),
+        yearIsNaN: isNaN(selectedYear),
+    });
+
     const {
         entries: leaderboard,
         loading: leaderboardLoading,
         loadMore,
         refetchLeaderboard,
         lastDocId,
-    } = useLeaderboard(selectedWeek, 100);
+    } = useLeaderboard(
+        {
+            weekNumber: selectedWeek,
+            yearNumber: selectedYear,
+        },
+        100
+    );
+
+    // Log whenever leaderboard data changes
+    useEffect(() => {
+        console.log('Leaderboard data updated:', {
+            entries: leaderboard?.length,
+            loading: leaderboardLoading,
+            lastDocId,
+        });
+    }, [leaderboard, leaderboardLoading, lastDocId]);
 
     // Calculate KPI values
     const totalPoints = leaderboard?.reduce((sum, p) => sum + (p.points || 0), 0) || 0;

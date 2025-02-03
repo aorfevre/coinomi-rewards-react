@@ -2,7 +2,12 @@ import { collection, getDocs, limit, orderBy, query, startAfter, where } from 'f
 import { useCallback, useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 
-export const useLeaderboard = (weekRange, pageSize = 50) => {
+const parseNumber = value => {
+    if (typeof value === 'string') return parseInt(value, 10);
+    return value;
+};
+
+export const useLeaderboard = ({ weekNumber, yearNumber }, pageSize = 50) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [entries, setEntries] = useState([]);
@@ -12,29 +17,76 @@ export const useLeaderboard = (weekRange, pageSize = 50) => {
 
     const fetchLeaderboard = useCallback(
         async (startAfterDoc = null) => {
-            if (!weekRange) return;
+            const parsedWeek = parseNumber(weekNumber);
+            const parsedYear = parseNumber(yearNumber);
+
+            console.log('Fetching leaderboard with parsed params:', {
+                weekNumber: parsedWeek,
+                yearNumber: parsedYear,
+                originalWeek: weekNumber,
+                originalYear: yearNumber,
+                pageSize,
+                startAfterDoc,
+            });
+
+            if (!parsedWeek || !parsedYear) {
+                console.log('Missing required params:', { parsedWeek, parsedYear });
+                return;
+            }
 
             try {
                 setLoading(true);
                 setError(null);
 
-                const [startDate, endDate] = weekRange.split('|').map(date => new Date(date));
-                const leaderboardRef = collection(db, 'leaderboard');
+                const leaderboardRef = collection(db, 'scores');
 
+                // First, let's check what fields our documents have
+                console.log('Checking collection data...');
+                const allDocsQuery = query(
+                    leaderboardRef,
+                    // Remove all filters to see what's actually in the collection
+                    limit(5)
+                );
+                const allDocsSnapshot = await getDocs(allDocsQuery);
+
+                if (allDocsSnapshot.empty) {
+                    console.log('Collection is empty');
+                } else {
+                    console.log(
+                        'Sample documents:',
+                        allDocsSnapshot.docs.map(doc => ({
+                            id: doc.id,
+                            data: doc.data(),
+                            week: doc.data().weekNumber, // Log specific fields
+                            year: doc.data().yearNumber,
+                            timestamp: doc.data().timestamp,
+                            points: doc.data().points,
+                        }))
+                    );
+                }
+
+                // Now try the filtered query
                 let baseQuery = query(
                     leaderboardRef,
-                    where('timestamp', '>=', startDate),
-                    where('timestamp', '<=', endDate),
-                    orderBy('timestamp', 'desc'),
+                    where('weekNumber', '==', parsedWeek),
+                    where('yearNumber', '==', parsedYear),
                     orderBy('points', 'desc'),
                     limit(pageSize)
                 );
 
                 if (startAfterDoc) {
+                    console.log('Paginating with startAfterDoc:', startAfterDoc.id);
                     baseQuery = query(baseQuery, startAfter(startAfterDoc));
                 }
 
+                console.log('Executing query...');
                 const snapshot = await getDocs(baseQuery);
+                console.log('Query results:', {
+                    totalDocs: snapshot.docs.length,
+                    empty: snapshot.empty,
+                    firstDoc: snapshot.docs[0]?.data(),
+                });
+
                 const docs = snapshot.docs.map(doc => ({
                     id: doc.id,
                     ...doc.data(),
@@ -52,28 +104,39 @@ export const useLeaderboard = (weekRange, pageSize = 50) => {
                 if (!startAfterDoc) {
                     const countQuery = query(
                         leaderboardRef,
-                        where('timestamp', '>=', startDate),
-                        where('timestamp', '<=', endDate)
+                        where('weekNumber', '==', weekNumber),
+                        where('yearNumber', '==', yearNumber)
                     );
                     const countSnapshot = await getDocs(countQuery);
+                    console.log('Total participants count:', countSnapshot.size);
                     setTotalParticipants(countSnapshot.size);
                 }
             } catch (err) {
                 console.error('Error fetching leaderboard:', err);
+                console.error('Error details:', {
+                    message: err.message,
+                    code: err.code,
+                    stack: err.stack,
+                });
                 setError(err);
             } finally {
                 setLoading(false);
             }
         },
-        [weekRange, pageSize]
+        [weekNumber, yearNumber, pageSize]
     );
 
     useEffect(() => {
+        console.log('useEffect triggered with:', { weekNumber, yearNumber });
         fetchLeaderboard();
     }, [fetchLeaderboard]);
 
     const loadMore = useCallback(() => {
-        if (!hasMore || loading) return;
+        if (!hasMore || loading) {
+            console.log('Cannot load more:', { hasMore, loading });
+            return;
+        }
+        console.log('Loading more entries...');
         return fetchLeaderboard(lastDoc);
     }, [hasMore, loading, lastDoc, fetchLeaderboard]);
 
