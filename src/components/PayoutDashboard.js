@@ -42,7 +42,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 import { getFirestore, collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { Link } from '@mui/material';
 
-const steps = ['Select Chain', 'Select Token', 'Set Amount'];
+const steps = ['Select Chain', 'Select Token', 'Set Amount', 'Process Batches'];
 
 // Define prop types for the token object
 const TokenPropType = PropTypes.shape({
@@ -64,6 +64,60 @@ const ERC20_ABI = [
     'function approve(address spender, uint256 amount) returns (bool)',
 ];
 
+// First, define BatchesStep component and its PropTypes
+const BatchesStep = ({ batches, onProcessBatch, loading, error }) => (
+    <Box>
+        <Typography variant="h6" gutterBottom>
+            Process Batches
+        </Typography>
+        {batches.map(batch => (
+            <Card key={batch.id} sx={{ mb: 2, p: 2 }}>
+                <Grid container spacing={2} alignItems="center">
+                    <Grid item xs={12} md={3}>
+                        <Typography variant="subtitle1">Batch #{batch.batchNumber}</Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            {batch.wallets.length} participants
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12} md={3}>
+                        <Typography variant="body2">Status: {batch.status}</Typography>
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Button
+                            variant="contained"
+                            onClick={() => onProcessBatch(batch)}
+                            disabled={batch.status === 'done' || loading}
+                            fullWidth
+                        >
+                            {loading ? 'Processing...' : 'Process Batch'}
+                        </Button>
+                    </Grid>
+                </Grid>
+            </Card>
+        ))}
+        {error && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+                {error}
+            </Alert>
+        )}
+    </Box>
+);
+
+BatchesStep.propTypes = {
+    batches: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            batchNumber: PropTypes.number.isRequired,
+            wallets: PropTypes.arrayOf(PropTypes.string).isRequired,
+            status: PropTypes.string.isRequired,
+        })
+    ).isRequired,
+    onProcessBatch: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    error: PropTypes.string,
+};
+
+// Then define StepContent component that uses BatchesStep
 const StepContent = ({
     step,
     chainId,
@@ -76,6 +130,9 @@ const StepContent = ({
     onChainSelect,
     selectedWeek,
     selectedYear,
+    batches,
+    batchStatus,
+    onProcessBatch,
 }) => {
     switch (step) {
         case 0:
@@ -132,6 +189,15 @@ const StepContent = ({
                     />
                 </Box>
             );
+        case 3:
+            return (
+                <BatchesStep
+                    batches={batches}
+                    onProcessBatch={onProcessBatch}
+                    loading={batchStatus.preparing}
+                    error={batchStatus.error}
+                />
+            );
         default:
             return null;
     }
@@ -149,6 +215,12 @@ StepContent.propTypes = {
     onChainSelect: PropTypes.func.isRequired,
     selectedWeek: PropTypes.number.isRequired,
     selectedYear: PropTypes.number.isRequired,
+    batches: BatchesStep.propTypes.batches,
+    batchStatus: PropTypes.shape({
+        preparing: PropTypes.bool.isRequired,
+        error: PropTypes.string,
+    }),
+    onProcessBatch: PropTypes.func.isRequired,
 };
 
 const StepSummary = ({ step, chainId, selectedToken, totalTokens }) => {
@@ -530,7 +602,7 @@ TabWithBadge.propTypes = {
 
 export const PayoutDashboard = () => {
     const [activeStep, setActiveStep] = useState(0);
-    const { connect, disconnect, account, chainId, switchChain } = useWeb3();
+    const { connect, disconnect, account, chainId, switchChain, getProvider } = useWeb3();
     const [selectedToken, setSelectedToken] = useState(null);
     const [totalTokens, setTotalTokens] = useState('');
     const [selectedWeek, setSelectedWeek] = useState(calculateWeek(new Date()));
@@ -543,32 +615,28 @@ export const PayoutDashboard = () => {
         message: '',
         severity: 'success',
     });
-    const [lastDocId, setLastDocId] = useState(null);
-    const [hasMore, setHasMore] = useState(false);
-
-    const {
-        leaderboard,
-        loading: leaderboardLoading,
-        refetch: refetchLeaderboard,
-        totalParticipants,
-    } = useLeaderboard({
-        pageSize: 100,
-        lastDocId: null,
-        week: selectedWeek,
-        year: selectedYear,
+    const [batches, setBatches] = useState([]);
+    const [batchStatus, setBatchStatus] = useState({
+        preparing: false,
+        error: null,
     });
 
-    useEffect(() => {
-        if (leaderboard?.totalParticipants) {
-            setHasMore(leaderboard.hasMore);
-            setLastDocId(leaderboard.lastDocId);
-        }
-    }, [leaderboard]);
+    const {
+        entries: leaderboard,
+        loading: leaderboardLoading,
+        loadMore,
+        refetchLeaderboard,
+        lastDocId,
+    } = useLeaderboard(selectedWeek, 100);
 
     // Calculate KPI values
     const totalPoints = leaderboard?.reduce((sum, p) => sum + (p.points || 0), 0) || 0;
     const tokensPerPoint =
         totalTokens && totalPoints ? (parseFloat(totalTokens) / totalPoints).toFixed(6) : '0';
+
+    const showSnackbar = useCallback((message, severity = 'success') => {
+        setSnackbar({ open: true, message, severity });
+    }, []);
 
     // Add effect to fetch payouts
     useEffect(() => {
@@ -596,9 +664,24 @@ export const PayoutDashboard = () => {
         fetchPayouts();
     }, [selectedWeek, selectedYear]);
 
-    const handleNext = () => {
-        setActiveStep(prevStep => prevStep + 1);
-    };
+    const handleNext = useCallback(() => {
+        if (activeStep === 2) {
+            // Create batches when moving from step 2 to 3
+            setBatchStatus(prev => ({ ...prev, preparing: true, error: null }));
+            try {
+                // Create batches logic here
+                setActiveStep(prev => prev + 1);
+            } catch (error) {
+                console.error('Error creating batches:', error);
+                setBatchStatus(prev => ({ ...prev, error: error.message }));
+                showSnackbar('Failed to create batches', 'error');
+            } finally {
+                setBatchStatus(prev => ({ ...prev, preparing: false }));
+            }
+        } else {
+            setActiveStep(prev => prev + 1);
+        }
+    }, [activeStep, showSnackbar]);
 
     const handleBack = () => {
         setActiveStep(prevStep => prevStep - 1);
@@ -606,15 +689,6 @@ export const PayoutDashboard = () => {
 
     const handleCloseSnackbar = () => {
         setSnackbar(prev => ({ ...prev, open: false }));
-    };
-
-    const showSnackbar = (message, severity = 'success') => {
-        console.log('Showing snackbar:', { message, severity });
-        setSnackbar({
-            open: true,
-            message,
-            severity,
-        });
     };
 
     const handleDownloadCSV = useCallback(async () => {
@@ -627,7 +701,7 @@ export const PayoutDashboard = () => {
             // Fetch all participants recursively
             let allParticipants = [...leaderboard];
             let currentLastDocId = lastDocId;
-            let remainingCount = totalParticipants - allParticipants.length;
+            let remainingCount = leaderboard.length - allParticipants.length;
 
             console.log('Starting pagination loop...');
 
@@ -640,7 +714,7 @@ export const PayoutDashboard = () => {
                 });
 
                 showSnackbar(
-                    `Fetching participants: ${allParticipants.length}/${totalParticipants}...`,
+                    `Fetching participants: ${allParticipants.length}/${leaderboard.length}...`,
                     'info'
                 );
 
@@ -659,7 +733,7 @@ export const PayoutDashboard = () => {
 
                 allParticipants = [...allParticipants, ...nextPage.leaderboard];
                 currentLastDocId = nextPage.lastDocId;
-                remainingCount = totalParticipants - allParticipants.length;
+                remainingCount = leaderboard.length - allParticipants.length;
 
                 console.log('Updated pagination state:', {
                     totalCollected: allParticipants.length,
@@ -670,7 +744,7 @@ export const PayoutDashboard = () => {
 
             console.log('Finished collecting participants:', {
                 finalCount: allParticipants.length,
-                expectedTotal: totalParticipants,
+                expectedTotal: leaderboard.length,
             });
 
             // Create CSV content
@@ -711,13 +785,11 @@ export const PayoutDashboard = () => {
     }, [
         leaderboard,
         lastDocId,
-        hasMore,
-        totalParticipants,
-        refetchLeaderboard,
+        showSnackbar,
         selectedWeek,
         selectedYear,
         tokensPerPoint,
-        showSnackbar,
+        refetchLeaderboard,
     ]);
 
     const handleChainSelect = async selectedChainId => {
@@ -751,26 +823,60 @@ export const PayoutDashboard = () => {
         }
     };
 
-    const handleLoadMore = async () => {
-        if (!hasMore || leaderboardLoading) return;
-
+    const handleLoadMore = useCallback(async () => {
+        if (leaderboardLoading) return;
         try {
-            const nextPage = await refetchLeaderboard({
-                pageSize: 100,
-                lastDocId,
-                week: selectedWeek,
-                year: selectedYear,
-            });
-
-            if (nextPage?.leaderboard) {
-                // The hook will handle updating the leaderboard state
-                showSnackbar('Successfully loaded more participants', 'success');
-            }
+            await loadMore();
+            showSnackbar('Successfully loaded more participants', 'success');
         } catch (error) {
             console.error('Error loading more participants:', error);
             showSnackbar('Failed to load more participants', 'error');
         }
-    };
+    }, [leaderboardLoading, loadMore, showSnackbar]);
+
+    // Process batch handler
+    const handleProcessBatch = useCallback(
+        async batch => {
+            try {
+                setBatchStatus(prev => ({ ...prev, preparing: true, error: null }));
+
+                // Check allowance and approve if needed
+                const provider = await getProvider();
+                const tokenContract = new Contract(batch.token, ERC20_ABI, provider.getSigner());
+                const disperseContract = CHAIN_CONFIGS[chainId].disperseContract;
+
+                const allowance = await tokenContract.allowance(account, disperseContract);
+                const totalAmount = batch.amounts.reduce(
+                    (sum, amount) => sum + BigInt(amount),
+                    BigInt(0)
+                );
+
+                if (allowance < totalAmount) {
+                    const approveTx = await tokenContract.approve(disperseContract, totalAmount);
+                    await approveTx.wait();
+                }
+
+                // Process the batch
+                const functions = getFunctions();
+                const processBatch = httpsCallable(functions, 'processBatch');
+                await processBatch({ batchId: batch.id });
+
+                // Update local state
+                setBatches(prev =>
+                    prev.map(b => (b.id === batch.id ? { ...b, status: 'done' } : b))
+                );
+
+                showSnackbar('Batch processed successfully', 'success');
+            } catch (error) {
+                console.error('Error processing batch:', error);
+                setBatchStatus(prev => ({ ...prev, error: error.message }));
+                showSnackbar('Failed to process batch', 'error');
+            } finally {
+                setBatchStatus(prev => ({ ...prev, preparing: false }));
+            }
+        },
+        [chainId, account, getProvider, showSnackbar]
+    );
 
     return (
         <Box sx={{ p: 3, maxWidth: 1200, margin: '0 auto' }}>
@@ -833,6 +939,9 @@ export const PayoutDashboard = () => {
                                 onChainSelect={handleChainSelect}
                                 selectedWeek={selectedWeek}
                                 selectedYear={selectedYear}
+                                batches={batches}
+                                batchStatus={batchStatus}
+                                onProcessBatch={handleProcessBatch}
                             />
 
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
@@ -867,7 +976,7 @@ export const PayoutDashboard = () => {
                             />
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
-                            <KPICard title="Total Participants" value={totalParticipants} />
+                            <KPICard title="Total Participants" value={leaderboard?.length} />
                         </Grid>
                         <Grid item xs={12} sm={6} md={3}>
                             <KPICard
@@ -981,7 +1090,7 @@ export const PayoutDashboard = () => {
                                     label={
                                         <TabWithBadge
                                             label="Participants"
-                                            count={totalParticipants}
+                                            count={leaderboard?.length}
                                         />
                                     }
                                 />
@@ -1038,24 +1147,19 @@ export const PayoutDashboard = () => {
                                             </TableBody>
                                         </Table>
                                     </TableContainer>
-                                    {hasMore && (
+                                    {loadMore && (
                                         <Box
                                             sx={{
+                                                mt: 2,
                                                 display: 'flex',
                                                 justifyContent: 'center',
-                                                mt: 2,
                                             }}
                                         >
                                             <Button
-                                                variant="outlined"
                                                 onClick={handleLoadMore}
                                                 disabled={leaderboardLoading}
                                             >
-                                                {leaderboardLoading ? (
-                                                    <CircularProgress size={24} />
-                                                ) : (
-                                                    'Load More'
-                                                )}
+                                                Load More
                                             </Button>
                                         </Box>
                                     )}
