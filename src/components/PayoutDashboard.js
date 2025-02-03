@@ -3,7 +3,6 @@ import { Box, Container, Typography } from '@mui/material';
 import { PayoutStepper } from './payout/PayoutStepper';
 import { StepContent } from './payout/PayoutStepper/StepContent';
 import { PayoutContent } from './payout/PayoutContent';
-import { KPISection } from './payout/KPISection';
 import { FeedbackSnackbar } from './common/FeedbackSnackbar';
 import { WalletButton } from './common/WalletButton';
 import { usePayoutDashboard } from './payout/PayoutDashboard/usePayoutDashboard';
@@ -72,17 +71,6 @@ export const PayoutDashboard = () => {
                         mb: 4,
                     }}
                 >
-                    <KPISection {...kpiData} />
-                </Box>
-
-                <Box
-                    sx={{
-                        bgcolor: 'background.paper',
-                        borderRadius: 2,
-                        p: 3,
-                        boxShadow: 1,
-                    }}
-                >
                     <PayoutStepper activeStep={activeStep} onNext={handleNext} onBack={handleBack}>
                         <StepContent
                             step={activeStep}
@@ -99,23 +87,31 @@ export const PayoutDashboard = () => {
                             onProcessBatch={handleProcessBatch}
                         />
                     </PayoutStepper>
+                </Box>
 
-                    {activeStep === 0 && (
-                        <PayoutContent
-                            selectedWeek={selectedWeek}
-                            selectedYear={selectedYear}
-                            onWeekChange={handleWeekChange}
-                            leaderboard={leaderboard}
-                            leaderboardLoading={leaderboardLoading}
-                            payouts={payouts}
-                            payoutsLoading={payoutsLoading}
-                            onDownloadCSV={handleDownloadCSV}
-                            onGenerateTest={handleGenerateTest}
-                            chainId={chainId}
-                            activeTab={activeTab}
-                            onTabChange={handleTabChange}
-                        />
-                    )}
+                <Box
+                    sx={{
+                        bgcolor: 'background.paper',
+                        borderRadius: 2,
+                        p: 3,
+                        boxShadow: 1,
+                    }}
+                >
+                    <PayoutContent
+                        selectedWeek={selectedWeek}
+                        selectedYear={selectedYear}
+                        onWeekChange={handleWeekChange}
+                        leaderboard={leaderboard}
+                        leaderboardLoading={leaderboardLoading}
+                        payouts={payouts}
+                        payoutsLoading={payoutsLoading}
+                        onDownloadCSV={handleDownloadCSV}
+                        onGenerateTest={handleGenerateTest}
+                        chainId={chainId}
+                        activeTab={activeTab}
+                        onTabChange={handleTabChange}
+                        kpiData={kpiData}
+                    />
                 </Box>
             </Box>
             <FeedbackSnackbar {...snackbar} onClose={handleCloseSnackbar} />
