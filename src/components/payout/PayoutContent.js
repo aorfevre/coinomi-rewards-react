@@ -32,10 +32,15 @@ export const PayoutContent = ({
     hasMore,
     onLoadMore,
     loading,
+    onGenerateTest,
+    isSepoliaNetwork,
 }) => {
+    // Add debug logging
+    console.log('PayoutContent render:', { isSepoliaNetwork });
+
     return (
         <Box>
-            {/* Week/Year selector and Download button */}
+            {/* Week/Year selector and buttons */}
             <Box
                 sx={{
                     display: 'flex',
@@ -49,9 +54,30 @@ export const PayoutContent = ({
                     selectedYear={selectedYear}
                     onChange={onWeekChange}
                 />
-                <Button variant="outlined" startIcon={<DownloadIcon />} onClick={onDownloadCSV}>
-                    DOWNLOAD CSV
-                </Button>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                    {isSepoliaNetwork && (
+                        <Button
+                            variant="outlined"
+                            onClick={onGenerateTest}
+                            color="error" // Changed to error for red color
+                            sx={{
+                                minWidth: 150,
+                                display: { xs: 'none', md: 'flex' }, // Hide on mobile
+                                borderColor: theme => theme.palette.error.main,
+                                color: theme => theme.palette.error.main,
+                                '&:hover': {
+                                    borderColor: theme => theme.palette.error.dark,
+                                    backgroundColor: 'rgba(211, 47, 47, 0.04)',
+                                },
+                            }}
+                        >
+                            Generate Test Data
+                        </Button>
+                    )}
+                    <Button variant="outlined" startIcon={<DownloadIcon />} onClick={onDownloadCSV}>
+                        DOWNLOAD CSV
+                    </Button>
+                </Box>
             </Box>
 
             {/* KPI Section */}
@@ -115,7 +141,7 @@ PayoutContent.propTypes = {
     payouts: PropTypes.arrayOf(PropTypes.object),
     payoutsLoading: PropTypes.bool,
     onDownloadCSV: PropTypes.func.isRequired,
-    onGenerateTest: PropTypes.func.isRequired,
+    onGenerateTest: PropTypes.func,
     chainId: PropTypes.string,
     activeTab: PropTypes.number.isRequired,
     onTabChange: PropTypes.func.isRequired,
@@ -129,6 +155,7 @@ PayoutContent.propTypes = {
     hasMore: PropTypes.bool,
     onLoadMore: PropTypes.func,
     loading: PropTypes.bool,
+    isSepoliaNetwork: PropTypes.bool,
 };
 
 PayoutContent.defaultProps = {
@@ -141,4 +168,6 @@ PayoutContent.defaultProps = {
     hasMore: false,
     onLoadMore: () => {},
     loading: false,
+    onGenerateTest: () => {},
+    isSepoliaNetwork: false,
 };

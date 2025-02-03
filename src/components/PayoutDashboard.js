@@ -39,6 +39,7 @@ export const PayoutDashboard = () => {
         totalParticipants,
         hasMore,
         handleLoadMore,
+        isSepoliaNetwork,
     } = usePayoutDashboard();
 
     return (
@@ -118,6 +119,7 @@ export const PayoutDashboard = () => {
                         hasMore={hasMore}
                         onLoadMore={handleLoadMore}
                         loading={leaderboardLoading}
+                        isSepoliaNetwork={isSepoliaNetwork}
                     />
                 </Box>
             </Box>

@@ -93,48 +93,31 @@ export const useWeb3 = () => {
     }, []);
 
     const switchChain = useCallback(async targetChainId => {
-        if (!window.ethereum) return;
+        if (!window.ethereum) {
+            throw new Error('No provider available');
+        }
 
         try {
-            // Reset error state
-            setError(null);
-
-            // Try to switch to the chain
+            // First try to switch to the chain
             await window.ethereum.request({
                 method: 'wallet_switchEthereumChain',
-                params: [{ chainId: targetChainId }],
+                params: [{ chainId: `0x${Number(targetChainId).toString(16)}` }],
             });
-
-            // Update chainId state after successful switch
-            setChainId(targetChainId);
+            setChainId(`0x${Number(targetChainId).toString(16)}`);
         } catch (switchError) {
-            // Handle chain not added to MetaMask
-            if (switchError?.code === 4902 || switchError?.code === -32603) {
-                const config = CHAIN_CONFIGS[targetChainId];
-                if (!config) {
-                    throw new Error(`Chain configuration not found for chainId: ${targetChainId}`);
-                }
-
+            // This error code indicates that the chain has not been added to MetaMask.
+            if (switchError.code === 4902) {
                 try {
+                    const chainParams = getChainParams(targetChainId);
                     await window.ethereum.request({
                         method: 'wallet_addEthereumChain',
-                        params: [config],
+                        params: [chainParams],
                     });
-
-                    // After adding the chain, try switching again
-                    await window.ethereum.request({
-                        method: 'wallet_switchEthereumChain',
-                        params: [{ chainId: targetChainId }],
-                    });
-
-                    // Update chainId state after successful switch
-                    setChainId(targetChainId);
+                    setChainId(`0x${Number(targetChainId).toString(16)}`);
                 } catch (addError) {
-                    console.error('Error adding chain:', addError);
-                    throw addError;
+                    throw new Error('Failed to add network');
                 }
             } else {
-                console.error('Error switching chain:', switchError);
                 throw switchError;
             }
         }
@@ -152,7 +135,6 @@ export const useWeb3 = () => {
                 const accounts = await window.ethereum.request({
                     method: 'eth_requestAccounts',
                 });
-
                 setAccount(accounts[0]);
 
                 // Initialize provider
@@ -163,6 +145,10 @@ export const useWeb3 = () => {
                     method: 'eth_chainId',
                 });
                 setChainId(currentChainId);
+
+                if (targetChainId && currentChainId !== `0x${Number(targetChainId).toString(16)}`) {
+                    await switchChain(targetChainId);
+                }
 
                 // Setup event listeners
                 window.ethereum.on('accountsChanged', newAccounts => {
@@ -178,16 +164,6 @@ export const useWeb3 = () => {
                     getProvider(); // Reinitialize provider on chain change
                 });
 
-                // Switch chain if specified
-                if (targetChainId && targetChainId !== currentChainId) {
-                    try {
-                        await switchChain(targetChainId);
-                    } catch (error) {
-                        console.error('Failed to switch chain:', error);
-                        // Continue with connection even if chain switch fails
-                    }
-                }
-
                 localStorage.setItem(WALLET_CONNECTED_KEY, 'true');
                 return provider;
             } catch (error) {
@@ -198,6 +174,7 @@ export const useWeb3 = () => {
         },
         [getProvider, switchChain]
     );
+
     // Auto-connect on mount if previously connected
     React.useEffect(() => {
         const wasConnected = localStorage.getItem(WALLET_CONNECTED_KEY);
@@ -228,4 +205,27 @@ export const useWeb3 = () => {
         provider,
         getProvider,
     };
+};
+
+// Helper function to get chain parameters
+const getChainParams = chainId => {
+    const chains = {
+        1: {
+            chainId: '0x1',
+            chainName: 'Ethereum Mainnet',
+            nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+            rpcUrls: ['https://mainnet.infura.io/v3/'],
+            blockExplorerUrls: ['https://etherscan.io'],
+        },
+        11155111: {
+            chainId: '0xaa36a7',
+            chainName: 'Sepolia',
+            nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
+            rpcUrls: ['https://sepolia.infura.io/v3/'],
+            blockExplorerUrls: ['https://sepolia.etherscan.io'],
+        },
+        // Add other chains as needed
+    };
+
+    return chains[chainId] || null;
 };

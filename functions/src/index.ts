@@ -40,11 +40,7 @@ export const recordPayout = functions.https.onCall(async (data, context) => {
     }
 });
 
-export const createFakeScores = functions.https.onCall(async (data, context) => {
-    if (!context.auth) {
-        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
-    }
-
+export const createFakeScores = functions.https.onCall(async data => {
     try {
         return await generateFakeScores(data);
     } catch (error) {

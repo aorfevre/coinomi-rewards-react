@@ -126,10 +126,43 @@ export const useLeaderboard = ({ weekNumber, yearNumber }, pageSize = 50) => {
         [weekNumber, yearNumber, pageSize]
     );
 
+    const fetchAllParticipants = useCallback(async () => {
+        const parsedWeek = parseNumber(weekNumber);
+        const parsedYear = parseNumber(yearNumber);
+
+        if (!parsedWeek || !parsedYear) {
+            return [];
+        }
+
+        try {
+            setLoading(true);
+            const leaderboardRef = collection(db, 'scores');
+
+            // Query without pagination limit
+            const fullQuery = query(
+                leaderboardRef,
+                where('weekNumber', '==', parsedWeek),
+                where('yearNumber', '==', parsedYear),
+                orderBy('points', 'desc')
+            );
+
+            const snapshot = await getDocs(fullQuery);
+            return snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+        } catch (err) {
+            console.error('Error fetching all participants:', err);
+            throw err;
+        } finally {
+            setLoading(false);
+        }
+    }, [weekNumber, yearNumber]);
+
     useEffect(() => {
         console.log('useEffect triggered with:', { weekNumber, yearNumber });
         fetchLeaderboard();
-    }, [fetchLeaderboard]);
+    }, [weekNumber, yearNumber, fetchLeaderboard]);
 
     const loadMore = useCallback(() => {
         if (!hasMore || loading) {
@@ -149,5 +182,6 @@ export const useLeaderboard = ({ weekNumber, yearNumber }, pageSize = 50) => {
         totalParticipants,
         refetchLeaderboard: fetchLeaderboard,
         lastDocId: lastDoc?.id,
+        fetchAllParticipants,
     };
 };

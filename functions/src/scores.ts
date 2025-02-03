@@ -118,34 +118,42 @@ export const getLeaderboard = functions.https.onCall(async data => {
     }
 });
 
-export const generateFakeScores = async (data: { weekNumber: number; yearNumber: number }) => {
-    const { weekNumber, yearNumber } = data;
+export const generateFakeScores = async (data: { week: number; year: number }) => {
+    const { week, year } = data;
     const scoresRef = db.collection('scores');
     const batch = db.batch();
 
-    // Helper function to generate valid-format Ethereum addresses
     const generateValidFormatAddress = () => {
-        // Generate 20 random bytes (40 hex chars)
         const randomBytes = Array.from({ length: 20 }, () => Math.floor(Math.random() * 256));
-
-        // Convert to hex string
         const addressBytes = randomBytes.map(b => b.toString(16).padStart(2, '0')).join('');
-
-        // Add '0x' prefix
         return `0x${addressBytes}`.toLowerCase();
     };
 
-    // Generate 10 fake entries
+    // Generate points with a more realistic distribution
+    const generatePoints = () => {
+        // Base points between 100-1000
+        const basePoints = Math.floor(Math.random() * 900) + 100;
+
+        // 30% chance of getting bonus points (100-500)
+        const bonusPoints = Math.random() < 0.3 ? Math.floor(Math.random() * 400) + 100 : 0;
+
+        // 10% chance of getting high activity points (500-2000)
+        const activityPoints = Math.random() < 0.1 ? Math.floor(Math.random() * 1500) + 500 : 0;
+
+        return basePoints + bonusPoints + activityPoints;
+    };
+
+    // Generate 1000 fake entries
     for (let i = 0; i < 1000; i++) {
-        const points = Math.floor(Math.random() * 4999) + 1;
+        const points = generatePoints();
         const walletAddress = generateValidFormatAddress();
 
         const docRef = scoresRef.doc();
         batch.set(docRef, {
             points,
             walletAddress,
-            weekNumber,
-            yearNumber,
+            weekNumber: week,
+            yearNumber: year,
             source: 'fake',
             createdAt: new Date().toISOString(),
         });
