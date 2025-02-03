@@ -234,13 +234,40 @@ export const usePayoutDashboard = () => {
         }
     }, [selectedWeek, selectedYear, showMessage, isSepoliaNetwork, refetchLeaderboard]);
 
-    const handleCreateBatches = useCallback(batchDetails => {
-        console.log('Creating batches:', {
-            batchDetails,
-            totalBatches: batchDetails.length,
-            totalParticipants: batchDetails.reduce((sum, size) => sum + size, 0),
-        });
-    }, []);
+    const handleCreateBatches = useCallback(
+        async batchSize => {
+            try {
+                showMessage('Creating batches...', 'info');
+
+                const functions = getFunctions(app);
+                const createBatchesFunction = httpsCallable(functions, 'createBatches');
+
+                const batchesData = {
+                    weekNumber: selectedWeek.toString(),
+                    yearNumber: selectedYear.toString(),
+                    token: {
+                        ...selectedToken,
+                        decimals: selectedToken.decimals.toString(),
+                    },
+                    totalTokens: totalTokens.toString(),
+                    batchSize: batchSize.toString(),
+                };
+
+                console.log('Requesting batch creation with:', batchesData);
+
+                const result = await createBatchesFunction(batchesData);
+
+                console.log('Batches created:', result.data);
+                showMessage('Batches created successfully', 'success');
+
+                handleNext();
+            } catch (error) {
+                console.error('Error creating batches:', error);
+                showMessage(error.message || 'Error creating batches', 'error');
+            }
+        },
+        [selectedWeek, selectedYear, selectedToken, totalTokens, showMessage, handleNext]
+    );
 
     return {
         activeStep,
