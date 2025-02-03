@@ -31,6 +31,7 @@ export const PayoutDashboard = () => {
         handleProcessBatch,
         handleDownloadCSV,
         handleGenerateTest,
+        handleCreateBatches,
         snackbar,
         handleCloseSnackbar,
         kpiData,
@@ -89,6 +90,8 @@ export const PayoutDashboard = () => {
                             batches={batches}
                             batchStatus={batchStatus}
                             onProcessBatch={handleProcessBatch}
+                            totalParticipants={totalParticipants}
+                            onCreateBatches={handleCreateBatches}
                         />
                     </PayoutStepper>
                 </Box>

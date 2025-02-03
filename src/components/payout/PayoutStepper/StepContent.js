@@ -14,14 +14,8 @@ export const StepContent = ({
     leaderboard,
     tokensPerPoint,
     onChainSelect,
-    batches,
-    batchStatus = {
-        preparing: false,
-        processing: false,
-        completed: false,
-        failed: false,
-    },
-    onProcessBatch,
+    totalParticipants,
+    onCreateBatches,
     handleTokenSelect,
 }) => {
     switch (step) {
@@ -59,7 +53,10 @@ export const StepContent = ({
             );
         case 3:
             return (
-                <BatchesStep batches={batches} status={batchStatus} onProcess={onProcessBatch} />
+                <BatchesStep
+                    totalParticipants={totalParticipants}
+                    onCreateBatches={onCreateBatches}
+                />
             );
         default:
             return null;
@@ -75,13 +72,7 @@ StepContent.propTypes = {
     leaderboard: PropTypes.array,
     tokensPerPoint: PropTypes.string,
     onChainSelect: PropTypes.func.isRequired,
-    batches: PropTypes.array,
-    batchStatus: PropTypes.shape({
-        preparing: PropTypes.bool,
-        processing: PropTypes.bool,
-        completed: PropTypes.bool,
-        failed: PropTypes.bool,
-    }),
-    onProcessBatch: PropTypes.func,
+    totalParticipants: PropTypes.number.isRequired,
+    onCreateBatches: PropTypes.func.isRequired,
     handleTokenSelect: PropTypes.func.isRequired,
 };

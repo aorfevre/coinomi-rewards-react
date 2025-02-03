@@ -234,6 +234,14 @@ export const usePayoutDashboard = () => {
         }
     }, [selectedWeek, selectedYear, showMessage, isSepoliaNetwork, refetchLeaderboard]);
 
+    const handleCreateBatches = useCallback(batchDetails => {
+        console.log('Creating batches:', {
+            batchDetails,
+            totalBatches: batchDetails.length,
+            totalParticipants: batchDetails.reduce((sum, size) => sum + size, 0),
+        });
+    }, []);
+
     return {
         activeStep,
         activeTab,
@@ -263,5 +271,6 @@ export const usePayoutDashboard = () => {
         handleDownloadCSV,
         handleGenerateTest,
         isSepoliaNetwork,
+        handleCreateBatches,
     };
 };
