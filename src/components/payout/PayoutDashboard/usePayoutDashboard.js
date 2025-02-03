@@ -1,5 +1,5 @@
 // Logic and state management
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { getWeek, getYear } from 'date-fns';
 import { useLeaderboard } from '../../../hooks/useLeaderboard';
 
@@ -30,6 +30,23 @@ export const usePayoutDashboard = () => {
         weekNumber: selectedWeek,
         yearNumber: selectedYear,
     });
+
+    // Calculate KPI data
+    const kpiData = useMemo(() => {
+        const totalPoints = leaderboard?.reduce((sum, entry) => sum + (entry.points || 0), 0) || 0;
+
+        return {
+            totalParticipants: totalParticipants || 0,
+            totalPoints,
+            tokensPerPoint: totalTokens ? Number(totalTokens) / totalPoints : 0,
+            totalTokens: Number(totalTokens) || 0,
+        };
+    }, [leaderboard, totalParticipants, totalTokens]);
+
+    // Log KPI data for debugging
+    useEffect(() => {
+        console.log('KPI Data:', kpiData);
+    }, [kpiData]);
 
     // Update logging to use entries instead of leaderboard.length
     useEffect(() => {
@@ -136,5 +153,6 @@ export const usePayoutDashboard = () => {
         totalParticipants,
         hasMore,
         handleLoadMore,
+        kpiData,
     };
 };
