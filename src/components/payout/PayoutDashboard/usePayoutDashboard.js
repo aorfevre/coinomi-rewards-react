@@ -1,6 +1,7 @@
 // Logic and state management
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { getWeek, getYear } from 'date-fns';
+import { useLeaderboard } from '../../../hooks/useLeaderboard';
 
 export const usePayoutDashboard = () => {
     const [activeStep, setActiveStep] = useState(0);
@@ -17,6 +18,28 @@ export const usePayoutDashboard = () => {
         completed: false,
         failed: false,
     });
+
+    // Fix: Pass an object with weekNumber and yearNumber
+    const {
+        entries: leaderboard,
+        loading: leaderboardLoading,
+        totalParticipants,
+        hasMore,
+        loadMore,
+    } = useLeaderboard({
+        weekNumber: selectedWeek,
+        yearNumber: selectedYear,
+    });
+
+    // Update logging to use entries instead of leaderboard.length
+    useEffect(() => {
+        console.log('Week/Year changed:', {
+            selectedWeek,
+            selectedYear,
+            hasLeaderboard: leaderboard?.length > 0,
+        });
+    }, [selectedWeek, selectedYear, leaderboard]);
+
     const showMessage = useCallback((message, severity = 'info') => {
         setSnackbar({
             open: true,
@@ -56,6 +79,7 @@ export const usePayoutDashboard = () => {
 
     const handleWeekChange = useCallback(
         (type, value) => {
+            console.log('Week change:', { type, value }); // Add logging
             if (type === 'week') {
                 setSelectedWeek(value);
             } else if (type === 'year') {
@@ -83,6 +107,10 @@ export const usePayoutDashboard = () => {
         setSnackbar(prev => ({ ...prev, open: false }));
     }, []);
 
+    const handleLoadMore = useCallback(() => {
+        loadMore();
+    }, [loadMore]);
+
     return {
         activeStep,
         activeTab,
@@ -103,5 +131,10 @@ export const usePayoutDashboard = () => {
         setTotalTokens,
         batchStatus,
         setBatchStatus,
+        leaderboard,
+        leaderboardLoading,
+        totalParticipants,
+        hasMore,
+        handleLoadMore,
     };
 };

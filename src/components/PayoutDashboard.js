@@ -36,6 +36,9 @@ export const PayoutDashboard = () => {
         kpiData,
         activeTab,
         handleTabChange,
+        totalParticipants,
+        hasMore,
+        handleLoadMore,
     } = usePayoutDashboard();
 
     return (
@@ -111,6 +114,10 @@ export const PayoutDashboard = () => {
                         activeTab={activeTab}
                         onTabChange={handleTabChange}
                         kpiData={kpiData}
+                        totalParticipants={totalParticipants}
+                        hasMore={hasMore}
+                        onLoadMore={handleLoadMore}
+                        loading={leaderboardLoading}
                     />
                 </Box>
             </Box>

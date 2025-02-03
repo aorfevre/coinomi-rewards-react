@@ -1,6 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Box, Button, Tab, Tabs } from '@mui/material';
+import {
+    Box,
+    Button,
+    Tab,
+    Tabs,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Paper,
+    CircularProgress,
+} from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import { WeekYearSelector } from '../common/WeekYearSelector';
 import { KPISection } from './KPISection';
@@ -15,6 +28,10 @@ export const PayoutContent = ({
     activeTab,
     onTabChange,
     kpiData,
+    totalParticipants,
+    hasMore,
+    onLoadMore,
+    loading,
 }) => {
     return (
         <Box>
@@ -44,10 +61,47 @@ export const PayoutContent = ({
 
             {/* Tabs and content */}
             <Tabs value={activeTab} onChange={onTabChange}>
-                <Tab label={`PARTICIPANTS (${leaderboard?.length || 0})`} />
+                <Tab label={`PARTICIPANTS (${totalParticipants || 0})`} />
                 <Tab label={`PAYOUTS (${payouts?.length || 0})`} />
             </Tabs>
-            {/* ... rest of the component ... */}
+
+            {/* Participants Table */}
+            {activeTab === 0 && (
+                <>
+                    <TableContainer component={Paper} sx={{ mt: 2 }}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Wallet Address</TableCell>
+                                    <TableCell align="right">Points</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {leaderboard?.map(entry => (
+                                    <TableRow key={entry.id}>
+                                        <TableCell>{entry.walletAddress}</TableCell>
+                                        <TableCell align="right">{entry.points}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                    {/* Load More Button */}
+                    {hasMore && (
+                        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                            <Button
+                                variant="outlined"
+                                onClick={onLoadMore}
+                                disabled={loading}
+                                startIcon={loading && <CircularProgress size={20} />}
+                            >
+                                {loading ? 'Loading...' : 'Load More'}
+                            </Button>
+                        </Box>
+                    )}
+                </>
+            )}
         </Box>
     );
 };
@@ -71,6 +125,10 @@ PayoutContent.propTypes = {
         tokensPerPoint: PropTypes.number,
         totalTokens: PropTypes.number,
     }).isRequired,
+    totalParticipants: PropTypes.number,
+    hasMore: PropTypes.bool,
+    onLoadMore: PropTypes.func,
+    loading: PropTypes.bool,
 };
 
 PayoutContent.defaultProps = {
@@ -79,4 +137,8 @@ PayoutContent.defaultProps = {
     payouts: [],
     payoutsLoading: false,
     chainId: '',
+    totalParticipants: 0,
+    hasMore: false,
+    onLoadMore: () => {},
+    loading: false,
 };
