@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
     Box,
@@ -110,6 +110,7 @@ export const BatchesTab = ({ weekNumber, yearNumber }) => {
     const { batches, loading, error } = useBatches({ weekNumber, yearNumber });
     const { checkAllowance, approveToken, loading: allowanceLoading } = useTokenPayout();
     const { account } = useWeb3();
+    const [hasAllowance, setHasAllowance] = useState(false);
 
     const payoutData = useMemo(() => {
         if (!Object.keys(batches).length) return null;
@@ -125,19 +126,23 @@ export const BatchesTab = ({ weekNumber, yearNumber }) => {
             token: payoutBatches[0]?.token || {},
             processedBatches,
             totalBatches,
-            hasAllowance: false, // Will be updated by checkAllowance
         };
     }, [batches]);
 
     // Check allowance when payout data is available
     React.useEffect(() => {
-        if (payoutData?.token?.address && account) {
-            checkAllowance(payoutData.token.address, account, payoutData.totalTokens).then(
-                hasAllowance => {
-                    payoutData.hasAllowance = hasAllowance;
-                }
-            );
-        }
+        const checkTokenAllowance = async () => {
+            if (payoutData?.token?.address && account) {
+                const allowance = await checkAllowance(
+                    payoutData.token.address,
+                    account,
+                    payoutData.totalTokens
+                );
+                setHasAllowance(allowance);
+            }
+        };
+
+        checkTokenAllowance();
     }, [payoutData, checkAllowance, account]);
 
     const handleApprove = async () => {
@@ -146,16 +151,20 @@ export const BatchesTab = ({ weekNumber, yearNumber }) => {
             return;
         }
 
+        if (!account) {
+            console.error('No wallet connected');
+            return;
+        }
+
         const success = await approveToken(payoutData.token.address, payoutData.totalTokens);
 
         if (success) {
-            // Recheck allowance after successful approval
             const newAllowance = await checkAllowance(
                 payoutData.token.address,
                 account,
                 payoutData.totalTokens
             );
-            payoutData.hasAllowance = newAllowance;
+            setHasAllowance(newAllowance);
         }
     };
 
@@ -192,7 +201,7 @@ export const BatchesTab = ({ weekNumber, yearNumber }) => {
                     payout={payoutData}
                     onApprove={handleApprove}
                     allowanceLoading={allowanceLoading}
-                    hasAllowance={payoutData.hasAllowance}
+                    hasAllowance={hasAllowance}
                     account={account}
                 />
             )}
@@ -217,14 +226,25 @@ export const BatchesTab = ({ weekNumber, yearNumber }) => {
                             const token = batch.token || {};
 
                             return (
-                                <TableRow key={batch.id}>
+                                <TableRow
+                                    key={batch.id}
+                                    sx={{
+                                        opacity: !batch.hasAllowance ? 0.5 : 1,
+                                    }}
+                                >
                                     <TableCell>{batch.number}</TableCell>
                                     <TableCell>{batch.size}</TableCell>
                                     <TableCell>
                                         {batchTokens.toFixed(6)} {token.symbol}
                                     </TableCell>
                                     <TableCell>
-                                        <StatusChip status={batch.status} />
+                                        <StatusChip
+                                            status={
+                                                !batch.hasAllowance
+                                                    ? 'pending_approval'
+                                                    : batch.status
+                                            }
+                                        />
                                     </TableCell>
                                     <TableCell>
                                         {batch.hash ? (

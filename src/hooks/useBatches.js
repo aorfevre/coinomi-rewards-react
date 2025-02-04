@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
 import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
 import { db } from '../config/firebase';
+import { useTokenPayout } from './useTokenPayout';
+import { useWeb3 } from './useWeb3';
 
 export const useBatches = ({ weekNumber, yearNumber }) => {
-    const [batches, setBatches] = useState([]);
+    const [batches, setBatches] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { checkAllowance } = useTokenPayout();
+    const { account } = useWeb3();
 
     useEffect(() => {
         const fetchBatches = async () => {
+            setLoading(true);
+            setError(null);
             try {
-                setLoading(true);
-                setError(null);
-
                 const batchesRef = collection(db, 'batches');
                 const q = query(
                     batchesRef,
@@ -41,11 +44,35 @@ export const useBatches = ({ weekNumber, yearNumber }) => {
                     payoutBatches.sort((a, b) => a.number - b.number);
                 });
 
+                // For each payout, check allowance
+                if (account) {
+                    for (const payoutId in groupedBatches) {
+                        const payoutBatches = groupedBatches[payoutId];
+                        if (payoutBatches.length > 0) {
+                            const firstBatch = payoutBatches[0];
+                            const tokenAddress = firstBatch.token?.address;
+                            const totalTokens = firstBatch.totalTokens;
+
+                            if (tokenAddress && totalTokens) {
+                                const hasAllowance = await checkAllowance(
+                                    tokenAddress,
+                                    account,
+                                    totalTokens
+                                );
+                                // Add allowance status to the payout data
+                                payoutBatches.forEach(batch => {
+                                    batch.hasAllowance = hasAllowance;
+                                });
+                            }
+                        }
+                    }
+                }
+
                 setBatches(groupedBatches);
-            } catch (error) {
-                console.error('Error fetching batches:', error);
-                setError(error.message);
-            } finally {
+                setLoading(false);
+            } catch (err) {
+                console.error('Error fetching batches:', err);
+                setError(err.message);
                 setLoading(false);
             }
         };
@@ -53,11 +80,7 @@ export const useBatches = ({ weekNumber, yearNumber }) => {
         if (weekNumber && yearNumber) {
             fetchBatches();
         }
-    }, [weekNumber, yearNumber]);
+    }, [weekNumber, yearNumber, account, checkAllowance]);
 
-    return {
-        batches,
-        loading,
-        error,
-    };
+    return { batches, loading, error };
 };
