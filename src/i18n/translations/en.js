@@ -201,4 +201,9 @@ export const en = {
     referYourFriends: 'Refer Your Friends',
     dailyRewardTooltip: 'Come back every day to claim your points & rewards',
     weeklyRewardTooltip: 'Reward airdrops are distributed on a weekly basis',
+
+    // Leaderboard translations
+    topPerformers: 'Top performers for the selected period',
+    week: 'Week',
+    year: 'Year',
 };

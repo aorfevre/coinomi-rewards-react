@@ -189,4 +189,7 @@ export const fr = {
     referYourFriends: 'Parrainez vos amis',
     dailyRewardTooltip: 'Revenez chaque jour pour réclamer vos points et récompenses',
     weeklyRewardTooltip: 'Les récompenses sont distribuées de manière hebdomadaire',
+    topPerformers: 'Meilleurs performeurs de la période sélectionnée',
+    week: 'Semaine',
+    year: 'Année',
 };

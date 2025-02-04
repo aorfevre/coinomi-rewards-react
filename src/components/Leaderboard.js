@@ -15,11 +15,12 @@ import {
     FormControl,
     InputLabel,
 } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 import { useLeaderboard } from '../hooks/useLeaderboard';
 import { shortenAddress } from '../utils/address';
 import { getWeek } from 'date-fns';
 
-// Utility function to get current week number (same as in PayoutDashboard)
+// Utility function to get current week number
 const getCurrentWeek = () => {
     const now = new Date();
     return getWeek(now, {
@@ -28,7 +29,7 @@ const getCurrentWeek = () => {
     });
 };
 
-// Utility functions for week/year options (same as in PayoutDashboard)
+// Utility functions for week/year options
 const generateWeekOptions = () => {
     return Array.from({ length: 53 }, (_, i) => i + 1);
 };
@@ -39,15 +40,25 @@ const generateYearOptions = () => {
 };
 
 export const Leaderboard = () => {
+    const { t } = useTranslation();
     const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
 
-    const { leaderboard, loading, error } = useLeaderboard(10, selectedWeek, selectedYear);
-
+    const {
+        entries: leaderboard,
+        loading,
+        error,
+    } = useLeaderboard({
+        weekNumber: selectedWeek,
+        yearNumber: selectedYear,
+    }); // Limit to 6 entries for the homepage
+    console.log('leaderboard', leaderboard, selectedWeek, selectedYear);
     if (error) {
         return (
             <Box sx={{ p: 3 }}>
-                <Typography color="error">Error loading leaderboard: {error.message}</Typography>
+                <Typography color="error">
+                    {t('errorLoading')}: {error.message}
+                </Typography>
             </Box>
         );
     }
@@ -56,35 +67,35 @@ export const Leaderboard = () => {
         <Box sx={{ p: 3 }}>
             <Box sx={{ mb: 3 }}>
                 <Typography variant="h4" gutterBottom>
-                    Leaderboard
+                    {t('leaderboard')}
                 </Typography>
                 <Typography variant="subtitle1" color="text.secondary">
-                    Top performers for the selected period
+                    {t('topPerformers')}
                 </Typography>
             </Box>
 
             {/* Period Selection */}
             <Box sx={{ mb: 3, display: 'flex', gap: 2 }}>
                 <FormControl sx={{ minWidth: 120 }} size="small">
-                    <InputLabel>Week</InputLabel>
+                    <InputLabel>{t('week')}</InputLabel>
                     <Select
                         value={selectedWeek}
-                        label="Week"
+                        label={t('week')}
                         onChange={e => setSelectedWeek(e.target.value)}
                     >
                         {generateWeekOptions().map(week => (
                             <MenuItem key={week} value={week}>
-                                Week {week}
+                                {t('week')} {week}
                             </MenuItem>
                         ))}
                     </Select>
                 </FormControl>
 
                 <FormControl sx={{ minWidth: 120 }} size="small">
-                    <InputLabel>Year</InputLabel>
+                    <InputLabel>{t('year')}</InputLabel>
                     <Select
                         value={selectedYear}
-                        label="Year"
+                        label={t('year')}
                         onChange={e => setSelectedYear(e.target.value)}
                     >
                         {generateYearOptions().map(year => (
@@ -100,9 +111,9 @@ export const Leaderboard = () => {
                 <Table>
                     <TableHead>
                         <TableRow>
-                            <TableCell>Rank</TableCell>
-                            <TableCell>Wallet</TableCell>
-                            <TableCell align="right">Points</TableCell>
+                            <TableCell>{t('rank')}</TableCell>
+                            <TableCell>{t('player')}</TableCell>
+                            <TableCell align="right">{t('points')}</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -112,8 +123,14 @@ export const Leaderboard = () => {
                                     <CircularProgress size={24} />
                                 </TableCell>
                             </TableRow>
+                        ) : leaderboard?.length === 0 ? (
+                            <TableRow>
+                                <TableCell colSpan={3} align="center">
+                                    {t('noPlayersYet')}
+                                </TableCell>
+                            </TableRow>
                         ) : (
-                            leaderboard?.map((entry, index) => (
+                            leaderboard.map((entry, index) => (
                                 <TableRow key={entry.id}>
                                     <TableCell>{index + 1}</TableCell>
                                     <TableCell>{shortenAddress(entry.walletAddress)}</TableCell>
