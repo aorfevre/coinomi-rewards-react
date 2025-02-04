@@ -43,6 +43,12 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Batches collection rules
+    match /batches/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
 
   }
 }

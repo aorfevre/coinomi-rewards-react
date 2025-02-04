@@ -35,6 +35,9 @@ export const createBatches = functions.https.onCall(async (data: BatchRequest) =
         const batchesRef = db.collection('batches');
         const timestamp = new Date().toISOString();
 
+        // Generate a unique payoutId using timestamp and week/year
+        const payoutId = `${data.yearNumber}-W${data.weekNumber}-${Date.now()}`;
+
         const batchSize = parseInt(data.batchSize);
         const totalParticipants = leaderboard.length;
         const numberOfBatches = Math.ceil(totalParticipants / batchSize);
@@ -64,9 +67,11 @@ export const createBatches = functions.https.onCall(async (data: BatchRequest) =
 
             const batchDoc = batchesRef.doc();
             batch.set(batchDoc, {
+                payoutId, // Add payoutId to each batch
                 timestamp,
                 walletCreation: timestamp,
                 number: i + 1,
+                totalBatches: numberOfBatches, // Add total number of batches for reference
                 size: currentBatchSize,
                 participants: batchParticipants.map(p => p.wallet),
                 amounts: participantAmounts.map(p => p.amount),
@@ -89,6 +94,7 @@ export const createBatches = functions.https.onCall(async (data: BatchRequest) =
 
         return {
             success: true,
+            payoutId,
             batchCount: numberOfBatches,
             totalParticipants,
         };

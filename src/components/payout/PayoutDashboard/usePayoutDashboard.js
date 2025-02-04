@@ -258,7 +258,13 @@ export const usePayoutDashboard = () => {
                 const result = await createBatchesFunction(batchesData);
 
                 console.log('Batches created:', result.data);
-                showMessage('Batches created successfully', 'success');
+                showMessage(
+                    'Batches created successfully! Go to the Batches tab to process the payments.',
+                    'success'
+                );
+
+                // Switch to Batches tab after creation
+                handleTabChange(null, 2); // Assuming 2 is the Batches tab index
 
                 handleNext();
             } catch (error) {
@@ -266,7 +272,15 @@ export const usePayoutDashboard = () => {
                 showMessage(error.message || 'Error creating batches', 'error');
             }
         },
-        [selectedWeek, selectedYear, selectedToken, totalTokens, showMessage, handleNext]
+        [
+            selectedWeek,
+            selectedYear,
+            selectedToken,
+            totalTokens,
+            showMessage,
+            handleNext,
+            handleTabChange,
+        ]
     );
 
     return {

@@ -1,10 +1,11 @@
 import { useState, useCallback } from 'react';
-import { Contract } from 'ethers';
-import { useWeb3 } from './useWeb3';
+import { Contract, ethers } from 'ethers';
+import { useWeb3, CHAIN_CONFIGS } from './useWeb3';
 
 const ERC20_ABI = [
     'function approve(address spender, uint256 amount) public returns (bool)',
     'function allowance(address owner, address spender) public view returns (uint256)',
+    'function decimals() public view returns (uint8)',
 ];
 
 const DISPERSE_ABI = [
@@ -18,22 +19,49 @@ export const useTokenPayout = () => {
     const [error, setError] = useState(null);
 
     const checkAllowance = useCallback(
-        async (tokenAddress, ownerAddress) => {
+        async (tokenAddress, ownerAddress, desiredAmount) => {
             try {
+                if (!tokenAddress || !ownerAddress || !desiredAmount) {
+                    console.warn('Missing required parameters:', {
+                        tokenAddress,
+                        ownerAddress,
+                        desiredAmount,
+                    });
+                    return false;
+                }
+
                 const provider = getProvider();
-                if (!provider) return 0;
+                if (!provider) {
+                    console.error('No provider available');
+                    return false;
+                }
+
+                const disperseAddress = CHAIN_CONFIGS[chainId]?.disperseContract;
+                if (!disperseAddress) {
+                    console.error('No disperse contract address found for chain:', chainId);
+                    return false;
+                }
 
                 const tokenContract = new Contract(tokenAddress, ERC20_ABI, provider);
-                const disperseAddress = CHAIN_CONFIGS[chainId]?.disperseContract;
+                const decimals = await tokenContract.decimals();
+                const desiredAmountWithDecimals = ethers.parseUnits(
+                    desiredAmount.toString(),
+                    decimals
+                );
 
                 const allowance = await tokenContract.allowance(ownerAddress, disperseAddress);
-                return allowance;
+                console.log('Current allowance:', {
+                    allowance: allowance.toString(),
+                    required: desiredAmountWithDecimals.toString(),
+                });
+
+                return allowance >= desiredAmountWithDecimals;
             } catch (err) {
                 console.error('Error checking allowance:', err);
-                return 0;
+                return false;
             }
         },
-        [getProvider, chainId]
+        [chainId]
     );
 
     const approveToken = useCallback(
@@ -41,6 +69,9 @@ export const useTokenPayout = () => {
             setError(null);
             setApproving(true);
             try {
+                if (!amount) {
+                    throw new Error('Amount is required');
+                }
                 const provider = getProvider();
                 if (!provider) throw new Error('No provider available');
 
@@ -48,7 +79,17 @@ export const useTokenPayout = () => {
                 const tokenContract = new Contract(tokenAddress, ERC20_ABI, signer);
                 const disperseAddress = CHAIN_CONFIGS[chainId]?.disperseContract;
 
-                const tx = await tokenContract.approve(disperseAddress, amount);
+                const decimals = await tokenContract.decimals();
+                const amountString = String(amount);
+                const amountWithDecimals = ethers.parseUnits(amountString, decimals);
+
+                console.log('Approving tokens:', {
+                    amount,
+                    decimals,
+                    amountWithDecimals: amountWithDecimals.toString(),
+                });
+
+                const tx = await tokenContract.approve(disperseAddress, amountWithDecimals);
                 await tx.wait();
 
                 return true;
