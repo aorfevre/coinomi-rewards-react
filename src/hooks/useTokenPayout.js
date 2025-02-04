@@ -62,7 +62,7 @@ export const useTokenPayout = () => {
                 return false;
             }
         },
-        [chainId]
+        [chainId, getProvider]
     );
 
     const approveToken = useCallback(
@@ -183,7 +183,7 @@ export const useTokenPayout = () => {
                 setDispersing(false);
             }
         },
-        [getProvider, chainId, updateBatchStatus]
+        [getProvider, chainId]
     );
 
     return {
