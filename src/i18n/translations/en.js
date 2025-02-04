@@ -31,7 +31,7 @@ export const en = {
     rules: 'Rules',
     profile: 'Profile',
     comingSoon: 'Coming soon...',
-    completedTasks: 'Completed\nTasks',
+    completedTasks: 'Completed\nActivities',
     dailyRewardsClaimed: 'Daily Rewards Claimed',
     times: 'times',
     recentActivity: 'Recent Activity',
@@ -206,4 +206,9 @@ export const en = {
     topPerformers: 'Top performers for the selected period',
     week: 'Week',
     year: 'Year',
+
+    // Recent Activity translations
+    'new-referral': 'New Referral',
+    'daily-reward': 'Daily Reward',
+    'referral-bonus': 'Referral Bonus',
 };

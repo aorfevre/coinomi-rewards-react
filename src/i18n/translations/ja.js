@@ -35,7 +35,7 @@ export const ja = {
     rules: 'ルール',
     profile: 'プロフィール',
     comingSoon: '近日公開...',
-    completedTasks: '完了したタスク',
+    completedTasks: '完了した\nアクティビティ',
     dailyRewardsClaimed: '受け取ったデイリー報酬',
     times: '回',
     recentActivity: '最近のアクティビティ',
@@ -182,4 +182,7 @@ export const ja = {
     referYourFriends: '友達を招待',
     dailyRewardTooltip: '毎日ログインしてポイントと報酬を獲得しましょう',
     weeklyRewardTooltip: '報酬の配布は週単位で行われます',
+    'new-referral': '新規紹介',
+    'daily-reward': 'デイリー報酬',
+    'referral-bonus': '紹介ボーナス',
 };

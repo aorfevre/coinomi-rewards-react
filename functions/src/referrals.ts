@@ -121,6 +121,14 @@ export const processReferral = functions.https.onCall(async (data, context) => {
 
         const referrerId = referrerQuery.docs[0].id;
 
+        // prevent self-referrals
+        if (referrerId === newUserId) {
+            throw new functions.https.HttpsError(
+                'already-exists',
+                'Self-referrals are not allowed'
+            );
+        }
+
         // Update new user with referral info
         await db.collection('users').doc(newUserId).update({
             referredBy: referrerId,
@@ -201,6 +209,7 @@ export const onReferralUpdate = functions.firestore
         const previousData = change.before.data() as UserData | undefined;
         const userId = context.params.userId;
 
+        console.log('On referral update', newData);
         // Check if this is a new referral
         if (
             newData?.referredBy && // Has referrer

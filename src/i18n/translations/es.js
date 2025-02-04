@@ -35,12 +35,12 @@ export const es = {
     rules: 'Reglas',
     profile: 'Perfil',
     comingSoon: 'Próximamente...',
-    completedTasks: 'Tareas\ncompletadas',
+    completedTasks: 'Actividades\ncompletadas',
     dailyRewardsClaimed: 'Recompensas diarias reclamadas',
     times: 'veces',
-    recentActivity: 'Actividad reciente',
+    recentActivity: 'Actividad Reciente',
     noRewardsClaimed: 'Aún no se han reclamado recompensas',
-    dailyReward: 'Recompensa diaria',
+    dailyReward: 'Recompensa Diaria',
     howItWorks: 'Cómo funciona',
     welcomeMessage:
         '¡Bienvenido a Coinomi Rewards! Gana puntos completando varias tareas y sube en la clasificación.',
@@ -193,4 +193,7 @@ export const es = {
     referYourFriends: 'Invita a tus amigos',
     dailyRewardTooltip: 'Vuelve cada día para reclamar tus puntos y recompensas',
     weeklyRewardTooltip: 'Las recompensas se distribuyen semanalmente',
+    'new-referral': 'Nueva Referencia',
+    'daily-reward': 'Recompensa Diaria',
+    'referral-bonus': 'Bono de Referencia',
 };

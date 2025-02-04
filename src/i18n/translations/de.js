@@ -35,7 +35,7 @@ export const de = {
     rules: 'Regeln',
     profile: 'Profil',
     comingSoon: 'Demnächst verfügbar...',
-    completedTasks: 'Abgeschlossene\nAufgaben',
+    completedTasks: 'Abgeschlossene\nAktivitäten',
     dailyRewardsClaimed: 'Eingeforderte tägliche Belohnungen',
     times: 'mal',
     recentActivity: 'Letzte Aktivität',
@@ -189,4 +189,7 @@ export const de = {
     referYourFriends: 'Freunde einladen',
     dailyRewardTooltip: 'Komm jeden Tag zurück, um deine Punkte & Belohnungen zu erhalten',
     weeklyRewardTooltip: 'Belohnungs-Airdrops werden wöchentlich verteilt',
+    new_referral: 'Neue Empfehlung',
+    daily_reward: 'Tägliche Belohnung',
+    referral_bonus: 'Empfehlungsbonus',
 };

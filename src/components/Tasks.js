@@ -92,7 +92,7 @@ export const Tasks = ({ userId }) => {
                                         >
                                             {reward.type === 'daily'
                                                 ? t('dailyReward')
-                                                : reward.type}
+                                                : t(reward.type)}
                                         </Typography>
                                         <Typography
                                             variant="body2"
