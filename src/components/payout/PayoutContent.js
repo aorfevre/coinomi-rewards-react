@@ -5,7 +5,6 @@ import DownloadIcon from '@mui/icons-material/Download';
 import { WeekYearSelector } from '../common/WeekYearSelector';
 import { KPISection } from './KPISection';
 import { LeaderboardTab } from './LeaderboardTab';
-import { PayoutsTab } from './PayoutsTab/PayoutsTab';
 import { BatchesTab } from './BatchesTab/BatchesTab';
 
 export const PayoutContent = ({
@@ -13,7 +12,6 @@ export const PayoutContent = ({
     selectedYear,
     onWeekChange,
     leaderboard,
-    payouts,
     onDownloadCSV,
     activeTab,
     onTabChange,
@@ -77,7 +75,6 @@ export const PayoutContent = ({
             {/* Tabs and content */}
             <Tabs value={activeTab} onChange={onTabChange}>
                 <Tab label="Leaderboard" />
-                <Tab label="Payouts" />
                 <Tab label="Batches" />
             </Tabs>
 
@@ -89,8 +86,7 @@ export const PayoutContent = ({
                     loading={loading}
                 />
             )}
-            {activeTab === 1 && <PayoutsTab payouts={payouts} />}
-            {activeTab === 2 && <BatchesTab weekNumber={selectedWeek} yearNumber={selectedYear} />}
+            {activeTab === 1 && <BatchesTab weekNumber={selectedWeek} yearNumber={selectedYear} />}
         </Box>
     );
 };

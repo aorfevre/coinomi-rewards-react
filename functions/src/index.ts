@@ -12,7 +12,7 @@ import {
 import * as functions from 'firebase-functions';
 import { createPayout } from './payouts';
 import { generateFakeScores } from './scores';
-import { createBatches } from './batches';
+import { createBatches, updateBatchStatus } from './batches';
 
 // Export the functions
 export {
@@ -28,6 +28,7 @@ export {
     updateReferralCode,
     onReferralUpdate,
     createBatches,
+    updateBatchStatus,
 };
 
 export const recordPayout = functions.https.onCall(async (data, context) => {

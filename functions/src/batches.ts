@@ -103,3 +103,52 @@ export const createBatches = functions.https.onCall(async (data: BatchRequest) =
         throw new functions.https.HttpsError('internal', 'Failed to create batches');
     }
 });
+
+interface UpdateBatchParams {
+    payoutId: string;
+    batchNumber: number;
+    hash: string;
+}
+
+export const updateBatchStatus = functions.https.onCall(async (data: UpdateBatchParams) => {
+    const { payoutId, batchNumber, hash } = data;
+
+    if (!payoutId || batchNumber === undefined || !hash) {
+        throw new functions.https.HttpsError(
+            'invalid-argument',
+            'payoutId, batchNumber and hash are required'
+        );
+    }
+
+    try {
+        // Query for the specific batch
+        const batchesRef = db.collection('batches');
+        const batchQuery = await batchesRef
+            .where('payoutId', '==', payoutId)
+            .where('number', '==', batchNumber)
+            .limit(1)
+            .get();
+
+        if (batchQuery.empty) {
+            throw new functions.https.HttpsError('not-found', 'Batch not found');
+        }
+
+        const batchDoc = batchQuery.docs[0];
+
+        // Update the batch
+        await batchDoc.ref.update({
+            status: 'processed',
+            hash,
+            updatedAt: new Date().toISOString(),
+        });
+
+        // Return the hash to confirm it was stored
+        return { hash };
+    } catch (error) {
+        functions.logger.error('Error updating batch status:', error);
+        throw new functions.https.HttpsError(
+            'internal',
+            error instanceof Error ? error.message : 'Error updating batch'
+        );
+    }
+});

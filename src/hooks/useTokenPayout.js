@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { Contract, ethers } from 'ethers';
 import { useWeb3, CHAIN_CONFIGS } from './useWeb3';
+import { updateBatchStatus } from '../config/firebase';
 
 const ERC20_ABI = [
     'function approve(address spender, uint256 amount) public returns (bool)',
@@ -105,10 +106,36 @@ export const useTokenPayout = () => {
     );
 
     const disperseTokens = useCallback(
-        async (tokenAddress, recipients, amounts) => {
+        async (tokenAddress, recipients, amounts, batch) => {
             setError(null);
             setDispersing(true);
             try {
+                console.log('Dispersing tokens:', {
+                    tokenAddress,
+                    recipientsLength: recipients?.length,
+                    amountsLength: amounts?.length,
+                    recipients: recipients,
+                    amounts: amounts.map(a => a.toString()),
+                });
+
+                if (!tokenAddress || !recipients || !amounts) {
+                    throw new Error('Missing required parameters for disperse');
+                }
+
+                if (!Array.isArray(recipients) || !Array.isArray(amounts)) {
+                    throw new Error(`Invalid array parameters: recipients and amounts must be arrays
+                        Recipients type: ${typeof recipients}
+                        Amounts type: ${typeof amounts}
+                    `);
+                }
+
+                if (recipients.length !== amounts.length) {
+                    throw new Error(`Array length mismatch: 
+                        Recipients length: ${recipients.length}
+                        Amounts length: ${amounts.length}
+                    `);
+                }
+
                 const provider = getProvider();
                 if (!provider) throw new Error('No provider available');
 
@@ -116,19 +143,47 @@ export const useTokenPayout = () => {
                 const disperseAddress = CHAIN_CONFIGS[chainId]?.disperseContract;
                 const disperseContract = new Contract(disperseAddress, DISPERSE_ABI, signer);
 
-                const tx = await disperseContract.disperseToken(tokenAddress, recipients, amounts);
-                await tx.wait();
+                console.log('Disperse contract setup:', {
+                    disperseAddress,
+                    contractInterface: disperseContract.interface.format(),
+                });
 
-                return true;
+                const tx = await disperseContract.disperseToken(tokenAddress, recipients, amounts);
+                console.log('Transaction sent:', {
+                    hash: tx.hash,
+                    data: tx.data,
+                });
+
+                const receipt = await tx.wait();
+                console.log('Transaction confirmed:', {
+                    hash: tx.hash,
+                    blockNumber: receipt.blockNumber,
+                    gasUsed: receipt.gasUsed.toString(),
+                });
+
+                const result = await updateBatchStatus({
+                    payoutId: batch.payoutId,
+                    batchNumber: batch.number,
+                    hash: tx.hash,
+                });
+
+                console.log('Backend update result:', result);
+                return result.hash;
             } catch (err) {
-                console.error('Error dispersing tokens:', err);
+                console.error('Error dispersing tokens:', {
+                    error: err,
+                    message: err.message,
+                    code: err.code,
+                    data: err.data,
+                    stack: err.stack,
+                });
                 setError(err.message);
-                return false;
+                throw err;
             } finally {
                 setDispersing(false);
             }
         },
-        [getProvider, chainId]
+        [getProvider, chainId, updateBatchStatus]
     );
 
     return {

@@ -144,7 +144,7 @@ export const generateFakeScores = async (data: { week: number; year: number }) =
     };
 
     // Generate 1000 fake entries
-    for (let i = 0; i < 1000; i++) {
+    for (let i = 0; i < 10; i++) {
         const points = generatePoints();
         const walletAddress = generateValidFormatAddress();
 

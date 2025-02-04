@@ -19,6 +19,8 @@ import {
 import { useBatches } from '../../../hooks/useBatches';
 import { useTokenPayout } from '../../../hooks/useTokenPayout';
 import { useWeb3 } from '../../../hooks/useWeb3';
+import { updateBatchStatus } from '../../../config/firebase';
+
 const statusColors = {
     todo: 'warning',
     processing: 'info',
@@ -35,10 +37,18 @@ const StatusChip = ({ status }) => (
     />
 );
 
-const PayoutInfo = ({ payout, onApprove, allowanceLoading, hasAllowance, account }) => {
+const PayoutInfo = ({
+    payout,
+    onApprove,
+    allowanceLoading,
+    hasAllowance,
+    account,
+    onDisperse,
+    dispersing,
+}) => {
     const { payoutId, totalTokens, token, processedBatches, totalBatches } = payout;
     const progress = (processedBatches / totalBatches) * 100;
-    const status = processedBatches === totalBatches ? 'Completed' : 'In Progress';
+    const isCompleted = processedBatches === totalBatches;
 
     return (
         <Paper sx={{ p: 3, mb: 3 }}>
@@ -68,22 +78,35 @@ const PayoutInfo = ({ payout, onApprove, allowanceLoading, hasAllowance, account
                         Token Address: {token.address}
                     </Typography>
                 </Box>
-                <Button
-                    variant="contained"
-                    onClick={onApprove}
-                    disabled={!account || hasAllowance || allowanceLoading}
-                    sx={{ minWidth: 150 }}
-                >
-                    {allowanceLoading ? (
-                        <CircularProgress size={24} />
-                    ) : hasAllowance ? (
-                        'Approved'
-                    ) : !account ? (
-                        'Connect Wallet'
-                    ) : (
-                        'Approve Tokens'
-                    )}
-                </Button>
+                {!isCompleted && (
+                    <Box sx={{ display: 'flex', gap: 2 }}>
+                        <Button
+                            variant="contained"
+                            onClick={onApprove}
+                            disabled={!account || hasAllowance || allowanceLoading}
+                            sx={{ minWidth: 150 }}
+                        >
+                            {allowanceLoading ? (
+                                <CircularProgress size={24} />
+                            ) : hasAllowance ? (
+                                'Approved'
+                            ) : !account ? (
+                                'Connect Wallet'
+                            ) : (
+                                'Approve Tokens'
+                            )}
+                        </Button>
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={onDisperse}
+                            disabled={!hasAllowance || dispersing}
+                            sx={{ minWidth: 150 }}
+                        >
+                            {dispersing ? <CircularProgress size={24} /> : 'Bulk Disperse'}
+                        </Button>
+                    </Box>
+                )}
             </Box>
             <Box sx={{ mb: 1 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
@@ -91,8 +114,8 @@ const PayoutInfo = ({ payout, onApprove, allowanceLoading, hasAllowance, account
                         Progress: {processedBatches} of {totalBatches} batches processed
                     </Typography>
                     <Chip
-                        label={status}
-                        color={status === 'Completed' ? 'success' : 'warning'}
+                        label={isCompleted ? 'Completed' : 'In Progress'}
+                        color={isCompleted ? 'success' : 'warning'}
                         size="small"
                     />
                 </Box>
@@ -107,46 +130,51 @@ const PayoutInfo = ({ payout, onApprove, allowanceLoading, hasAllowance, account
 };
 
 export const BatchesTab = ({ weekNumber, yearNumber }) => {
-    const { batches, loading, error } = useBatches({ weekNumber, yearNumber });
-    const { checkAllowance, approveToken, loading: allowanceLoading } = useTokenPayout();
+    const { batches, loading, error, refetch } = useBatches({ weekNumber, yearNumber });
+    const {
+        checkAllowance,
+        approveToken,
+        loading: allowanceLoading,
+        disperseTokens,
+    } = useTokenPayout();
     const { account } = useWeb3();
-    const [hasAllowance, setHasAllowance] = useState(false);
+    const [hasAllowance, setHasAllowance] = useState({}); // Track allowance per payout
+    const [dispersing, setDispersing] = useState(false);
 
-    const payoutData = useMemo(() => {
-        if (!Object.keys(batches).length) return null;
+    const payoutsData = useMemo(() => {
+        if (!Object.keys(batches).length) return [];
 
-        const payoutId = Object.keys(batches)[0];
-        const payoutBatches = batches[payoutId];
-        const totalBatches = payoutBatches.length;
-        const processedBatches = payoutBatches.filter(b => b.status === 'done').length;
-
-        return {
+        return Object.entries(batches).map(([payoutId, payoutBatches]) => ({
             payoutId,
             totalTokens: payoutBatches[0]?.totalTokens || '0',
             token: payoutBatches[0]?.token || {},
-            processedBatches,
-            totalBatches,
-        };
+            processedBatches: payoutBatches.filter(b => b.status === 'processed').length,
+            totalBatches: payoutBatches.length,
+        }));
     }, [batches]);
 
-    // Check allowance when payout data is available
+    // Check allowance for all payouts
     React.useEffect(() => {
-        const checkTokenAllowance = async () => {
-            if (payoutData?.token?.address && account) {
-                const allowance = await checkAllowance(
-                    payoutData.token.address,
-                    account,
-                    payoutData.totalTokens
-                );
-                setHasAllowance(allowance);
+        const checkTokenAllowances = async () => {
+            const allowances = {};
+            for (const payout of payoutsData) {
+                if (payout.token?.address && account) {
+                    const allowance = await checkAllowance(
+                        payout.token.address,
+                        account,
+                        payout.totalTokens
+                    );
+                    allowances[payout.payoutId] = allowance;
+                }
             }
+            setHasAllowance(allowances);
         };
 
-        checkTokenAllowance();
-    }, [payoutData, checkAllowance, account]);
+        checkTokenAllowances();
+    }, [payoutsData, checkAllowance, account]);
 
-    const handleApprove = async () => {
-        if (!payoutData?.token?.address || !payoutData?.totalTokens) {
+    const handleApprove = async payout => {
+        if (!payout?.token?.address || !payout?.totalTokens) {
             console.error('Missing token address or amount');
             return;
         }
@@ -156,15 +184,61 @@ export const BatchesTab = ({ weekNumber, yearNumber }) => {
             return;
         }
 
-        const success = await approveToken(payoutData.token.address, payoutData.totalTokens);
+        const success = await approveToken(payout.token.address, payout.totalTokens);
 
         if (success) {
             const newAllowance = await checkAllowance(
-                payoutData.token.address,
+                payout.token.address,
                 account,
-                payoutData.totalTokens
+                payout.totalTokens
             );
-            setHasAllowance(newAllowance);
+            setHasAllowance(prev => ({
+                ...prev,
+                [payout.payoutId]: newAllowance,
+            }));
+        }
+    };
+
+    const handleDisperse = async payout => {
+        if (!payout || !account || !hasAllowance[payout.payoutId]) return;
+
+        setDispersing(true);
+        try {
+            const pendingBatches = batches[payout.payoutId]?.filter(b => b.status === 'todo') || [];
+
+            for (const batch of pendingBatches) {
+                try {
+                    const hash = await disperseTokens(
+                        payout.token.address,
+                        batch.participants,
+                        batch.amountsDecimals,
+                        batch
+                    );
+
+                    if (hash) {
+                        try {
+                            await updateBatchStatus({
+                                payoutId: batch.payoutId,
+                                batchNumber: batch.number,
+                                hash,
+                            });
+                            await refetch();
+                        } catch (updateError) {
+                            console.error('Failed to update backend:', updateError);
+                            break;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error processing batch:', error);
+                    break;
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 2000));
+            }
+        } catch (error) {
+            console.error('Error in bulk disperse:', error);
+        } finally {
+            setDispersing(false);
         }
     };
 
@@ -184,87 +258,70 @@ export const BatchesTab = ({ weekNumber, yearNumber }) => {
         );
     }
 
-    const payoutIds = Object.keys(batches);
-
-    if (payoutIds.length === 0) {
-        return (
-            <Alert severity="info" sx={{ mt: 2 }}>
-                No batches found for Week {weekNumber}, {yearNumber}
-            </Alert>
-        );
-    }
-
     return (
         <Box sx={{ mt: 2 }}>
-            {payoutData && (
-                <PayoutInfo
-                    payout={payoutData}
-                    onApprove={handleApprove}
-                    allowanceLoading={allowanceLoading}
-                    hasAllowance={hasAllowance}
-                    account={account}
-                />
-            )}
+            {payoutsData.map(payout => (
+                <Box key={payout.payoutId} sx={{ mb: 4 }}>
+                    <PayoutInfo
+                        payout={payout}
+                        onApprove={() => handleApprove(payout)}
+                        allowanceLoading={allowanceLoading}
+                        hasAllowance={hasAllowance[payout.payoutId]}
+                        account={account}
+                        onDisperse={() => handleDisperse(payout)}
+                        dispersing={dispersing}
+                    />
 
-            <TableContainer component={Paper}>
-                <Table>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell>Batch #</TableCell>
-                            <TableCell>Size</TableCell>
-                            <TableCell>Tokens</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Transaction</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {Object.values(batches)[0]?.map(batch => {
-                            const batchTokens = batch.amounts.reduce(
-                                (sum, amount) => sum + Number(amount),
-                                0
-                            );
-                            const token = batch.token || {};
-
-                            return (
-                                <TableRow
-                                    key={batch.id}
-                                    sx={{
-                                        opacity: !batch.hasAllowance ? 0.5 : 1,
-                                    }}
-                                >
-                                    <TableCell>{batch.number}</TableCell>
-                                    <TableCell>{batch.size}</TableCell>
-                                    <TableCell>
-                                        {batchTokens.toFixed(6)} {token.symbol}
-                                    </TableCell>
-                                    <TableCell>
-                                        <StatusChip
-                                            status={
-                                                !batch.hasAllowance
-                                                    ? 'pending_approval'
-                                                    : batch.status
-                                            }
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        {batch.hash ? (
-                                            <a
-                                                href={`https://sepolia.etherscan.io/tx/${batch.hash}`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {batch.hash.slice(0, 8)}...
-                                            </a>
-                                        ) : (
-                                            '-'
-                                        )}
-                                    </TableCell>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Batch #</TableCell>
+                                    <TableCell>Size</TableCell>
+                                    <TableCell>Tokens</TableCell>
+                                    <TableCell>Status</TableCell>
+                                    <TableCell>Transaction</TableCell>
                                 </TableRow>
-                            );
-                        })}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                            </TableHead>
+                            <TableBody>
+                                {batches[payout.payoutId]?.map(batch => {
+                                    const batchTokens = batch.amounts.reduce(
+                                        (sum, amount) => sum + Number(amount),
+                                        0
+                                    );
+                                    const token = batch.token || {};
+
+                                    return (
+                                        <TableRow key={batch.id}>
+                                            <TableCell>{batch.number}</TableCell>
+                                            <TableCell>{batch.size}</TableCell>
+                                            <TableCell>
+                                                {batchTokens.toFixed(6)} {token.symbol}
+                                            </TableCell>
+                                            <TableCell>
+                                                <StatusChip status={batch.status} />
+                                            </TableCell>
+                                            <TableCell>
+                                                {batch.hash ? (
+                                                    <a
+                                                        href={`https://sepolia.etherscan.io/tx/${batch.hash}`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        {batch.hash.slice(0, 8)}...
+                                                    </a>
+                                                ) : (
+                                                    '-'
+                                                )}
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Box>
+            ))}
         </Box>
     );
 };
@@ -293,4 +350,6 @@ PayoutInfo.propTypes = {
     allowanceLoading: PropTypes.bool.isRequired,
     hasAllowance: PropTypes.bool.isRequired,
     account: PropTypes.string,
+    onDisperse: PropTypes.func.isRequired,
+    dispersing: PropTypes.bool.isRequired,
 };
