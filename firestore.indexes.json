@@ -113,7 +113,10 @@
         {
             "collectionGroup": "users",
             "queryScope": "COLLECTION",
-            "fields": [{ "fieldPath": "referredBy", "order": "ASCENDING" }]
+            "fields": [
+                { "fieldPath": "referredBy", "order": "ASCENDING" },
+                { "fieldPath": "points", "order": "DESCENDING" }
+            ]
         }
     ],
     "fieldOverrides": []
