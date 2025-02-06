@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { useBatches } from '../../../hooks/useBatches';
 import { useTokenPayout } from '../../../hooks/useTokenPayout';
-import { useWeb3 } from '../../../hooks/useWeb3';
+import { useWeb3, CHAIN_CONFIGS } from '../../../hooks/useWeb3';
 import { updateBatchStatus } from '../../../config/firebase';
 
 const statusColors = {
@@ -46,9 +46,22 @@ const PayoutInfo = ({
     onDisperse,
     dispersing,
 }) => {
-    const { payoutId, totalTokens, token, processedBatches, totalBatches } = payout;
+    const { payoutId, totalTokens, token, processedBatches, totalBatches, chainId } = payout;
     const progress = (processedBatches / totalBatches) * 100;
     const isCompleted = processedBatches === totalBatches;
+    const { chainId: currentChainId, switchChain } = useWeb3();
+
+    // Get chain name from CHAIN_CONFIGS
+    const chainName = CHAIN_CONFIGS[chainId]?.chainName || 'Unknown Network';
+    const isCorrectChain = currentChainId === chainId;
+
+    const handleChainSwitch = async () => {
+        try {
+            await switchChain(chainId);
+        } catch (error) {
+            console.error('Failed to switch chain:', error);
+        }
+    };
 
     return (
         <Paper sx={{ p: 3, mb: 3 }}>
@@ -77,34 +90,50 @@ const PayoutInfo = ({
                     >
                         Token Address: {token.address}
                     </Typography>
+                    <Typography variant="subtitle2" color="text.secondary">
+                        Network: {chainName} ({chainId})
+                    </Typography>
                 </Box>
                 {!isCompleted && (
                     <Box sx={{ display: 'flex', gap: 2 }}>
-                        <Button
-                            variant="contained"
-                            onClick={onApprove}
-                            disabled={!account || hasAllowance || allowanceLoading}
-                            sx={{ minWidth: 150 }}
-                        >
-                            {allowanceLoading ? (
-                                <CircularProgress size={24} />
-                            ) : hasAllowance ? (
-                                'Approved'
-                            ) : !account ? (
-                                'Connect Wallet'
-                            ) : (
-                                'Approve Tokens'
-                            )}
-                        </Button>
-                        <Button
-                            variant="contained"
-                            color="secondary"
-                            onClick={onDisperse}
-                            disabled={!hasAllowance || dispersing}
-                            sx={{ minWidth: 150 }}
-                        >
-                            {dispersing ? <CircularProgress size={24} /> : 'Bulk Disperse'}
-                        </Button>
+                        {!isCorrectChain ? (
+                            <Button
+                                variant="contained"
+                                color="warning"
+                                onClick={handleChainSwitch}
+                                sx={{ minWidth: 150 }}
+                            >
+                                Switch to {chainName}
+                            </Button>
+                        ) : (
+                            <>
+                                <Button
+                                    variant="contained"
+                                    onClick={onApprove}
+                                    disabled={!account || hasAllowance || allowanceLoading}
+                                    sx={{ minWidth: 150 }}
+                                >
+                                    {allowanceLoading ? (
+                                        <CircularProgress size={24} />
+                                    ) : hasAllowance ? (
+                                        'Approved'
+                                    ) : !account ? (
+                                        'Connect Wallet'
+                                    ) : (
+                                        'Approve Tokens'
+                                    )}
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    onClick={onDisperse}
+                                    disabled={!hasAllowance || dispersing}
+                                    sx={{ minWidth: 150 }}
+                                >
+                                    {dispersing ? <CircularProgress size={24} /> : 'Bulk Disperse'}
+                                </Button>
+                            </>
+                        )}
                     </Box>
                 )}
             </Box>
@@ -150,6 +179,8 @@ export const BatchesTab = ({ weekNumber, yearNumber }) => {
             token: payoutBatches[0]?.token || {},
             processedBatches: payoutBatches.filter(b => b.status === 'processed').length,
             totalBatches: payoutBatches.length,
+            batches: payoutBatches,
+            chainId: payoutBatches[0]?.chainId,
         }));
     }, [batches]);
 
@@ -345,6 +376,7 @@ PayoutInfo.propTypes = {
         }).isRequired,
         processedBatches: PropTypes.number.isRequired,
         totalBatches: PropTypes.number.isRequired,
+        chainId: PropTypes.string,
     }).isRequired,
     onApprove: PropTypes.func.isRequired,
     allowanceLoading: PropTypes.bool.isRequired,

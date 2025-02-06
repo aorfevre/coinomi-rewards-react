@@ -11,6 +11,7 @@ interface BatchRequest {
     };
     totalTokens: string;
     batchSize: string;
+    chainId: string;
 }
 
 export const createBatches = functions.https.onCall(async (data: BatchRequest) => {
@@ -67,11 +68,11 @@ export const createBatches = functions.https.onCall(async (data: BatchRequest) =
 
             const batchDoc = batchesRef.doc();
             batch.set(batchDoc, {
-                payoutId, // Add payoutId to each batch
+                payoutId,
                 timestamp,
                 walletCreation: timestamp,
                 number: i + 1,
-                totalBatches: numberOfBatches, // Add total number of batches for reference
+                totalBatches: numberOfBatches,
                 size: currentBatchSize,
                 participants: batchParticipants.map(p => p.wallet),
                 amounts: participantAmounts.map(p => p.amount),
@@ -85,6 +86,7 @@ export const createBatches = functions.https.onCall(async (data: BatchRequest) =
                 status: 'todo',
                 weekNumber: parseInt(data.weekNumber),
                 yearNumber: parseInt(data.yearNumber),
+                chainId: data.chainId,
             });
 
             participantIndex += currentBatchSize;

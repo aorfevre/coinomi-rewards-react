@@ -251,6 +251,7 @@ export const usePayoutDashboard = () => {
                     },
                     totalTokens: totalTokens.toString(),
                     batchSize: batchSize.toString(),
+                    chainId: currentChainId,
                 };
 
                 console.log('Requesting batch creation with:', batchesData);
@@ -264,7 +265,7 @@ export const usePayoutDashboard = () => {
                 );
 
                 // Switch to Batches tab after creation
-                handleTabChange(null, 2); // Assuming 2 is the Batches tab index
+                handleTabChange(null, 1); // Assuming 2 is the Batches tab index
 
                 handleNext();
             } catch (error) {
@@ -280,6 +281,7 @@ export const usePayoutDashboard = () => {
             showMessage,
             handleNext,
             handleTabChange,
+            currentChainId,
         ]
     );
 

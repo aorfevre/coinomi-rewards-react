@@ -146,9 +146,17 @@ export const useTokenPayout = () => {
                 console.log('Disperse contract setup:', {
                     disperseAddress,
                     contractInterface: disperseContract.interface.format(),
+                    amounts: amounts.map(a => a.toString()),
+                    chainId,
                 });
+                // remove decimals from amounts
+                const amountsWithoutDecimals = amounts.map(a => a.toString().replace('.', ''));
 
-                const tx = await disperseContract.disperseToken(tokenAddress, recipients, amounts);
+                const tx = await disperseContract.disperseToken(
+                    tokenAddress,
+                    recipients,
+                    amountsWithoutDecimals
+                );
                 console.log('Transaction sent:', {
                     hash: tx.hash,
                     data: tx.data,
