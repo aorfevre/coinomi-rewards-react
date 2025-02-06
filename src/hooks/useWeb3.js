@@ -3,15 +3,6 @@ import { BrowserProvider } from 'ethers';
 import React from 'react';
 
 export const CHAIN_CONFIGS = {
-    '0x1': {
-        chainId: '0x1',
-        chainName: 'Ethereum',
-        nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-        rpcUrls: ['https://eth-mainnet.public.blastapi.io'],
-        blockExplorerUrls: ['https://etherscan.io'],
-        disperseContract: '0xD152f549545093347A162Dce210e7293f1452150',
-        icon: 'ethereum.svg',
-    },
     '0xaa36a7': {
         chainId: '0xaa36a7',
         chainName: 'Sepolia',
@@ -210,13 +201,6 @@ export const useWeb3 = () => {
 // Helper function to get chain parameters
 const getChainParams = chainId => {
     const chains = {
-        1: {
-            chainId: '0x1',
-            chainName: 'Ethereum Mainnet',
-            nativeCurrency: { name: 'ETH', symbol: 'ETH', decimals: 18 },
-            rpcUrls: ['https://mainnet.infura.io/v3/'],
-            blockExplorerUrls: ['https://etherscan.io'],
-        },
         11155111: {
             chainId: '0xaa36a7',
             chainName: 'Sepolia',

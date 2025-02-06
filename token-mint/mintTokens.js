@@ -33,19 +33,22 @@ async function main() {
 
         // Get initial balance
         const recipient = '0x07335f37009ad3a5EFF7785Ce7fdD1344FdD4197';
+        const decimals = await tokenContract.decimals();
         const initialBalance = await tokenContract.balanceOf(recipient);
-        console.log('Initial balance:', ethers.formatUnits(initialBalance, 18));
+        console.log('Initial balance:', ethers.formatUnits(initialBalance, decimals));
 
         // Mint tokens
-        const amount = ethers.parseUnits('1000000', 18); // 1 million tokens with 18 decimals
+        const amount = ethers.parseUnits('1000000', decimals); // 1 million tokens with 6 decimals
         console.log('Minting tokens...');
         const tx = await tokenContract.mint(recipient, amount);
         await tx.wait();
-        console.log(`Successfully minted ${ethers.formatUnits(amount, 18)} tokens to ${recipient}`);
+        console.log(
+            `Successfully minted ${ethers.formatUnits(amount, decimals)} tokens to ${recipient}`
+        );
 
         // Verify final balance
         const finalBalance = await tokenContract.balanceOf(recipient);
-        console.log('Final balance:', ethers.formatUnits(finalBalance, 18));
+        console.log('Final balance:', ethers.formatUnits(finalBalance, decimals));
     } catch (error) {
         console.error('Error:', error.message);
         if (error.data) {

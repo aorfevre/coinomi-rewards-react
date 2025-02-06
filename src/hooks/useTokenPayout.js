@@ -7,6 +7,7 @@ const ERC20_ABI = [
     'function approve(address spender, uint256 amount) public returns (bool)',
     'function allowance(address owner, address spender) public view returns (uint256)',
     'function decimals() public view returns (uint8)',
+    'function balanceOf(address account) public view returns (uint256)',
 ];
 
 const DISPERSE_ABI = [
@@ -143,19 +144,129 @@ export const useTokenPayout = () => {
                 const disperseAddress = CHAIN_CONFIGS[chainId]?.disperseContract;
                 const disperseContract = new Contract(disperseAddress, DISPERSE_ABI, signer);
 
-                console.log('Disperse contract setup:', {
-                    disperseAddress,
-                    contractInterface: disperseContract.interface.format(),
-                    amounts: amounts.map(a => a.toString()),
-                    chainId,
-                });
-                // remove decimals from amounts
-                const amountsWithoutDecimals = amounts.map(a => a.toString().replace('.', ''));
+                const tokenContract = new Contract(tokenAddress, ERC20_ABI, provider);
+                const decimals = await tokenContract.decimals();
 
+                const amountsWithDecimals = amounts.map(a => {
+                    // Convert to string and ensure we're handling whole numbers
+                    const amountStr = a.toString().trim().split('.')[0];
+                    console.log('Amount string:', amountStr);
+                    // Simply parse the whole number and multiply by token decimals
+                    return BigInt(amountStr);
+                });
+
+                console.log('Amounts with decimals:', amountsWithDecimals);
+                // Add balance check before dispersing
+                const signerAddress = await signer.getAddress();
+                const tokenBalance = await tokenContract.balanceOf(signerAddress);
+
+                console.log('Token balance:', tokenBalance.toString());
+                // Calculate total in human-readable format first
+                const totalAmountHuman = Number(
+                    amounts.reduce((sum, val) => sum + Number(val), 0).toFixed(0)
+                );
+                // Then convert to token units
+                console.log('Total amount human:', totalAmountHuman);
+                const totalAmount = BigInt(totalAmountHuman);
+
+                console.log('Balance check:', {
+                    humanReadableTotal: totalAmountHuman,
+                    tokenBalance: ethers.formatUnits(tokenBalance, decimals),
+                    totalAmount: totalAmount.toString(),
+                });
+
+                if (BigInt(tokenBalance.toString()) < totalAmount) {
+                    throw new Error('Insufficient token balance for disperse');
+                }
+
+                // Add allowance check
+                const allowance = await tokenContract.allowance(signerAddress, disperseAddress);
+                if (BigInt(allowance.toString()) < totalAmount) {
+                    throw new Error('Insufficient token allowance for disperse');
+                }
+
+                console.log('Pre-disperse checks:', {
+                    balance: tokenBalance.toString(),
+                    totalAmount: totalAmount.toString(),
+                    allowance: allowance.toString(),
+                    signerAddress,
+                    disperseAddress,
+                    tokenAddress,
+                    recipients,
+                    amountsWithDecimals,
+                });
+
+                // Improve gas estimation with better error handling and buffer
+                let gasLimit;
+                try {
+                    console.log('Attempting to estimate gas with params:', {
+                        tokenAddress,
+                        recipients: recipients.slice(0, 3),
+                        amountsWithDecimals: amountsWithDecimals.map(a => a.toString()).slice(0, 3),
+                    });
+
+                    // Add exponential backoff retry logic for gas estimation
+                    let retryCount = 0;
+                    const maxRetries = 3;
+                    const baseDelay = 1000; // 1 second
+
+                    while (retryCount < maxRetries) {
+                        try {
+                            // Get current fee data to ensure estimation is accurate
+                            const feeData = await provider.getFeeData();
+                            console.log('Current gas price:', feeData.gasPrice?.toString());
+
+                            gasLimit = await disperseContract.disperseToken.estimateGas(
+                                tokenAddress,
+                                recipients,
+                                amountsWithDecimals,
+                                { gasPrice: feeData.gasPrice }
+                            );
+                            break; // Success, exit the retry loop
+                        } catch (estimateErr) {
+                            retryCount++;
+                            if (retryCount === maxRetries) throw estimateErr;
+
+                            const delay = baseDelay * Math.pow(2, retryCount - 1);
+                            console.warn(
+                                `Gas estimation attempt ${retryCount} failed, retrying in ${delay}ms...`,
+                                estimateErr.message
+                            );
+                            await new Promise(resolve => setTimeout(resolve, delay));
+                        }
+                    }
+
+                    // Add 50% buffer to the estimated gas for safer execution
+                    gasLimit = (gasLimit * BigInt(150)) / BigInt(100);
+                    console.log('Estimated gas limit with buffer:', gasLimit.toString());
+                } catch (err) {
+                    console.error('Gas estimation failed after retries:', {
+                        error: err,
+                        message: err.message,
+                        code: err.code,
+                        data: err.data,
+                        method: 'disperseToken',
+                        tokenAddress,
+                        recipientsCount: recipients.length,
+                        amountsCount: amountsWithDecimals.length,
+                        rpcUrl: provider.connection?.url || 'unknown',
+                    });
+
+                    // More generous fallback gas calculation
+                    const baseGas = 150000; // Increased base gas
+                    const perRecipientGas = 85000; // Increased per-recipient gas
+                    gasLimit = BigInt(baseGas + perRecipientGas * recipients.length);
+
+                    // Add 50% safety buffer to fallback calculation
+                    gasLimit = (gasLimit * BigInt(150)) / BigInt(100);
+                    console.warn('Using calculated fallback gas limit:', gasLimit.toString());
+                }
+                console.log('Using gas limit:', gasLimit);
                 const tx = await disperseContract.disperseToken(
                     tokenAddress,
                     recipients,
-                    amountsWithoutDecimals
+                    amountsWithDecimals,
+                    { gasLimit: gasLimit }
                 );
                 console.log('Transaction sent:', {
                     hash: tx.hash,
