@@ -172,4 +172,5 @@ export const tr = {
     referYourFriends: 'Arkadaşlarını Davet Et',
     dailyRewardTooltip: 'Puanlarınızı ve ödüllerinizi almak için her gün geri gelin',
     weeklyRewardTooltip: 'Ödül dağıtımları haftalık olarak yapılır',
+    copy: 'Kopyala',
 };

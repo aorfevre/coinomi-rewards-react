@@ -185,4 +185,5 @@ export const ja = {
     'new-referral': '新規紹介',
     'daily-reward': 'デイリー報酬',
     'referral-bonus': '紹介ボーナス',
+    copy: 'コピー',
 };

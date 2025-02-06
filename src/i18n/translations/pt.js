@@ -185,4 +185,5 @@ export const pt = {
     referYourFriends: 'Indique seus amigos',
     dailyRewardTooltip: 'Volte todos os dias para reivindicar seus pontos e recompensas',
     weeklyRewardTooltip: 'As recompensas são distribuídas semanalmente',
+    copy: 'Copiar',
 };

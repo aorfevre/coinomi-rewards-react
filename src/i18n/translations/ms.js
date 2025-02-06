@@ -173,4 +173,5 @@ export const ms = {
     daily: 'Harian',
     weekly: 'Mingguan',
     claimRewards: 'Tuntut ganjaran',
+    copy: 'Salin',
 };

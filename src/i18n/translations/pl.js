@@ -170,4 +170,5 @@ export const pl = {
     daily: 'Dziennie',
     weekly: 'Tygodniowo',
     claimRewards: 'Odbierz nagrody',
+    copy: 'Kopiuj',
 };

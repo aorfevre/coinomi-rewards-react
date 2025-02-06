@@ -182,4 +182,5 @@ export const it = {
     referYourFriends: 'Invita i tuoi amici',
     dailyRewardTooltip: 'Torna ogni giorno per richiedere i tuoi punti e premi',
     weeklyRewardTooltip: 'I premi vengono distribuiti settimanalmente',
+    copy: 'Copia',
 };

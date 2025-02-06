@@ -173,4 +173,5 @@ export const fa = {
     daily: 'روزانه',
     weekly: 'هفتگی',
     claimRewards: 'دریافت پاداش‌ها',
+    copy: 'کپی',
 };

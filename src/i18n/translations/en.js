@@ -211,4 +211,5 @@ export const en = {
     'new-referral': 'New Referral',
     'daily-reward': 'Daily Reward',
     'referral-bonus': 'Referral Bonus',
+    copy: 'Copy',
 };

@@ -170,4 +170,5 @@ export const hr = {
     daily: 'Dnevno',
     weekly: 'Tjedno',
     claimRewards: 'Preuzmi nagrade',
+    copy: 'Kopiraj',
 };

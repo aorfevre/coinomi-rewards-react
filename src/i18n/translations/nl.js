@@ -174,4 +174,5 @@ export const nl = {
     daily: 'Dagelijks',
     weekly: 'Wekelijks',
     claimRewards: 'Claim beloningen',
+    copy: 'Kopiëren',
 };

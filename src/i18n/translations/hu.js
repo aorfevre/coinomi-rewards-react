@@ -168,4 +168,5 @@ export const hu = {
     daily: 'Napi',
     weekly: 'Heti',
     claimRewards: 'Jutalmak igénylése',
+    copy: 'Másolás',
 };

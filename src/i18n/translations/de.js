@@ -192,4 +192,5 @@ export const de = {
     new_referral: 'Neue Empfehlung',
     daily_reward: 'Tägliche Belohnung',
     referral_bonus: 'Empfehlungsbonus',
+    copy: 'Kopieren',
 };

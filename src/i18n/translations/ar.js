@@ -180,4 +180,5 @@ export const ar = {
     referYourFriends: 'ادعُ أصدقاءك',
     dailyRewardTooltip: 'عد كل يوم للمطالبة بنقاطك ومكافآتك',
     weeklyRewardTooltip: 'يتم توزيع مكافآت الإسقاط الجوي أسبوعياً',
+    copy: 'نسخ',
 };

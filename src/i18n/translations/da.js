@@ -168,4 +168,5 @@ export const da = {
     daily: 'Daglig',
     weekly: 'Ugentlig',
     claimRewards: 'Hent belønninger',
+    copy: 'Kopiér',
 };

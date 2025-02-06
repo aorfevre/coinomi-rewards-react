@@ -39,5 +39,6 @@ export const ka = {
     daily: 'ყოველდღიური',
     weekly: 'ყოველკვირეული',
     claimRewards: 'ჯილდოების მიღება',
+    copy: 'კოპირება',
     // ... add all other translations
 };

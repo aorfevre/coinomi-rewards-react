@@ -79,6 +79,7 @@ export const ReferralTab = ({ userId }) => {
                         boxShadow: 'none',
                     },
                 }}
+                disabled={!referralCode}
             >
                 {t('copy')}
             </Button>

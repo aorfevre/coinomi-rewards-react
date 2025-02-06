@@ -168,4 +168,5 @@ export const cs = {
     daily: 'Denní',
     weekly: 'Týdenní',
     claimRewards: 'Získat odměny',
+    copy: 'Kopírovat',
 };

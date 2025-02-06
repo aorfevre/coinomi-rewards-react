@@ -176,4 +176,5 @@ export const ko = {
     referYourFriends: '친구 초대하기',
     dailyRewardTooltip: '매일 접속하여 포인트와 보상을 받으세요',
     weeklyRewardTooltip: '보상은 주간 단위로 지급됩니다',
+    copy: '복사',
 };

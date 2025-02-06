@@ -195,4 +195,5 @@ export const fr = {
     new_referral: 'Nouveau Parrainage',
     daily_reward: 'Récompense Quotidienne',
     referral_bonus: 'Bonus de Parrainage',
+    copy: 'Copier',
 };

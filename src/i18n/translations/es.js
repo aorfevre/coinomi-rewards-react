@@ -196,4 +196,5 @@ export const es = {
     'new-referral': 'Nueva Referencia',
     'daily-reward': 'Recompensa Diaria',
     'referral-bonus': 'Bono de Referencia',
+    copy: 'Copiar',
 };

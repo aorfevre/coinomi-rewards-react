@@ -174,4 +174,5 @@ export const el = {
     daily: 'Ημερήσια',
     weekly: 'Εβδομαδιαία',
     claimRewards: 'Διεκδίκηση ανταμοιβών',
+    copy: 'Αντιγραφή',
 };

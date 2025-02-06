@@ -173,4 +173,5 @@ export const is = {
     daily: 'Daglega',
     weekly: 'Vikulega',
     claimRewards: 'Sækja verðlaun',
+    copy: 'Afrita',
 };

@@ -180,4 +180,5 @@ export const hi = {
     referYourFriends: 'अपने दोस्तों को आमंत्रित करें',
     dailyRewardTooltip: 'अपने अंक और पुरस्कार प्राप्त करने के लिए हर दिन वापस आएं',
     weeklyRewardTooltip: 'पुरस्कार एयरड्रॉप साप्ताहिक आधार पर वितरित किए जाते हैं',
+    copy: 'कॉपी करें',
 };

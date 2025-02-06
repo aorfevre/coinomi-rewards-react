@@ -171,4 +171,5 @@ export const id = {
     daily: 'Harian',
     weekly: 'Mingguan',
     claimRewards: 'Klaim hadiah',
+    copy: 'Salin',
 };

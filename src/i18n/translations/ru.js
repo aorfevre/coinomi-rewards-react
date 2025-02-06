@@ -172,4 +172,5 @@ export const ru = {
     referYourFriends: 'Пригласите друзей',
     dailyRewardTooltip: 'Возвращайтесь каждый день, чтобы получить очки и награды',
     weeklyRewardTooltip: 'Награды распределяются еженедельно',
+    copy: 'Копировать',
 };

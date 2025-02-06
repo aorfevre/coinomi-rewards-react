@@ -172,4 +172,5 @@ export const fi = {
     daily: 'Päivittäin',
     weekly: 'Viikoittain',
     claimRewards: 'Lunasta palkinnot',
+    copy: 'Kopioi',
 };

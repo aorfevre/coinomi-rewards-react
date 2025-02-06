@@ -170,4 +170,5 @@ export const et = {
     daily: 'Päevane',
     weekly: 'Iganädalane',
     claimRewards: 'Lunasta preemiad',
+    copy: 'Kopeeri',
 };

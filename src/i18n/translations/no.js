@@ -168,4 +168,5 @@ export const no = {
     daily: 'Daglig',
     weekly: 'Ukentlig',
     claimRewards: 'Krev belønninger',
+    copy: 'Kopier',
 };
