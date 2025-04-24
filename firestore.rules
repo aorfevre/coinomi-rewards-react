@@ -49,6 +49,11 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // TwitterRewards collection rules
+    match /twitterRewards/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
 
   }
 }
