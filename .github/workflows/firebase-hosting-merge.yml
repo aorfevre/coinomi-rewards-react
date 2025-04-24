@@ -145,6 +145,11 @@ jobs:
                   echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > service-account.json
                   export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
 
+            - name: Authenticate with Firebase
+              run: |
+                  firebase auth:export service-account.json --format=json
+                  firebase login --credential service-account.json
+
             - name: Set Firebase project
               run: |
                   firebase use ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }} --non-interactive
