@@ -135,6 +135,19 @@ jobs:
                   ls lib  # Debug step to verify build output
                   cat lib/index.js  # Debug step to verify file contents
 
+            - name: Set up Firebase CLI
+              run: |
+                  npm install -g firebase-tools
+                  firebase --version
+
+            - name: Set cleanup policy
+              uses: w9jds/firebase-action@master
+              with:
+                  args: functions:artifacts:setpolicy --retention=30d
+              env:
+                  GCP_SA_KEY: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+                  PROJECT_ID: ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}
+
             - name: Deploy Functions
               uses: w9jds/firebase-action@master
               with:
