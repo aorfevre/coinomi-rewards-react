@@ -145,6 +145,10 @@ jobs:
                   echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > service-account.json
                   export GOOGLE_APPLICATION_CREDENTIALS=service-account.json
 
+            - name: Set Firebase project
+              run: |
+                  firebase use ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }} --token "$(cat service-account.json | jq -r .private_key)"
+
             - name: Deploy Functions
               run: |
                   firebase deploy --only functions --force
