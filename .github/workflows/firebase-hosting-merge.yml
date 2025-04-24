@@ -147,7 +147,7 @@ jobs:
 
             - name: Set Firebase project
               run: |
-                  firebase use ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }} --token "$(cat service-account.json | jq -r .private_key)"
+                  firebase use ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }} --non-interactive
 
             - name: Deploy Functions
               run: |
