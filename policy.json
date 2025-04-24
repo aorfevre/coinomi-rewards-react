@@ -1,0 +1,9 @@
+{
+    "rules": [
+        {
+            "description": "Delete images older than 30 days",
+            "maxAge": "30d",
+            "tagPrefixes": ["us-central1"]
+        }
+    ]
+}

@@ -68,3 +68,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+# Migration
+
+gcloud artifacts repositories set-cleanup-policies gcf-artifacts \
+ --project=coinomi-rewards \
+ --location=us-central1 \
+ --policy=cleanup-policy.json \
+ --no-dry-run

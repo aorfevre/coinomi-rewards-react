@@ -1,0 +1,10 @@
+[
+  {
+    "name": "keep-recent-artifacts",
+    "action": {"type": "Keep"},
+    "mostRecentVersions": {
+      "keepCount": 5
+    },
+    "versionNamePattern": "*"
+  }
+]
