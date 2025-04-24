@@ -173,4 +173,9 @@ export const tr = {
     dailyRewardTooltip: 'Puanlarınızı ve ödüllerinizi almak için her gün geri gelin',
     weeklyRewardTooltip: 'Ödül dağıtımları haftalık olarak yapılır',
     copy: 'Kopyala',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter Görevi',
+    connectTwitter: 'Twitter ile Bağlan',
+    twitterSuccess: '🎉 Tebrikler! Artık tüm ödüllerde %10 kalıcı bonus alıyorsunuz!',
+    twitterPrompt: 'Twitter hesabınızı bağlayarak tüm ödüllerde %10 kalıcı bonus kazanın!',
 };

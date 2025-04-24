@@ -196,4 +196,11 @@ export const fr = {
     daily_reward: 'Récompense Quotidienne',
     referral_bonus: 'Bonus de Parrainage',
     copy: 'Copier',
+    // Twitter Challenge
+    twitterChallenge: 'Défi Twitter',
+    connectTwitter: 'Connecter Twitter',
+    twitterSuccess:
+        '🎉 Félicitations ! Vous recevez maintenant un bonus permanent de 10% sur toutes les récompenses !',
+    twitterPrompt:
+        'Connectez votre compte Twitter pour obtenir un bonus permanent de 10% sur toutes les récompenses !',
 };

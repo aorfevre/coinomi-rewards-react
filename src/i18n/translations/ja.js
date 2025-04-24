@@ -186,4 +186,10 @@ export const ja = {
     'daily-reward': 'デイリー報酬',
     'referral-bonus': '紹介ボーナス',
     copy: 'コピー',
+    // Twitter Challenge
+    twitterChallenge: 'Twitterチャレンジ',
+    connectTwitter: 'Twitterを接続',
+    twitterSuccess: '🎉 おめでとうございます！すべての報酬に10%の恒久的なボーナスが付与されます！',
+    twitterPrompt:
+        'Twitterアカウントを接続して、すべての報酬に10%の恒久的なボーナスを獲得しましょう！',
 };

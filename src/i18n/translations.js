@@ -177,6 +177,11 @@ export const resources = {
             shareOn: 'Share on {{network}}',
             shareInviteText:
                 '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
+            twitterChallenge: 'Twitter Challenge',
+            connectTwitter: 'Connect with Twitter',
+            twitterSuccess:
+                '🎉 Congratulations! You are now receiving a permanent 10% bonus on all rewards!',
+            twitterPrompt: 'Link your Twitter account to get a permanent 10% bonus on all rewards!',
         },
     },
     pt: {
@@ -327,6 +332,12 @@ export const resources = {
             shareOn: 'Share on {{network}}',
             shareInviteText:
                 '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
+            twitterChallenge: 'Desafio do Twitter',
+            connectTwitter: 'Conectar com Twitter',
+            twitterSuccess:
+                '🎉 Parabéns! Você agora está recebendo um bônus permanente de 10% em todas as recompensas!',
+            twitterPrompt:
+                'Vincule sua conta do Twitter para obter um bônus permanente de 10% em todas as recompensas!',
         },
     },
     fr: {
@@ -478,6 +489,11 @@ export const resources = {
             shareOn: 'Share on {{network}}',
             shareInviteText:
                 '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
+            twitterChallenge: 'Twitter Challenge',
+            connectTwitter: 'Connect with Twitter',
+            twitterSuccess:
+                '🎉 Congratulations! You are now receiving a permanent 10% bonus on all rewards!',
+            twitterPrompt: 'Link your Twitter account to get a permanent 10% bonus on all rewards!',
         },
     },
     tr: {
@@ -612,6 +628,11 @@ export const resources = {
             shareOn: 'Share on {{network}}',
             shareInviteText:
                 '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
+            twitterChallenge: 'Twitter Challenge',
+            connectTwitter: 'Connect with Twitter',
+            twitterSuccess:
+                '🎉 Congratulations! You are now receiving a permanent 10% bonus on all rewards!',
+            twitterPrompt: 'Link your Twitter account to get a permanent 10% bonus on all rewards!',
         },
     },
     zh: {
@@ -739,6 +760,11 @@ export const resources = {
             shareOn: 'Share on {{network}}',
             shareInviteText:
                 '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
+            twitterChallenge: 'Twitter Challenge',
+            connectTwitter: 'Connect with Twitter',
+            twitterSuccess:
+                '🎉 Congratulations! You are now receiving a permanent 10% bonus on all rewards!',
+            twitterPrompt: 'Link your Twitter account to get a permanent 10% bonus on all rewards!',
         },
     },
     vi: {
@@ -875,6 +901,11 @@ export const resources = {
             shareOn: 'Share on {{network}}',
             shareInviteText:
                 '🚀 Join me on Coinomi Wallet and get bonus rewards! Download the app from {{appUrl}} and use my referral code: {{referralCode}} when you sign up. #Coinomi #Crypto',
+            twitterChallenge: 'Twitter Challenge',
+            connectTwitter: 'Connect with Twitter',
+            twitterSuccess:
+                '🎉 Congratulations! You are now receiving a permanent 10% bonus on all rewards!',
+            twitterPrompt: 'Link your Twitter account to get a permanent 10% bonus on all rewards!',
         },
     },
     fil: {

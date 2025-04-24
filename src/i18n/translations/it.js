@@ -183,4 +183,11 @@ export const it = {
     dailyRewardTooltip: 'Torna ogni giorno per richiedere i tuoi punti e premi',
     weeklyRewardTooltip: 'I premi vengono distribuiti settimanalmente',
     copy: 'Copia',
+    // Twitter Challenge
+    twitterChallenge: 'Sfida Twitter',
+    connectTwitter: 'Connetti Twitter',
+    twitterSuccess:
+        '🎉 Congratulazioni! Ora ricevi un bonus permanente del 10% su tutte le ricompense!',
+    twitterPrompt:
+        'Collega il tuo account Twitter per ottenere un bonus permanente del 10% su tutte le ricompense!',
 };

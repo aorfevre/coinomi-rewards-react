@@ -212,4 +212,11 @@ export const en = {
     'daily-reward': 'Daily Reward',
     'referral-bonus': 'Referral Bonus',
     copy: 'Copy',
+
+    // Twitter Challenge
+    twitterChallenge: 'Twitter Challenge',
+    connectTwitter: 'Connect with Twitter',
+    twitterSuccess:
+        '🎉 Congratulations! You are now receiving a permanent 10% bonus on all rewards!',
+    twitterPrompt: 'Link your Twitter account to get a permanent 10% bonus on all rewards!',
 };

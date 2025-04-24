@@ -163,4 +163,9 @@ export const sl = {
     shareOn: 'Deli na {{network}}',
     shareInviteText:
         '🚀 Pridruži se mi v Coinomi Wallet in prejmi bonus nagrade! Prenesi aplikacijo iz {{appUrl}} in uporabi mojo kodo za priporočila: {{referralCode}} ob registraciji. #Coinomi #Crypto',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter Izziv',
+    connectTwitter: 'Poveži Twitter',
+    twitterSuccess: '🎉 Čestitamo! Zdaj prejemate trajni 10% bonus na vse nagrade!',
+    twitterPrompt: 'Povežite svoj Twitter račun za trajni 10% bonus na vse nagrade!',
 };

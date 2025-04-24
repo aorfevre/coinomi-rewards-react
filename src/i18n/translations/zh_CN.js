@@ -147,4 +147,9 @@ export const zh_CN = {
     shareOn: '分享到{{network}}',
     shareInviteText:
         '🚀 和我一起加入Coinomi钱包获得奖励！从{{appUrl}}下载应用，注册时使用我的推荐码：{{referralCode}}。#Coinomi #Crypto',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter挑战',
+    connectTwitter: '连接Twitter',
+    twitterSuccess: '🎉 恭喜！您现在获得所有奖励的10%永久加成！',
+    twitterPrompt: '关联您的Twitter账号，获得所有奖励的10%永久加成！',
 };

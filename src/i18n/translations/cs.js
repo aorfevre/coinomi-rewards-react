@@ -169,4 +169,9 @@ export const cs = {
     weekly: 'Týdenní',
     claimRewards: 'Získat odměny',
     copy: 'Kopírovat',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter Výzva',
+    connectTwitter: 'Připojit Twitter',
+    twitterSuccess: '🎉 Gratulujeme! Nyní získáváte 10% trvalý bonus na všechny odměny!',
+    twitterPrompt: 'Připojte svůj Twitter účet a získejte 10% trvalý bonus na všechny odměny!',
 };

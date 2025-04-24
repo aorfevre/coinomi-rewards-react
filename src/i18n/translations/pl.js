@@ -171,4 +171,9 @@ export const pl = {
     weekly: 'Tygodniowo',
     claimRewards: 'Odbierz nagrody',
     copy: 'Kopiuj',
+    // Twitter Challenge
+    twitterChallenge: 'Wyzwanie Twitter',
+    connectTwitter: 'Połącz z Twitterem',
+    twitterSuccess: '🎉 Gratulacje! Otrzymujesz teraz stały 10% bonus do wszystkich nagród!',
+    twitterPrompt: 'Połącz swoje konto Twitter, aby otrzymać stały 10% bonus do wszystkich nagród!',
 };

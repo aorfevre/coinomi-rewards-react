@@ -167,4 +167,11 @@ export const vi = {
     shareOn: 'Chia sẻ trên {{network}}',
     shareInviteText:
         '🚀 Tham gia cùng tôi trên Coinomi Wallet và nhận phần thưởng bonus! Tải ứng dụng từ {{appUrl}} và sử dụng mã giới thiệu của tôi: {{referralCode}} khi đăng ký. #Coinomi #Crypto',
+    // Twitter Challenge
+    twitterChallenge: 'Thử Thách Twitter',
+    connectTwitter: 'Kết Nối Twitter',
+    twitterSuccess:
+        '🎉 Chúc mừng! Bạn giờ đây nhận được 10% thưởng vĩnh viễn cho tất cả phần thưởng!',
+    twitterPrompt:
+        'Liên kết tài khoản Twitter của bạn để nhận 10% thưởng vĩnh viễn cho tất cả phần thưởng!',
 };

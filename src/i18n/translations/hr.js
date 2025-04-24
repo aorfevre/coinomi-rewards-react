@@ -171,4 +171,10 @@ export const hr = {
     weekly: 'Tjedno',
     claimRewards: 'Preuzmi nagrade',
     copy: 'Kopiraj',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter Izazov',
+    connectTwitter: 'Poveži Twitter',
+    twitterSuccess: '🎉 Čestitamo! Sada dobivate trajni bonus od 10% na sve nagrade!',
+    twitterPrompt:
+        'Povežite svoj Twitter račun kako biste dobili trajni bonus od 10% na sve nagrade!',
 };

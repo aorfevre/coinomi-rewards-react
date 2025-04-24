@@ -197,4 +197,11 @@ export const es = {
     'daily-reward': 'Recompensa Diaria',
     'referral-bonus': 'Bono de Referencia',
     copy: 'Copiar',
+    // Twitter Challenge
+    twitterChallenge: 'Desafío de Twitter',
+    connectTwitter: 'Conectar con Twitter',
+    twitterSuccess:
+        '🎉 ¡Felicidades! Ahora recibirás un bono permanente del 10% en todas las recompensas!',
+    twitterPrompt:
+        '¡Vincula tu cuenta de Twitter para obtener un bono permanente del 10% en todas las recompensas!',
 };

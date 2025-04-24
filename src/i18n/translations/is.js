@@ -174,4 +174,10 @@ export const is = {
     weekly: 'Vikulega',
     claimRewards: 'Sækja verðlaun',
     copy: 'Afrita',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter Áskorun',
+    connectTwitter: 'Tengja Twitter',
+    twitterSuccess: '🎉 Til hamingju! Þú færð nú 10% varanlegan bónus á allar umbunir!',
+    twitterPrompt:
+        'Tengdu Twitter reikninginn þinn til að fá 10% varanlegan bónus á allar umbunir!',
 };

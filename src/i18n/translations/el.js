@@ -175,4 +175,10 @@ export const el = {
     weekly: 'Εβδομαδιαία',
     claimRewards: 'Διεκδίκηση ανταμοιβών',
     copy: 'Αντιγραφή',
+    // Twitter Challenge
+    twitterChallenge: 'Πρόκληση Twitter',
+    connectTwitter: 'Σύνδεση Twitter',
+    twitterSuccess: '🎉 Συγχαρητήρια! Τώρα λαμβάνετε 10% μόνιμο μπόνους σε όλες τις ανταμοιβές!',
+    twitterPrompt:
+        'Συνδέστε τον λογαριασμό σας στο Twitter για να λάβετε 10% μόνιμο μπόνους σε όλες τις ανταμοιβές!',
 };

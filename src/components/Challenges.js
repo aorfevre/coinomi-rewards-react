@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
+import TwitterIcon from '@mui/icons-material/Twitter';
 import PropTypes from 'prop-types';
 import { useUserData } from '../hooks/useUserData';
 import { useState } from 'react';
@@ -91,6 +92,20 @@ export const Challenges = ({ userId, onTabChange }) => {
         onTabChange('referrals');
     };
 
+    const handleTwitterAuth = () => {
+        const twitterAuthUrl = `${process.env.REACT_APP_FUNCTION_URL}/twitterAuth?userId=${userId}`;
+        const width = 600;
+        const height = 600;
+        const left = window.screen.width / 2 - width / 2;
+        const top = window.screen.height / 2 - height / 2;
+
+        window.open(
+            twitterAuthUrl,
+            'twitter-auth',
+            `width=${width},height=${height},left=${left},top=${top}`
+        );
+    };
+
     if (loading) {
         return <Box sx={{ mt: 4 }}>{t('loading')}</Box>;
     }
@@ -106,6 +121,19 @@ export const Challenges = ({ userId, onTabChange }) => {
             </Box> */}
 
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <ChallengeCard
+                    icon={TwitterIcon}
+                    title={t('twitterChallenge')}
+                    description={
+                        userData.twitterConnected ? t('twitterSuccess') : t('twitterPrompt')
+                    }
+                    isCompleted={userData.twitterConnected}
+                    buttonText={t('connectTwitter')}
+                    onAction={handleTwitterAuth}
+                    color="#1DA1F2"
+                    buttonStartIcon={<TwitterIcon />}
+                />
+
                 <ChallengeCard
                     icon={TelegramIcon}
                     title={t('telegramChallenge')}

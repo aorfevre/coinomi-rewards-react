@@ -175,4 +175,11 @@ export const nl = {
     weekly: 'Wekelijks',
     claimRewards: 'Claim beloningen',
     copy: 'Kopiëren',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter Uitdaging',
+    connectTwitter: 'Verbind met Twitter',
+    twitterSuccess:
+        '🎉 Gefeliciteerd! Je ontvangt nu een permanente bonus van 10% op alle beloningen!',
+    twitterPrompt:
+        'Koppel je Twitter-account om een permanente bonus van 10% op alle beloningen te krijgen!',
 };

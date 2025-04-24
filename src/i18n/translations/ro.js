@@ -167,4 +167,10 @@ export const ro = {
     shareOn: 'Partajează pe {{network}}',
     shareInviteText:
         '🚀 Alăturați-vă mie pe Coinomi Wallet și primiți recompense bonus! Descărcați aplicația de la {{appUrl}} și folosiți codul meu de recomandare: {{referralCode}} la înregistrare. #Coinomi #Crypto',
+    // Twitter Challenge
+    twitterChallenge: 'Provocarea Twitter',
+    connectTwitter: 'Conectează Twitter',
+    twitterSuccess: '🎉 Felicitări! Acum primești un bonus permanent de 10% la toate recompensele!',
+    twitterPrompt:
+        'Conectează-ți contul de Twitter pentru a primi un bonus permanent de 10% la toate recompensele!',
 };

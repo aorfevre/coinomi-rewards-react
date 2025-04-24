@@ -174,4 +174,10 @@ export const ms = {
     weekly: 'Mingguan',
     claimRewards: 'Tuntut ganjaran',
     copy: 'Salin',
+    // Twitter Challenge
+    twitterChallenge: 'Cabaran Twitter',
+    connectTwitter: 'Sambung Twitter',
+    twitterSuccess: '🎉 Tahniah! Anda kini menerima bonus tetap 10% untuk semua ganjaran!',
+    twitterPrompt:
+        'Sambungkan akaun Twitter anda untuk mendapatkan bonus tetap 10% untuk semua ganjaran!',
 };

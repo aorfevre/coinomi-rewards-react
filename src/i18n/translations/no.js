@@ -169,4 +169,10 @@ export const no = {
     weekly: 'Ukentlig',
     claimRewards: 'Krev belønninger',
     copy: 'Kopier',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter-utfordring',
+    connectTwitter: 'Koble til Twitter',
+    twitterSuccess: '🎉 Gratulerer! Du mottar nå en permanent 10% bonus på alle belønninger!',
+    twitterPrompt:
+        'Koble til Twitter-kontoen din for å få en permanent 10% bonus på alle belønninger!',
 };

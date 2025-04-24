@@ -193,4 +193,11 @@ export const de = {
     daily_reward: 'Tägliche Belohnung',
     referral_bonus: 'Empfehlungsbonus',
     copy: 'Kopieren',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter-Herausforderung',
+    connectTwitter: 'Twitter verbinden',
+    twitterSuccess:
+        '🎉 Glückwunsch! Sie erhalten jetzt einen dauerhaften Bonus von 10% auf alle Belohnungen!',
+    twitterPrompt:
+        'Verbinden Sie Ihr Twitter-Konto, um einen dauerhaften Bonus von 10% auf alle Belohnungen zu erhalten!',
 };

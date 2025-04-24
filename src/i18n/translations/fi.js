@@ -173,4 +173,9 @@ export const fi = {
     weekly: 'Viikoittain',
     claimRewards: 'Lunasta palkinnot',
     copy: 'Kopioi',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter-haaste',
+    connectTwitter: 'Yhdistä Twitter',
+    twitterSuccess: '🎉 Onnittelut! Saat nyt 10% pysyvän bonuksen kaikista palkkioista!',
+    twitterPrompt: 'Yhdistä Twitter-tilisi saadaksesi 10% pysyvän bonuksen kaikista palkkioista!',
 };

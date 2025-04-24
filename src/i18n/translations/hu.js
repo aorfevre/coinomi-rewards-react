@@ -169,4 +169,10 @@ export const hu = {
     weekly: 'Heti',
     claimRewards: 'Jutalmak igénylése',
     copy: 'Másolás',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter kihívás',
+    connectTwitter: 'Twitter csatlakozás',
+    twitterSuccess: '🎉 Gratulálunk! Mostantól 10% állandó bónuszt kapsz minden jutalomra!',
+    twitterPrompt:
+        'Csatlakoztasd Twitter fiókodat, hogy 10% állandó bónuszt kapj minden jutalomra!',
 };

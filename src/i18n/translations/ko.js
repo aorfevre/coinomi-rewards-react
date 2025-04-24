@@ -177,4 +177,9 @@ export const ko = {
     dailyRewardTooltip: '매일 접속하여 포인트와 보상을 받으세요',
     weeklyRewardTooltip: '보상은 주간 단위로 지급됩니다',
     copy: '복사',
+    // Twitter Challenge
+    twitterChallenge: '트위터 챌린지',
+    connectTwitter: '트위터 연결',
+    twitterSuccess: '🎉 축하합니다! 이제 모든 보상에 10% 영구 보너스를 받게 됩니다!',
+    twitterPrompt: '트위터 계정을 연결하여 모든 보상에 10% 영구 보너스를 받으세요!',
 };

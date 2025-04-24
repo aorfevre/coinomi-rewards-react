@@ -40,5 +40,11 @@ export const ka = {
     weekly: 'ყოველკვირეული',
     claimRewards: 'ჯილდოების მიღება',
     copy: 'კოპირება',
+    // Twitter Challenge
+    twitterChallenge: 'Twitter გამოწვევა',
+    connectTwitter: 'Twitter-ის დაკავშირება',
+    twitterSuccess: '🎉 გილოცავთ! თქვენ ახლა იღებთ მუდმივ 10% ბონუსს ყველა ჯილდოზე!',
+    twitterPrompt:
+        'დააკავშირეთ თქვენი Twitter ანგარიში, რათა მიიღოთ მუდმივი 10% ბონუსი ყველა ჯილდოზე!',
     // ... add all other translations
 };

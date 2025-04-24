@@ -172,4 +172,10 @@ export const id = {
     weekly: 'Mingguan',
     claimRewards: 'Klaim hadiah',
     copy: 'Salin',
+    // Twitter Challenge
+    twitterChallenge: 'Tantangan Twitter',
+    connectTwitter: 'Hubungkan Twitter',
+    twitterSuccess: '🎉 Selamat! Anda sekarang menerima bonus permanen 10% untuk semua hadiah!',
+    twitterPrompt:
+        'Hubungkan akun Twitter Anda untuk mendapatkan bonus permanen 10% untuk semua hadiah!',
 };
