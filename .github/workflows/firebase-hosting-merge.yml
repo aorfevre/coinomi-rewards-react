@@ -147,7 +147,7 @@ jobs:
 
             - name: Authenticate with Firebase
               run: |
-                  firebase auth:export service-account.json --format=json
+                  firebase auth:export service-account.json --format=json --project=${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}
                   firebase login --credential service-account.json
 
             - name: Set Firebase project
