@@ -55,5 +55,11 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Koala Tweets collection rules
+    match /koala_tweets/{docId} {
+      allow read: if true;  // Allow public read access
+      allow write: if false;  // Only our scheduled function can write
+    }
+
   }
 }

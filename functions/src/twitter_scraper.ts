@@ -1,4 +1,5 @@
 import * as functions from 'firebase-functions';
+import * as admin from 'firebase-admin';
 import { TwitterApi, type TweetV2, type UserV2, type ApiV2Includes } from 'twitter-api-v2';
 
 // Twitter API v2 Client with bearer token
@@ -35,9 +36,30 @@ export const scrapKoalaTweets = async () => {
             tweets: tweets.data.data,
             includes: tweets.data.includes,
         };
+
+        // Store the results in Firestore
+        const tweetsRef = admin.firestore().collection('koala_tweets');
+        await tweetsRef.doc('latest').set({
+            ...response,
+            lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+        });
+
         return response;
     } catch (error) {
         console.error('Error scraping tweets:', error);
         throw new functions.https.HttpsError('internal', `Failed to scrape tweets for ${username}`);
     }
 };
+
+// Scheduled function to run every 15 minutes
+export const scheduledScrapeKoalaTweets = functions.pubsub
+    .schedule('every 15 minutes')
+    .onRun(async context => {
+        try {
+            await scrapKoalaTweets();
+            console.log('Successfully scraped Koala Wallet tweets');
+        } catch (error) {
+            console.error('Error in scheduled tweet scraping:', error);
+            throw error;
+        }
+    });
