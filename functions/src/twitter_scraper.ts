@@ -1,6 +1,14 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
-import { TwitterApi, type TweetV2, type UserV2, type ApiV2Includes } from 'twitter-api-v2';
+import {
+    TwitterApi,
+    type TweetV2,
+    type UserV2,
+    type ApiV2Includes,
+    type TTweetv2Expansion,
+    type TTweetv2MediaField,
+    type TTweetv2TweetField,
+} from 'twitter-api-v2';
 
 // Twitter API v2 Client with bearer token
 const twitterClient = new TwitterApi(process.env.TWITTER_BEARER_TOKEN!);
@@ -24,6 +32,14 @@ export const scrapKoalaTweets = async () => {
     const maxResults = 5;
 
     try {
+        console.log('Scraping Koala Wallet tweets ... ', twitterClient);
+
+        // Get the last scraped tweet ID from metadata
+        const db = admin.firestore();
+        const metadataRef = db.collection('koala_scrap').doc('latest');
+        const metadata = await metadataRef.get();
+        const lastTweetId = metadata.exists ? metadata.data()?.lastTweetId : undefined;
+
         // First get the user ID from username
         const user = await twitterClient.v2.userByUsername(username);
 
@@ -31,13 +47,27 @@ export const scrapKoalaTweets = async () => {
             throw new functions.https.HttpsError('not-found', `User ${username} not found`);
         }
 
-        // Get user's tweets
-        const tweets = await twitterClient.v2.userTimeline(user.data.id, {
+        // Get user's tweets with since_id if available
+        const tweetOptions = {
             max_results: maxResults,
-            expansions: ['attachments.media_keys', 'author_id'],
-            'tweet.fields': ['created_at', 'public_metrics', 'entities', 'text'],
-            'media.fields': ['url', 'preview_image_url', 'type'],
-        });
+            expansions: ['attachments.media_keys', 'author_id'] as TTweetv2Expansion[],
+            'tweet.fields': [
+                'created_at',
+                'public_metrics',
+                'entities',
+                'text',
+            ] as TTweetv2TweetField[],
+            'media.fields': ['url', 'preview_image_url', 'type'] as TTweetv2MediaField[],
+            ...(lastTweetId ? { since_id: lastTweetId } : {}),
+        };
+
+        const tweets = await twitterClient.v2.userTimeline(user.data.id, tweetOptions);
+
+        // If no new tweets, return early
+        if (!tweets.data.data || tweets.data.data.length === 0) {
+            console.log('No new tweets found since last scrape');
+            return null;
+        }
 
         const response: UserTweetsResponse = {
             user: user.data,
@@ -46,7 +76,6 @@ export const scrapKoalaTweets = async () => {
         };
 
         // Get a Firestore batch for atomic operations
-        const db = admin.firestore();
         const batch = db.batch();
 
         // Store each tweet individually
@@ -68,18 +97,17 @@ export const scrapKoalaTweets = async () => {
         });
 
         // Update metadata
-        const metadataRef = db.collection('koala_scrap').doc('latest');
-        const metadata: ScrapMetadata = {
+        const newMetadata: ScrapMetadata = {
             lastUpdated: admin.firestore.Timestamp.now(),
             lastTweetId: response.tweets[0]?.id || '',
             totalTweetsScraped: response.tweets.length,
             lastExecutionStatus: 'success',
         };
-        batch.set(metadataRef, metadata);
+        batch.set(metadataRef, newMetadata);
 
         // Commit all the changes atomically
         await batch.commit();
-        console.log(`Successfully scraped ${response.tweets.length} tweets from ${username}`);
+        console.log(`Successfully scraped ${response.tweets.length} new tweets from ${username}`);
 
         return response;
     } catch (error) {
@@ -112,3 +140,9 @@ export const scheduledScrapeKoalaTweets = functions.pubsub
             throw error;
         }
     });
+
+setTimeout(async () => {
+    console.log('Scraping Koala Wallet tweets ... ');
+
+    await scrapKoalaTweets();
+}, 1000);
