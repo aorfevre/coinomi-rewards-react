@@ -105,6 +105,7 @@ export const scheduledScrapeKoalaTweets = functions.pubsub
     .schedule('every 15 minutes')
     .onRun(async () => {
         try {
+            console.log('Scraping Koala Wallet tweets');
             await scrapKoalaTweets();
         } catch (error) {
             console.error('Error in scheduled tweet scraping:', error);
