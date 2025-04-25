@@ -55,11 +55,16 @@ service cloud.firestore {
       allow write: if false;
     }
 
-    // Koala Tweets collection rules
-    match /koala_tweets/{docId} {
-      allow read: if true;  // Allow public read access
-      allow write: if false;  // Only our scheduled function can write
+    // Koala Tweets collection rules - stores individual tweets
+    match /koala_tweets/{tweetId} {
+      allow read: if true;  // Allow public read access to tweets
+      allow write: if false;  // Only cloud functions can write
     }
 
+    // Koala Scraping Metadata collection rules
+    match /koala_scrap/{docId} {
+      allow read: if true;  // Allow public read access to scraping metadata
+      allow write: if false;  // Only cloud functions can write
+    }
   }
 }

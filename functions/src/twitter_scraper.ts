@@ -11,6 +11,18 @@ interface UserTweetsResponse {
     includes?: ApiV2Includes;
 }
 
+interface ScrapMetadata {
+    lastUpdated: admin.firestore.Timestamp;
+    lastTweetId: string;
+    totalTweetsScraped: number;
+    lastExecutionStatus: 'success' | 'error';
+    errorMessage?: string;
+}
+// setTimeout(async () => {
+//     const response = await scrapKoalaTweets();
+//     console.log(response);
+// }, 1000);
+
 export const scrapKoalaTweets = async () => {
     const username = 'koalawallet';
     const maxResults = 5;
@@ -37,15 +49,53 @@ export const scrapKoalaTweets = async () => {
             includes: tweets.data.includes,
         };
 
-        // Store the results in Firestore
+        // Get a Firestore batch for atomic operations
+        const batch = admin.firestore().batch();
+
+        // Store each tweet individually
         const tweetsRef = admin.firestore().collection('koala_tweets');
-        await tweetsRef.doc('latest').set({
-            ...response,
-            lastUpdated: admin.firestore.FieldValue.serverTimestamp(),
+        response.tweets.forEach(tweet => {
+            const tweetDoc = tweetsRef.doc(tweet.id);
+            batch.set(
+                tweetDoc,
+                {
+                    ...tweet,
+                    user: response.user,
+                    media: response.includes?.media?.filter(media =>
+                        tweet.attachments?.media_keys?.includes(media.media_key)
+                    ),
+                    scrapedAt: admin.firestore.FieldValue.serverTimestamp(),
+                },
+                { merge: true }
+            );
         });
+
+        // Update metadata
+        const metadataRef = admin.firestore().collection('koala_scrap').doc('latest');
+        const metadata: ScrapMetadata = {
+            lastUpdated: admin.firestore.Timestamp.now(),
+            lastTweetId: response.tweets[0]?.id || '',
+            totalTweetsScraped: response.tweets.length,
+            lastExecutionStatus: 'success',
+        };
+        batch.set(metadataRef, metadata);
+
+        // Commit all the changes atomically
+        await batch.commit();
 
         return response;
     } catch (error) {
+        // Update metadata with error information
+        const metadataRef = admin.firestore().collection('koala_scrap').doc('latest');
+        const metadata: ScrapMetadata = {
+            lastUpdated: admin.firestore.Timestamp.now(),
+            lastTweetId: '',
+            totalTweetsScraped: 0,
+            lastExecutionStatus: 'error',
+            errorMessage: error instanceof Error ? error.message : 'Unknown error',
+        };
+        await metadataRef.set(metadata);
+
         console.error('Error scraping tweets:', error);
         throw new functions.https.HttpsError('internal', `Failed to scrape tweets for ${username}`);
     }
