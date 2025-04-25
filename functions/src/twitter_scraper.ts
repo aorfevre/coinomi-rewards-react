@@ -2,11 +2,6 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { TwitterApi, type TweetV2, type UserV2, type ApiV2Includes } from 'twitter-api-v2';
 
-// Initialize Firebase Admin if not already initialized
-if (!admin.apps.length) {
-    admin.initializeApp();
-}
-
 // Twitter API v2 Client with bearer token
 const twitterClient = new TwitterApi(process.env.TWITTER_BEARER_TOKEN!);
 
@@ -23,10 +18,6 @@ interface ScrapMetadata {
     lastExecutionStatus: 'success' | 'error';
     errorMessage?: string;
 }
-// setTimeout(async () => {
-//     const response = await scrapKoalaTweets();
-//     console.log(response);
-// }, 1000);
 
 export const scrapKoalaTweets = async () => {
     const username = 'koalawallet';
@@ -55,10 +46,11 @@ export const scrapKoalaTweets = async () => {
         };
 
         // Get a Firestore batch for atomic operations
-        const batch = admin.firestore().batch();
+        const db = admin.firestore();
+        const batch = db.batch();
 
         // Store each tweet individually
-        const tweetsRef = admin.firestore().collection('koala_tweets');
+        const tweetsRef = db.collection('koala_tweets');
         response.tweets.forEach(tweet => {
             const tweetDoc = tweetsRef.doc(tweet.id);
             batch.set(
@@ -76,7 +68,7 @@ export const scrapKoalaTweets = async () => {
         });
 
         // Update metadata
-        const metadataRef = admin.firestore().collection('koala_scrap').doc('latest');
+        const metadataRef = db.collection('koala_scrap').doc('latest');
         const metadata: ScrapMetadata = {
             lastUpdated: admin.firestore.Timestamp.now(),
             lastTweetId: response.tweets[0]?.id || '',
@@ -87,11 +79,13 @@ export const scrapKoalaTweets = async () => {
 
         // Commit all the changes atomically
         await batch.commit();
+        console.log(`Successfully scraped ${response.tweets.length} tweets from ${username}`);
 
         return response;
     } catch (error) {
         // Update metadata with error information
-        const metadataRef = admin.firestore().collection('koala_scrap').doc('latest');
+        const db = admin.firestore();
+        const metadataRef = db.collection('koala_scrap').doc('latest');
         const metadata: ScrapMetadata = {
             lastUpdated: admin.firestore.Timestamp.now(),
             lastTweetId: '',
@@ -106,17 +100,12 @@ export const scrapKoalaTweets = async () => {
     }
 };
 
-// Scheduled function to run every 15 minutes
+// Scheduled function to run every 2 minutes
 export const scheduledScrapeKoalaTweets = functions.pubsub
-    .schedule('every 2 minutes')
-    .timeZone('UTC') // Specify timezone
-    .retryConfig({
-        retryCount: 3,
-    })
-    .onRun(async context => {
+    .schedule('every 15 minutes')
+    .onRun(async () => {
         try {
             await scrapKoalaTweets();
-            console.log('Successfully scraped Koala Wallet tweets');
         } catch (error) {
             console.error('Error in scheduled tweet scraping:', error);
             throw error;

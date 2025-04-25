@@ -1,3 +1,4 @@
+import './config/firebase'; // Import this first to ensure Firebase is initialized
 import { getCustomToken } from './auth';
 import { claimDailyReward, onRewardCreated } from './rewards';
 import { getLeaderboard, getUserRank } from './scores';
