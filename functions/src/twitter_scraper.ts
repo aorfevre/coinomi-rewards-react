@@ -2,6 +2,11 @@ import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { TwitterApi, type TweetV2, type UserV2, type ApiV2Includes } from 'twitter-api-v2';
 
+// Initialize Firebase Admin if not already initialized
+if (!admin.apps.length) {
+    admin.initializeApp();
+}
+
 // Twitter API v2 Client with bearer token
 const twitterClient = new TwitterApi(process.env.TWITTER_BEARER_TOKEN!);
 
@@ -103,7 +108,11 @@ export const scrapKoalaTweets = async () => {
 
 // Scheduled function to run every 15 minutes
 export const scheduledScrapeKoalaTweets = functions.pubsub
-    .schedule('every 15 minutes')
+    .schedule('every 2 minutes')
+    .timeZone('UTC') // Specify timezone
+    .retryConfig({
+        retryCount: 3,
+    })
     .onRun(async context => {
         try {
             await scrapKoalaTweets();
