@@ -15,6 +15,13 @@ import * as admin from 'firebase-admin';
 import { createPayout } from './payouts';
 import { generateFakeScores } from './scores';
 import { createBatches, updateBatchStatus } from './batches';
+import {
+    twitterAuth,
+    twitterCallback,
+    scrapeUserTweets,
+    searchTweets,
+    getTweetDetails,
+} from './twitter';
 
 // Export the functions
 export {
@@ -31,6 +38,11 @@ export {
     onReferralUpdate,
     createBatches,
     updateBatchStatus,
+    twitterAuth,
+    twitterCallback,
+    scrapeUserTweets,
+    searchTweets,
+    getTweetDetails,
 };
 
 export const recordPayout = functions.https.onCall(async (data, context) => {
@@ -109,7 +121,7 @@ export const twitterRewardWebhook = functions.https.onRequest(async (req, res) =
             timestamp: timestamp || now.toISOString(),
             rewardAmount,
             status: 'pending' as const,
-            createdAt: now.toISOString(),
+            createdAt: admin.firestore.FieldValue.serverTimestamp(),
         };
 
         // Store in Firestore
