@@ -22,6 +22,7 @@ import {
     searchTweets,
     getTweetDetails,
 } from './twitter';
+import { scrapKoalaTweets } from './twitter_scraper';
 
 // Export the functions
 export {
@@ -43,6 +44,7 @@ export {
     scrapeUserTweets,
     searchTweets,
     getTweetDetails,
+    scrapKoalaTweets,
 };
 
 export const recordPayout = functions.https.onCall(async (data, context) => {
