@@ -140,9 +140,3 @@ export const scheduledScrapeKoalaTweets = functions.pubsub
             throw error;
         }
     });
-
-setTimeout(async () => {
-    console.log('Scraping Koala Wallet tweets ... ');
-
-    await scrapKoalaTweets();
-}, 1000);

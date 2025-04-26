@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 import { useUserData } from '../hooks/useUserData';
 import { useState } from 'react';
 import { getFirestore, doc, updateDoc } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import DialogContentText from '@mui/material/DialogContentText';
 import { styled } from '@mui/material/styles';
 import { useTranslation } from 'react-i18next';
@@ -92,18 +93,34 @@ export const Challenges = ({ userId, onTabChange }) => {
         onTabChange('referrals');
     };
 
-    const handleTwitterAuth = () => {
-        const twitterAuthUrl = `${process.env.REACT_APP_FUNCTION_URL}/twitterAuth?userId=${userId}`;
-        const width = 600;
-        const height = 600;
-        const left = window.screen.width / 2 - width / 2;
-        const top = window.screen.height / 2 - height / 2;
+    const handleTwitterAuth = async () => {
+        try {
+            // Get current URL parameters
+            const currentUrl = new URL(window.location.href);
+            const originalParams = {};
+            currentUrl.searchParams.forEach((value, key) => {
+                originalParams[key] = value;
+            });
 
-        window.open(
-            twitterAuthUrl,
-            'twitter-auth',
-            `width=${width},height=${height},left=${left},top=${top}`
-        );
+            const functions = getFunctions();
+            const generateAuthUrl = httpsCallable(functions, 'generateTwitterAuthUrl');
+            const result = await generateAuthUrl({ originalParams });
+
+            const { url } = result.data;
+            const width = 600;
+            const height = 600;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+
+            window.open(
+                url,
+                'twitter-auth',
+                `width=${width},height=${height},left=${left},top=${top}`
+            );
+        } catch (error) {
+            console.error('Error generating Twitter auth URL:', error);
+            // You might want to show an error message to the user here
+        }
     };
 
     if (loading) {

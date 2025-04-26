@@ -66,5 +66,15 @@ service cloud.firestore {
       allow read: if true;  // Allow public read access to scraping metadata
       allow write: if false;  // Only cloud functions can write
     }
+    // Twitter Auth collection rules
+    match /twitter_auth_states/{state} {
+      allow read: if true;  // Allow public read access to scraping metadata
+      allow write: if false;  // Only cloud functions can write
+    }
+    // Twitter Auth collection rules
+    match /twitter_auth/{twitterAuthId} {
+      allow read: if false;  // Only cloud functions can read
+      allow write: if false;  // Only cloud functions can write
+    }
   }
 }
