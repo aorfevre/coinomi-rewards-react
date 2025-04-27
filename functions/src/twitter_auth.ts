@@ -74,22 +74,39 @@ export const twitterAuthCallback = functions.https.onRequest(async (req, res) =>
             redirectUri: process.env.TWITTER_CALLBACK_URL!,
         });
 
-        // Store the tokens in Firestore
+        // Create a new client with the access token to fetch user profile
+        const userClient = new TwitterApi(accessToken);
+        const userProfile = await userClient.v2.me({
+            'user.fields': ['id', 'name', 'username', 'profile_image_url'],
+        });
+
+        // Store the tokens and user profile in Firestore
         const twitterAuthData: any = {
             accessToken,
             updatedAt: new Date().toISOString(),
+            twitterUserProfile: userProfile.data,
         };
         if (refreshToken) {
             twitterAuthData.refreshToken = refreshToken;
         }
 
-        await admin.firestore().collection('users').doc(userId).set(
-            {
-                twitterAuth: twitterAuthData,
-                twitterConnected: true,
-            },
-            { merge: true }
-        );
+        await admin
+            .firestore()
+            .collection('users')
+            .doc(userId)
+            .set(
+                {
+                    twitterConnected: true,
+                    twitter: {
+                        twitterHandle: userProfile.data.username,
+                        twitterId: userProfile.data.id,
+                        twitterName: userProfile.data.name,
+                        twitterProfileImage: userProfile.data.profile_image_url,
+                        twitterToken: twitterAuthData,
+                    },
+                },
+                { merge: true }
+            );
 
         // Also store in twitter_auth collection
         await admin
