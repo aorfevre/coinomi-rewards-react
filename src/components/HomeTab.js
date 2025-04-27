@@ -146,43 +146,6 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                     sx={{ mb: 1.5 }}
                 />
 
-                {/* Streak section title */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                    <TrendingUpIcon sx={{ color: 'primary.main' }} />
-                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        {t('streakBonus')}
-                    </Typography>
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            color: 'warning.main',
-                            fontWeight: 700,
-                        }}
-                    >
-                        +{streakBonus}%
-                    </Typography>
-                </Box>
-
-                {/* Streak Bonus */}
-                <StreakBonus
-                    currentStreak={scoreDoc?.currentStreak || 0}
-                    lastClaimDate={scoreDoc?.lastTaskTimestamp}
-                    sx={{
-                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
-                        borderRadius: 2,
-                        bgcolor: 'background.paper',
-                    }}
-                />
-
-                {/* Tweet Card Section (after Streak Bonus) */}
-                <TweetCard
-                    twitterConnected={userData?.twitterConnected}
-                    onStartTwitterAuth={handleTwitterAuth}
-                    onLike={tweet => console.log('Like', tweet)}
-                    onRetweet={tweet => console.log('Retweet', tweet)}
-                    onSkip={tweet => console.log('Skip', tweet)}
-                />
-
                 {/* Stats section title */}
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                     <BarChartIcon sx={{ color: 'primary.main' }} />
@@ -273,6 +236,42 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                         </Box>
                     </Box>
                 </Box>
+                {/* Streak section title */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <TrendingUpIcon sx={{ color: 'primary.main' }} />
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        {t('streakBonus')}
+                    </Typography>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            color: 'warning.main',
+                            fontWeight: 700,
+                        }}
+                    >
+                        +{streakBonus}%
+                    </Typography>
+                </Box>
+
+                {/* Streak Bonus */}
+                <StreakBonus
+                    currentStreak={scoreDoc?.currentStreak || 0}
+                    lastClaimDate={scoreDoc?.lastTaskTimestamp}
+                    sx={{
+                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+                        borderRadius: 2,
+                        bgcolor: 'background.paper',
+                    }}
+                />
+
+                {/* Tweet Card Section (after Streak Bonus) */}
+                <TweetCard
+                    twitterConnected={userData?.twitterConnected}
+                    onStartTwitterAuth={handleTwitterAuth}
+                    onLike={tweet => console.log('Like', tweet)}
+                    onRetweet={tweet => console.log('Retweet', tweet)}
+                    onSkip={tweet => console.log('Skip', tweet)}
+                />
             </Box>
         </Box>
     );
