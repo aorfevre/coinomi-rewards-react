@@ -10,6 +10,8 @@ import { calculateMultiplier } from '../utils/multiplierCalculator';
 import { RewardsSection } from './RewardsSection';
 import CalendarIcon from '@mui/icons-material/CalendarToday';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import { TweetCard } from './TweetCard';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
     const { userData } = useUserData(userId);
@@ -99,6 +101,32 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
         return () => clearInterval(timer);
     }, [scoreDoc?.lastClaimDaily]);
 
+    // Twitter auth handler
+    const handleTwitterAuth = async () => {
+        try {
+            const functions = getFunctions();
+            const currentUrl = new URL(window.location.href);
+            const originalParams = {};
+            currentUrl.searchParams.forEach((value, key) => {
+                originalParams[key] = value;
+            });
+            const generateAuthUrl = httpsCallable(functions, 'generateTwitterAuthUrl');
+            const result = await generateAuthUrl({ originalParams });
+            const { url } = result.data;
+            const width = 600;
+            const height = 600;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+            window.open(
+                url,
+                'twitter-auth',
+                `width=${width},height=${height},left=${left},top=${top}`
+            );
+        } catch (error) {
+            console.error('Error generating Twitter auth URL:', error);
+        }
+    };
+
     return (
         <Box>
             <Box sx={{ p: 2 }}>
@@ -116,6 +144,43 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                     dailyTimeLeft={dailyTimeLeft}
                     weeklyTimeLeft={weeklyTimeLeft}
                     sx={{ mb: 1.5 }}
+                />
+
+                {/* Streak section title */}
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+                    <TrendingUpIcon sx={{ color: 'primary.main' }} />
+                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                        {t('streakBonus')}
+                    </Typography>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            color: 'warning.main',
+                            fontWeight: 700,
+                        }}
+                    >
+                        +{streakBonus}%
+                    </Typography>
+                </Box>
+
+                {/* Streak Bonus */}
+                <StreakBonus
+                    currentStreak={scoreDoc?.currentStreak || 0}
+                    lastClaimDate={scoreDoc?.lastTaskTimestamp}
+                    sx={{
+                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
+                        borderRadius: 2,
+                        bgcolor: 'background.paper',
+                    }}
+                />
+
+                {/* Tweet Card Section (after Streak Bonus) */}
+                <TweetCard
+                    twitterConnected={userData?.twitterConnected}
+                    onStartTwitterAuth={handleTwitterAuth}
+                    onLike={tweet => console.log('Like', tweet)}
+                    onRetweet={tweet => console.log('Retweet', tweet)}
+                    onSkip={tweet => console.log('Skip', tweet)}
                 />
 
                 {/* Stats section title */}
@@ -208,34 +273,6 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                         </Box>
                     </Box>
                 </Box>
-
-                {/* Streak section title */}
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-                    <TrendingUpIcon sx={{ color: 'primary.main' }} />
-                    <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                        {t('streakBonus')}
-                    </Typography>
-                    <Typography
-                        variant="h6"
-                        sx={{
-                            color: 'warning.main',
-                            fontWeight: 700,
-                        }}
-                    >
-                        +{streakBonus}%
-                    </Typography>
-                </Box>
-
-                {/* Streak Bonus */}
-                <StreakBonus
-                    currentStreak={scoreDoc?.currentStreak || 0}
-                    lastClaimDate={scoreDoc?.lastTaskTimestamp}
-                    sx={{
-                        boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.08)',
-                        borderRadius: 2,
-                        bgcolor: 'background.paper',
-                    }}
-                />
             </Box>
         </Box>
     );
