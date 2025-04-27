@@ -20,7 +20,7 @@ export const generateTwitterAuthUrl = functions.https.onCall(async (data, contex
 
         const { url, state, codeVerifier } = twitterClient.generateOAuth2AuthLink(
             process.env.TWITTER_CALLBACK_URL!,
-            { scope: ['tweet.read', 'users.read'] }
+            { scope: ['tweet.read', 'users.read', 'like.write', 'tweet.write'] }
         );
 
         // Store the state and code verifier in Firestore, along with original params

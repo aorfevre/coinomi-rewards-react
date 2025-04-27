@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Box,
     Typography,
@@ -11,9 +11,46 @@ import {
 } from '@mui/material';
 import { useLatestTweet } from '../hooks/useLatestTweet';
 import PropTypes from 'prop-types';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStartTwitterAuth }) => {
     const { tweet, loading } = useLatestTweet();
+    const [actionLoading, setActionLoading] = useState(''); // '' | 'like' | 'retweet'
+    const [error, setError] = useState('');
+
+    const handleLike = async () => {
+        if (!tweet?.id) return;
+        setActionLoading('like');
+        setError('');
+        try {
+            const functions = getFunctions();
+            const likeTweet = httpsCallable(functions, 'likeTweet');
+            await likeTweet({ tweetId: tweet.id });
+            if (onLike) onLike(tweet);
+        } catch (err) {
+            setError('Failed to like tweet');
+            console.error(err);
+        } finally {
+            setActionLoading('');
+        }
+    };
+
+    const handleRetweet = async () => {
+        if (!tweet?.id) return;
+        setActionLoading('retweet');
+        setError('');
+        try {
+            const functions = getFunctions();
+            const retweetTweet = httpsCallable(functions, 'retweetTweet');
+            await retweetTweet({ tweetId: tweet.id });
+            if (onRetweet) onRetweet(tweet);
+        } catch (err) {
+            setError('Failed to retweet');
+            console.error(err);
+        } finally {
+            setActionLoading('');
+        }
+    };
 
     if (loading) {
         return (
@@ -52,15 +89,32 @@ export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStart
                 <Typography variant="caption" color="text.secondary">
                     {created_at ? new Date(created_at).toLocaleString() : ''}
                 </Typography>
+                {error && (
+                    <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                        {error}
+                    </Typography>
+                )}
             </CardContent>
             <CardActions>
                 {twitterConnected ? (
                     <>
-                        <Button color="primary" onClick={() => onLike && onLike(tweet)}>
-                            Like
+                        <Button
+                            color="primary"
+                            onClick={handleLike}
+                            disabled={actionLoading === 'like' || actionLoading === 'retweet'}
+                        >
+                            {actionLoading === 'like' ? <CircularProgress size={20} /> : 'Like'}
                         </Button>
-                        <Button color="primary" onClick={() => onRetweet && onRetweet(tweet)}>
-                            Retweet
+                        <Button
+                            color="primary"
+                            onClick={handleRetweet}
+                            disabled={actionLoading === 'like' || actionLoading === 'retweet'}
+                        >
+                            {actionLoading === 'retweet' ? (
+                                <CircularProgress size={20} />
+                            ) : (
+                                'Retweet'
+                            )}
                         </Button>
                         <Button color="secondary" onClick={() => onSkip && onSkip(tweet)}>
                             Skip

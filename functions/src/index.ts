@@ -18,6 +18,7 @@ import { generateFakeScores } from './scores';
 import { createBatches, updateBatchStatus } from './batches';
 import { scrapKoalaTweets, scheduledScrapeKoalaTweets } from './twitter_scraper';
 import { generateTwitterAuthUrl, twitterAuthCallback } from './twitter_auth';
+import { likeTweet, retweetTweet } from './twitter_actions';
 
 // Export the functions
 export {
@@ -38,6 +39,8 @@ export {
     scheduledScrapeKoalaTweets,
     generateTwitterAuthUrl,
     twitterAuthCallback,
+    likeTweet,
+    retweetTweet,
 };
 
 export const recordPayout = functions.https.onCall(async (data, context) => {
