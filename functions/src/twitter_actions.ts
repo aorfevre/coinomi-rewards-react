@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
 import { TwitterApi } from 'twitter-api-v2';
+import { setTwitterReward } from './rewards';
 
 // Helper to get user's Twitter access token from Firestore
 async function getUserTwitterToken(userId: string) {
@@ -22,13 +23,16 @@ export const likeTweet = functions.https.onCall(async (data, context) => {
     }
     try {
         const accessToken = await getUserTwitterToken(context.auth.uid);
-        console.log('accessToken ==>', accessToken);
-        console.log('tweetId ==>', tweetId);
         const userClient = new TwitterApi(accessToken);
-        console.log('userClient ==>', userClient);
         const me = await userClient.v2.me();
-        console.log('me ==>', me.data.id, tweetId);
         await userClient.v2.like(me.data.id, tweetId);
+        // Add reward entry using helper
+        await setTwitterReward({
+            userId: context.auth.uid,
+            tweetId,
+            basePoints: 50,
+            type: 'twitter_like',
+        });
         return { success: true };
     } catch (error) {
         console.error('Error liking tweet:', error);
@@ -50,6 +54,13 @@ export const retweetTweet = functions.https.onCall(async (data, context) => {
         const userClient = new TwitterApi(accessToken);
         const me = await userClient.v2.me();
         await userClient.v2.retweet(me.data.id, tweetId);
+        // Add reward entry using helper
+        await setTwitterReward({
+            userId: context.auth.uid,
+            tweetId,
+            basePoints: 50,
+            type: 'twitter_retweet',
+        });
         return { success: true };
     } catch (error) {
         console.error('Error retweeting tweet:', error);

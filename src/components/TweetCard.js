@@ -8,6 +8,7 @@ import {
     CardActions,
     Avatar,
     CircularProgress,
+    Snackbar,
 } from '@mui/material';
 import { useLatestTweet } from '../hooks/useLatestTweet';
 import PropTypes from 'prop-types';
@@ -17,6 +18,7 @@ export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStart
     const { tweet, loading } = useLatestTweet();
     const [actionLoading, setActionLoading] = useState(''); // '' | 'like' | 'retweet'
     const [error, setError] = useState('');
+    const [snackbar, setSnackbar] = useState({ open: false, message: '' });
 
     const handleLike = async () => {
         if (!tweet?.id) return;
@@ -27,6 +29,7 @@ export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStart
             const likeTweet = httpsCallable(functions, 'likeTweet');
             await likeTweet({ tweetId: tweet.id });
             if (onLike) onLike(tweet);
+            setSnackbar({ open: true, message: 'Tweet liked successfully!' });
         } catch (err) {
             setError('Failed to like tweet');
             console.error(err);
@@ -44,12 +47,18 @@ export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStart
             const retweetTweet = httpsCallable(functions, 'retweetTweet');
             await retweetTweet({ tweetId: tweet.id });
             if (onRetweet) onRetweet(tweet);
+            setSnackbar({ open: true, message: 'Tweet retweeted successfully!' });
         } catch (err) {
             setError('Failed to retweet');
             console.error(err);
         } finally {
             setActionLoading('');
         }
+    };
+
+    const handleSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') return;
+        setSnackbar({ open: false, message: '' });
     };
 
     if (loading) {
@@ -68,65 +77,74 @@ export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStart
     const { text, user, created_at } = tweet;
 
     return (
-        <Card sx={{ mb: 2 }}>
-            <CardContent>
-                <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                    {user?.profile_image_url && (
-                        <Avatar src={user.profile_image_url} alt={user.name} sx={{ mr: 1 }} />
-                    )}
-                    <Box>
-                        <Typography variant="subtitle1" fontWeight={700}>
-                            {user?.name || 'Unknown User'}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            @{user?.username || 'unknown'}
-                        </Typography>
+        <>
+            <Card sx={{ mb: 2 }}>
+                <CardContent>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                        {user?.profile_image_url && (
+                            <Avatar src={user.profile_image_url} alt={user.name} sx={{ mr: 1 }} />
+                        )}
+                        <Box>
+                            <Typography variant="subtitle1" fontWeight={700}>
+                                {user?.name || 'Unknown User'}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                @{user?.username || 'unknown'}
+                            </Typography>
+                        </Box>
                     </Box>
-                </Box>
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                    {text}
-                </Typography>
-                <Typography variant="caption" color="text.secondary">
-                    {created_at ? new Date(created_at).toLocaleString() : ''}
-                </Typography>
-                {error && (
-                    <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                        {error}
+                    <Typography variant="body1" sx={{ mb: 1 }}>
+                        {text}
                     </Typography>
-                )}
-            </CardContent>
-            <CardActions>
-                {twitterConnected ? (
-                    <>
-                        <Button
-                            color="primary"
-                            onClick={handleLike}
-                            disabled={actionLoading === 'like' || actionLoading === 'retweet'}
-                        >
-                            {actionLoading === 'like' ? <CircularProgress size={20} /> : 'Like'}
+                    <Typography variant="caption" color="text.secondary">
+                        {created_at ? new Date(created_at).toLocaleString() : ''}
+                    </Typography>
+                    {error && (
+                        <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                            {error}
+                        </Typography>
+                    )}
+                </CardContent>
+                <CardActions>
+                    {twitterConnected ? (
+                        <>
+                            <Button
+                                color="primary"
+                                onClick={handleLike}
+                                disabled={actionLoading === 'like' || actionLoading === 'retweet'}
+                            >
+                                {actionLoading === 'like' ? <CircularProgress size={20} /> : 'Like'}
+                            </Button>
+                            <Button
+                                color="primary"
+                                onClick={handleRetweet}
+                                disabled={actionLoading === 'like' || actionLoading === 'retweet'}
+                            >
+                                {actionLoading === 'retweet' ? (
+                                    <CircularProgress size={20} />
+                                ) : (
+                                    'Retweet'
+                                )}
+                            </Button>
+                            <Button color="secondary" onClick={() => onSkip && onSkip(tweet)}>
+                                Skip
+                            </Button>
+                        </>
+                    ) : (
+                        <Button color="primary" onClick={onStartTwitterAuth} fullWidth>
+                            Connect to Twitter first
                         </Button>
-                        <Button
-                            color="primary"
-                            onClick={handleRetweet}
-                            disabled={actionLoading === 'like' || actionLoading === 'retweet'}
-                        >
-                            {actionLoading === 'retweet' ? (
-                                <CircularProgress size={20} />
-                            ) : (
-                                'Retweet'
-                            )}
-                        </Button>
-                        <Button color="secondary" onClick={() => onSkip && onSkip(tweet)}>
-                            Skip
-                        </Button>
-                    </>
-                ) : (
-                    <Button color="primary" onClick={onStartTwitterAuth} fullWidth>
-                        Connect to Twitter first
-                    </Button>
-                )}
-            </CardActions>
-        </Card>
+                    )}
+                </CardActions>
+            </Card>
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={3000}
+                onClose={handleSnackbarClose}
+                message={snackbar.message}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            />
+        </>
     );
 };
 

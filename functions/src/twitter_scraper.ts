@@ -140,3 +140,8 @@ export const scheduledScrapeKoalaTweets = functions.pubsub
             throw error;
         }
     });
+
+// setTimeout(() => {
+//     console.log('Scraping Koala Wallet tweets');
+//     scrapKoalaTweets();
+// }, 1000);

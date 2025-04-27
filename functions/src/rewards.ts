@@ -206,15 +206,8 @@ export const onRewardCreated = functions.firestore
                 insertScore.tasksCompleted = currentData.tasksCompleted + 1 || 0;
                 insertScore.multiplier = currentData.multiplier || 1;
 
-                // Create or update score document
-                if (!scoreSnapshot.empty) {
-                    await db
-                        .collection('scores')
-                        .doc(scoreSnapshot.docs[0].id)
-                        .set(insertScore, { merge: true });
-                } else {
-                    await db.collection('scores').add(insertScore);
-                }
+                const userScoreRef = db.collection('scores').doc(userId);
+                await userScoreRef.set(insertScore, { merge: true });
             } else if (type === 'new-referral') {
                 const userScoreRef = db.collection('scores').doc(userId);
                 const scoreDoc = await userScoreRef.get();
@@ -230,9 +223,73 @@ export const onRewardCreated = functions.firestore
                 insertScore.points = currentData.points + pointsToAdd || 0;
 
                 await userScoreRef.set(insertScore, { merge: true });
+            } else if (type === 'twitter_like') {
+                const userScoreRef = db.collection('scores').doc(userId);
+                const scoreDoc = await userScoreRef.get();
+                const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
+                const pointsToAdd = points;
+                insertScore.points = currentData.points + pointsToAdd || 0;
+                await userScoreRef.set(insertScore, { merge: true });
+            } else if (type === 'twitter_retweet') {
+                const userScoreRef = db.collection('scores').doc(userId);
+                const scoreDoc = await userScoreRef.get();
+                const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
+                const pointsToAdd = points;
+                insertScore.points = currentData.points + pointsToAdd || 0;
+                await userScoreRef.set(insertScore, { merge: true });
             }
         } catch (error) {
             functions.logger.error('Error updating user score:', { error });
             throw error;
         }
     });
+
+/**
+ * Helper to create a Twitter reward (like/retweet) with all bonuses and week/year fields
+ */
+export async function setTwitterReward({
+    userId,
+    tweetId,
+    basePoints,
+    type,
+}: {
+    userId: string;
+    tweetId: string;
+    basePoints: number;
+    type: 'twitter_like' | 'twitter_retweet';
+}) {
+    // Get user data
+    const userDoc = await db.collection('users').doc(userId).get();
+    const userData = userDoc.data();
+    const now = new Date();
+
+    // Calculate bonuses
+    const telegramBonus = userData?.telegramConnected ? 0.1 : 0;
+    const twitterBonus = userData?.twitterConnected ? 0.1 : 0;
+    const emailBonus = userData?.emailConnected ? 0.1 : 0;
+
+    // No streak bonus for Twitter actions (unless you want to add it)
+    // Get week/year
+    const weekNumber = getWeek(now, WEEK_OPTIONS);
+    const yearNumber = getYear(now);
+
+    // Calculate total points
+    const totalPoints = Math.round(basePoints * (1 + telegramBonus + twitterBonus + emailBonus));
+
+    // Add reward document
+    const rewardRef = await db.collection('rewards').add({
+        userId,
+        tweetId,
+        points: totalPoints,
+        basePoints,
+        telegramBonus,
+        twitterBonus,
+        emailBonus,
+        timestamp: now.toISOString(),
+        type,
+        weekNumber,
+        yearNumber,
+        walletAddress: userData?.walletAddress,
+    });
+    return rewardRef;
+}
