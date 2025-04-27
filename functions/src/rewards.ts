@@ -66,6 +66,7 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
 
         // Calculate bonus multiplier
         const telegramBonus = userData?.telegramConnected ? 0.1 : 0; // 10% bonus
+        const twitterBonus = userData?.twitterConnected ? 0.1 : 0; // 10% bonus
         const emailBonus = userData?.emailConnected ? 0.1 : 0; // 10% bonus
         const basePoints = 100;
 
@@ -83,7 +84,9 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
         const streakBonusValue = isStreakActive ? scoreDoc.data()?.currentStreak || 0 : 0;
         const streakBonus = streakBonusValue * 0.02;
 
-        const totalPoints = Math.round(basePoints * (1 + telegramBonus + emailBonus + streakBonus));
+        const totalPoints = Math.round(
+            basePoints * (1 + telegramBonus + twitterBonus + emailBonus + streakBonus)
+        );
 
         // Add reward document with week and year
         const rewardRef = await db.collection('rewards').add({
@@ -91,6 +94,7 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
             points: totalPoints,
             basePoints,
             telegramBonus: userData?.telegramConnected ? 0.1 : 0,
+            twitterBonus: userData?.twitterConnected ? 0.1 : 0,
             emailBonus: userData?.emailConnected ? 0.1 : 0,
             streakBonus: streakBonus,
             timestamp: now.toISOString(),
