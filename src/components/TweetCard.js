@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Box,
     Typography,
@@ -9,16 +9,64 @@ import {
     Avatar,
     CircularProgress,
     Snackbar,
+    IconButton,
 } from '@mui/material';
-import { useLatestTweet } from '../hooks/useLatestTweet';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import RepeatIcon from '@mui/icons-material/Repeat';
+import RepeatOutlinedIcon from '@mui/icons-material/RepeatOutlined';
 import PropTypes from 'prop-types';
 import { getFunctions, httpsCallable } from 'firebase/functions';
+import { useNextTweet } from '../hooks/useLatestTweet';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { db } from '../config/firebase';
 
-export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStartTwitterAuth }) => {
-    const { tweet, loading } = useLatestTweet();
+export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected }) => {
+    console.log('TweetCard', userId);
+    const { tweet, loading } = useNextTweet(userId);
     const [actionLoading, setActionLoading] = useState(''); // '' | 'like' | 'retweet'
     const [error, setError] = useState('');
     const [snackbar, setSnackbar] = useState({ open: false, message: '' });
+    const [liked, setLiked] = useState(false);
+    const [retweeted, setRetweeted] = useState(false);
+
+    useEffect(() => {
+        if (!tweet) {
+            console.log('No tweet to check actions for');
+            return;
+        }
+        if (!userId) {
+            console.log('No userId provided, read-only mode');
+            setLiked(false);
+            setRetweeted(false);
+            return;
+        }
+        const checkActions = async () => {
+            const q = query(
+                collection(db, 'rewards'),
+                where('userId', '==', userId),
+                where('tweetId', '==', tweet.id),
+                where('type', 'in', ['twitter_like', 'twitter_retweet'])
+            );
+            const snap = await getDocs(q);
+            let liked = false,
+                retweeted = false;
+            snap.forEach(doc => {
+                const data = doc.data();
+                if (data.type === 'twitter_like') liked = true;
+                if (data.type === 'twitter_retweet') retweeted = true;
+            });
+            setLiked(liked);
+            setRetweeted(retweeted);
+        };
+        checkActions();
+    }, [tweet, userId]);
+
+    useEffect(() => {
+        if (tweet && liked && retweeted && onSkip) {
+            onSkip(tweet);
+        }
+    }, [tweet, liked, retweeted, onSkip]);
 
     const handleLike = async () => {
         if (!tweet?.id) return;
@@ -28,6 +76,7 @@ export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStart
             const functions = getFunctions();
             const likeTweet = httpsCallable(functions, 'likeTweet');
             await likeTweet({ tweetId: tweet.id });
+            setLiked(true);
             if (onLike) onLike(tweet);
             setSnackbar({ open: true, message: 'Tweet liked successfully!' });
         } catch (err) {
@@ -46,6 +95,7 @@ export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStart
             const functions = getFunctions();
             const retweetTweet = httpsCallable(functions, 'retweetTweet');
             await retweetTweet({ tweetId: tweet.id });
+            setRetweeted(true);
             if (onRetweet) onRetweet(tweet);
             setSnackbar({ open: true, message: 'Tweet retweeted successfully!' });
         } catch (err) {
@@ -72,8 +122,6 @@ export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStart
         return <Box sx={{ p: 2 }}>No tweet found.</Box>;
     }
 
-    // Example tweet fields: text, user, created_at, etc.
-    // You may need to adjust these based on your Firestore structure
     const { text, user, created_at } = tweet;
 
     return (
@@ -106,34 +154,54 @@ export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStart
                     )}
                 </CardContent>
                 <CardActions>
-                    {twitterConnected ? (
+                    {userId && twitterConnected ? (
                         <>
-                            <Button
-                                color="primary"
+                            <IconButton
+                                color={liked ? 'error' : 'default'}
                                 onClick={handleLike}
-                                disabled={actionLoading === 'like' || actionLoading === 'retweet'}
+                                disabled={
+                                    liked || actionLoading === 'like' || actionLoading === 'retweet'
+                                }
                             >
-                                {actionLoading === 'like' ? <CircularProgress size={20} /> : 'Like'}
-                            </Button>
-                            <Button
-                                color="primary"
+                                {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                            </IconButton>
+                            <IconButton
+                                color={retweeted ? 'primary' : 'default'}
                                 onClick={handleRetweet}
-                                disabled={actionLoading === 'like' || actionLoading === 'retweet'}
+                                disabled={
+                                    retweeted ||
+                                    actionLoading === 'like' ||
+                                    actionLoading === 'retweet'
+                                }
                             >
-                                {actionLoading === 'retweet' ? (
-                                    <CircularProgress size={20} />
-                                ) : (
-                                    'Retweet'
-                                )}
-                            </Button>
+                                {retweeted ? <RepeatIcon /> : <RepeatOutlinedIcon />}
+                            </IconButton>
                             <Button color="secondary" onClick={() => onSkip && onSkip(tweet)}>
                                 Skip
                             </Button>
                         </>
                     ) : (
-                        <Button color="primary" onClick={onStartTwitterAuth} fullWidth>
-                            Connect to Twitter first
-                        </Button>
+                        <Box sx={{ width: '100%' }}>
+                            {!userId ? (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={() => {
+                                        if (window.startSignIn) {
+                                            window.startSignIn();
+                                        } else {
+                                            alert('Sign-in logic not implemented!');
+                                        }
+                                    }}
+                                >
+                                    Sign in to interact with tweets.
+                                </Button>
+                            ) : (
+                                <Typography variant="body2" color="text.secondary">
+                                    Connect to Twitter first to interact.
+                                </Typography>
+                            )}
+                        </Box>
                     )}
                 </CardActions>
             </Card>
@@ -149,9 +217,9 @@ export const TweetCard = ({ onLike, onRetweet, onSkip, twitterConnected, onStart
 };
 
 TweetCard.propTypes = {
+    userId: PropTypes.string.isRequired,
     onLike: PropTypes.func,
     onRetweet: PropTypes.func,
     onSkip: PropTypes.func,
     twitterConnected: PropTypes.bool,
-    onStartTwitterAuth: PropTypes.func,
 };
