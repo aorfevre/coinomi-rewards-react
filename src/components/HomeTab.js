@@ -271,6 +271,7 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                     onLike={tweet => console.log('Like', tweet)}
                     onRetweet={tweet => console.log('Retweet', tweet)}
                     onSkip={tweet => console.log('Skip', tweet)}
+                    userId={userData?.coinomiId}
                 />
             </Box>
         </Box>

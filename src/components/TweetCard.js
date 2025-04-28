@@ -22,7 +22,6 @@ import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected }) => {
-    console.log('TweetCard', userId);
     const { tweet, loading } = useNextTweet(userId);
     const [actionLoading, setActionLoading] = useState(''); // '' | 'like' | 'retweet'
     const [error, setError] = useState('');
@@ -111,6 +110,36 @@ export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected 
         setSnackbar({ open: false, message: '' });
     };
 
+    // Sign-in handler (same as in Challenges.js)
+    const handleSignIn = async () => {
+        try {
+            // Get current URL parameters
+            const currentUrl = new URL(window.location.href);
+            const originalParams = {};
+            currentUrl.searchParams.forEach((value, key) => {
+                originalParams[key] = value;
+            });
+
+            const functions = getFunctions();
+            const generateAuthUrl = httpsCallable(functions, 'generateTwitterAuthUrl');
+            const result = await generateAuthUrl({ originalParams });
+
+            const { url } = result.data;
+            const width = 600;
+            const height = 600;
+            const left = window.screen.width / 2 - width / 2;
+            const top = window.screen.height / 2 - height / 2;
+
+            window.open(
+                url,
+                'twitter-auth',
+                `width=${width},height=${height},left=${left},top=${top}`
+            );
+        } catch (error) {
+            console.error('Error generating Twitter auth URL:', error);
+        }
+    };
+
     if (loading) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
@@ -119,6 +148,7 @@ export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected 
         );
     }
     if (!tweet) {
+        console.log('TweetCard no tweet', { userId, twitterConnected });
         return <Box sx={{ p: 2 }}>No tweet found.</Box>;
     }
 
@@ -183,17 +213,7 @@ export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected 
                     ) : (
                         <Box sx={{ width: '100%' }}>
                             {!userId ? (
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={() => {
-                                        if (window.startSignIn) {
-                                            window.startSignIn();
-                                        } else {
-                                            alert('Sign-in logic not implemented!');
-                                        }
-                                    }}
-                                >
+                                <Button variant="contained" color="primary" onClick={handleSignIn}>
                                     Sign in to interact with tweets.
                                 </Button>
                             ) : (
