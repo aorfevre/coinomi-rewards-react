@@ -21,7 +21,14 @@ import { useNextTweet } from '../hooks/useLatestTweet';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
-export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected }) => {
+export const TweetCard = ({
+    userId,
+    onLike,
+    onRetweet,
+    onSkip,
+    twitterConnected,
+    onStartTwitterAuth,
+}) => {
     const { tweet, loading } = useNextTweet(userId);
     const [actionLoading, setActionLoading] = useState(''); // '' | 'like' | 'retweet' | 'skip'
     const [error, setError] = useState('');
@@ -247,6 +254,14 @@ export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected 
                                 <Button variant="contained" color="primary" onClick={handleSignIn}>
                                     Sign in to interact with tweets.
                                 </Button>
+                            ) : !twitterConnected ? (
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={onStartTwitterAuth}
+                                >
+                                    Connect to Twitter
+                                </Button>
                             ) : (
                                 <Typography variant="body2" color="text.secondary">
                                     Connect to Twitter first to interact.
@@ -273,4 +288,5 @@ TweetCard.propTypes = {
     onRetweet: PropTypes.func,
     onSkip: PropTypes.func,
     twitterConnected: PropTypes.bool,
+    onStartTwitterAuth: PropTypes.func,
 };
