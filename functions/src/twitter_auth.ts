@@ -31,7 +31,7 @@ export const generateTwitterAuthUrl = functions.https.onCall(async (data, contex
             userId: context.auth.uid,
             originalParams: originalParams || {},
         });
-
+        console.log('Twitter auth URL generated', { url });
         return { url };
     } catch (error) {
         console.error('Error generating Twitter auth URL:', error);
