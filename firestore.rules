@@ -76,5 +76,11 @@ service cloud.firestore {
       allow read: if false;  // Only cloud functions can read
       allow write: if false;  // Only cloud functions can write
     }
+
+    // Tweet Skips collection rules
+    match /tweet_skips/{docId} {
+      allow read: if true;  // Allow public read access for analytics
+      allow write: if false;  // Only cloud functions can write
+    }
   }
 }

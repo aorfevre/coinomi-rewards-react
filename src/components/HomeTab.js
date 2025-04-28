@@ -17,6 +17,7 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
     const { userData } = useUserData(userId);
     const { scoreDoc } = useScore(userId);
     const { t } = useTranslation();
+    const [tweetKey, setTweetKey] = useState(0);
 
     // Initial states with all required properties
     const [dailyTimeLeft, setDailyTimeLeft] = useState({
@@ -125,6 +126,10 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
         } catch (error) {
             console.error('Error generating Twitter auth URL:', error);
         }
+    };
+
+    const handleSkip = () => {
+        setTweetKey(prev => prev + 1);
     };
 
     return (
@@ -270,8 +275,9 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                     onStartTwitterAuth={handleTwitterAuth}
                     onLike={tweet => console.log('Like', tweet)}
                     onRetweet={tweet => console.log('Retweet', tweet)}
-                    onSkip={tweet => console.log('Skip', tweet)}
-                    userId={userData?.coinomiId}
+                    onSkip={handleSkip}
+                    userId={userId}
+                    key={tweetKey}
                 />
             </Box>
         </Box>

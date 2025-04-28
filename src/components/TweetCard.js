@@ -23,7 +23,7 @@ import { db } from '../config/firebase';
 
 export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected }) => {
     const { tweet, loading } = useNextTweet(userId);
-    const [actionLoading, setActionLoading] = useState(''); // '' | 'like' | 'retweet'
+    const [actionLoading, setActionLoading] = useState(''); // '' | 'like' | 'retweet' | 'skip'
     const [error, setError] = useState('');
     const [snackbar, setSnackbar] = useState({ open: false, message: '' });
     const [liked, setLiked] = useState(false);
@@ -31,11 +31,9 @@ export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected 
 
     useEffect(() => {
         if (!tweet) {
-            console.log('No tweet to check actions for');
             return;
         }
         if (!userId) {
-            console.log('No userId provided, read-only mode');
             setLiked(false);
             setRetweeted(false);
             return;
@@ -63,7 +61,10 @@ export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected 
 
     useEffect(() => {
         if (tweet && liked && retweeted && onSkip) {
-            onSkip(tweet);
+            const timer = setTimeout(() => {
+                onSkip();
+            }, 1000);
+            return () => clearTimeout(timer);
         }
     }, [tweet, liked, retweeted, onSkip]);
 
@@ -99,6 +100,24 @@ export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected 
             setSnackbar({ open: true, message: 'Tweet retweeted successfully!' });
         } catch (err) {
             setError('Failed to retweet');
+            console.error(err);
+        } finally {
+            setActionLoading('');
+        }
+    };
+
+    const handleSkip = async () => {
+        if (!tweet?.id) return;
+        setActionLoading('skip');
+        setError('');
+        try {
+            const functions = getFunctions();
+            const skipTweet = httpsCallable(functions, 'skipTweet');
+            await skipTweet({ tweetId: tweet.id });
+            setSnackbar({ open: true, message: 'Tweet skipped successfully!' });
+            if (onSkip) onSkip();
+        } catch (err) {
+            setError('Failed to skip tweet');
             console.error(err);
         } finally {
             setActionLoading('');
@@ -190,7 +209,10 @@ export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected 
                                 color={liked ? 'error' : 'default'}
                                 onClick={handleLike}
                                 disabled={
-                                    liked || actionLoading === 'like' || actionLoading === 'retweet'
+                                    liked ||
+                                    actionLoading === 'like' ||
+                                    actionLoading === 'retweet' ||
+                                    actionLoading === 'skip'
                                 }
                             >
                                 {liked ? <FavoriteIcon /> : <FavoriteBorderIcon />}
@@ -201,12 +223,21 @@ export const TweetCard = ({ userId, onLike, onRetweet, onSkip, twitterConnected 
                                 disabled={
                                     retweeted ||
                                     actionLoading === 'like' ||
-                                    actionLoading === 'retweet'
+                                    actionLoading === 'retweet' ||
+                                    actionLoading === 'skip'
                                 }
                             >
                                 {retweeted ? <RepeatIcon /> : <RepeatOutlinedIcon />}
                             </IconButton>
-                            <Button color="secondary" onClick={() => onSkip && onSkip(tweet)}>
+                            <Button
+                                color="secondary"
+                                onClick={handleSkip}
+                                disabled={
+                                    actionLoading === 'like' ||
+                                    actionLoading === 'retweet' ||
+                                    actionLoading === 'skip'
+                                }
+                            >
                                 Skip
                             </Button>
                         </>

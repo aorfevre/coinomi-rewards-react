@@ -13,10 +13,15 @@ export const useNextTweet = userId => {
         let cancelled = false;
 
         const fetchNextTweet = async () => {
+            const fiveDaysAgo = new Date();
+            fiveDaysAgo.setDate(fiveDaysAgo.getDate() - 10);
+            const fiveDaysAgoISOString = fiveDaysAgo.toISOString();
+
             if (!userId) {
-                // No userId: just show the latest tweet
+                // No userId: just show the latest tweet from last 5 days
                 const tweetsQuery = query(
                     collection(db, 'koala_tweets'),
+                    where('created_at', '>=', fiveDaysAgoISOString),
                     orderBy('created_at', 'desc'),
                     limit(1)
                 );
@@ -31,22 +36,25 @@ export const useNextTweet = userId => {
                 });
                 return;
             }
-            // Get all tweetIds the user has already liked or retweeted
-            const rewardsQuery = query(
-                collection(db, 'rewards'),
+
+            // Get all tweetIds the user has skipped in the last 5 days
+            const skipsQuery = query(
+                collection(db, 'tweet_skips'),
                 where('userId', '==', userId),
-                where('type', 'in', ['twitter_like', 'twitter_retweet'])
+                where('createdAt', '>=', fiveDaysAgoISOString)
             );
-            const rewardsSnap = await getDocs(rewardsQuery);
-            const completedTweetIds = new Set();
-            rewardsSnap.forEach(doc => {
+
+            const skipsSnap = await getDocs(skipsQuery);
+            const skippedTweetIds = new Set();
+            skipsSnap.forEach(doc => {
                 const data = doc.data();
-                if (data.tweetId) completedTweetIds.add(data.tweetId);
+                if (data.tweetId) skippedTweetIds.add(data.tweetId);
             });
 
-            // Listen for tweets, skipping completed ones
+            // Listen for tweets from the last 5 days, skipping the ones that were skipped
             const tweetsQuery = query(
                 collection(db, 'koala_tweets'),
+                where('created_at', '>=', fiveDaysAgoISOString),
                 orderBy('created_at', 'desc'),
                 limit(20)
             );
@@ -54,7 +62,7 @@ export const useNextTweet = userId => {
                 if (cancelled) return;
                 const tweets = [];
                 snap.forEach(doc => {
-                    if (!completedTweetIds.has(doc.id)) {
+                    if (!skippedTweetIds.has(doc.id)) {
                         tweets.push({ id: doc.id, ...doc.data() });
                     }
                 });

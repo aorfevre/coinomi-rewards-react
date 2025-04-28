@@ -67,3 +67,39 @@ export const retweetTweet = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('internal', 'Failed to retweet tweet');
     }
 });
+
+// Store a tweet skip action
+export const skipTweet = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+    const { tweetId } = data;
+    if (!tweetId) {
+        throw new functions.https.HttpsError('invalid-argument', 'Missing tweetId');
+    }
+
+    try {
+        // Get the tweet data to store its creation date
+        const tweetDoc = await admin.firestore().collection('koala_tweets').doc(tweetId).get();
+        if (!tweetDoc.exists) {
+            throw new functions.https.HttpsError('not-found', 'Tweet not found');
+        }
+        const tweetData = tweetDoc.data();
+
+        // Store the skip action
+        await admin
+            .firestore()
+            .collection('tweet_skips')
+            .add({
+                userId: context.auth.uid,
+                tweetId: tweetId,
+                createdAt: new Date().toISOString(),
+                tweetCreatedAt: tweetData?.created_at || null,
+            });
+
+        return { success: true };
+    } catch (error) {
+        console.error('Error storing tweet skip:', error);
+        throw new functions.https.HttpsError('internal', 'Failed to store tweet skip');
+    }
+});
