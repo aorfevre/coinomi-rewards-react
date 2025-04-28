@@ -126,6 +126,14 @@
                 { "fieldPath": "yearNumber", "order": "ASCENDING" },
                 { "fieldPath": "number", "order": "ASCENDING" }
             ]
+        },
+        {
+            "collectionGroup": "tweet_skips",
+            "queryScope": "COLLECTION",
+            "fields": [
+                { "fieldPath": "userId", "order": "ASCENDING" },
+                { "fieldPath": "createdAt", "order": "ASCENDING" }
+            ]
         }
     ],
     "fieldOverrides": []
