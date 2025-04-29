@@ -176,4 +176,15 @@ export const pl = {
     connectTwitter: 'Połącz z Twitterem',
     twitterSuccess: '🎉 Gratulacje! Otrzymujesz teraz stały 10% bonus do wszystkich nagród!',
     twitterPrompt: 'Połącz swoje konto Twitter, aby otrzymać stały 10% bonus do wszystkich nagród!',
+    pleaseAddUserId: 'Dodaj parametr userId do URL',
+    emailChallengePrompt:
+        'Udostępnij swój email, aby otrzymać stały bonus 10% do wszystkich nagród!',
+    emailChallengeSuccess: '🎉 Połączono! Otrzymujesz teraz stały bonus 10% do wszystkich nagród!',
+    followKoalaWalletChallenge: 'Śledź @KoalaWallet na Twitterze, aby nas wesprzeć!',
+    twitterAuthSuccessTitle: 'Twitter pomyślnie połączony!',
+    twitterAuthSuccessMessage:
+        'Twoje konto Twitter zostało pomyślnie połączone. Możesz teraz kontynuować korzystanie z aplikacji.',
+    continueToApp: 'Kontynuuj do aplikacji',
+    twitter_like: 'Polubił tweeta',
+    twitter_retweet: 'Zretweetował tweeta',
 };

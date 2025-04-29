@@ -20,6 +20,7 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { createTheme } from '@mui/material/styles';
 import { Navbar } from './components/Navbar';
 import { PayoutDashboard } from './components/PayoutDashboard';
+import { TwitterAuthSuccess } from './components/TwitterAuthSuccess';
 
 function App() {
     const { t, i18n } = useTranslation();
@@ -90,6 +91,16 @@ function App() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <PayoutDashboard />
+            </ThemeProvider>
+        );
+    }
+
+    // If it's the Twitter auth success page, render it without auth
+    if (pathname === '/twitter-auth-success') {
+        return (
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <TwitterAuthSuccess />
             </ThemeProvider>
         );
     }

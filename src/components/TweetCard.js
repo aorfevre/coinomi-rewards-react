@@ -175,7 +175,14 @@ export const TweetCard = ({
     }
     if (!tweet) {
         console.log('TweetCard no tweet', { userId, twitterConnected });
-        return <Box sx={{ p: 2 }}>No tweet found.</Box>;
+        return (
+            <Box sx={{ p: 2, textAlign: 'center' }}>
+                <Typography variant="body1" color="text.secondary">
+                    No new tweets available right now. Check back later for more opportunities to
+                    earn points!
+                </Typography>
+            </Box>
+        );
     }
 
     const { text, user, created_at } = tweet;

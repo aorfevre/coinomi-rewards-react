@@ -174,4 +174,15 @@ export const da = {
     connectTwitter: 'Forbind Twitter',
     twitterSuccess: '🎉 Tillykke! Du får nu 10% permanent bonus på alle belønninger!',
     twitterPrompt: 'Forbind din Twitter-konto for at få 10% permanent bonus på alle belønninger!',
+    pleaseAddUserId: 'Please add a userId parameter to the URL',
+    emailChallengePrompt: 'Share your email to get a permanent 10% bonus on all rewards!',
+    emailChallengeSuccess:
+        '🎉 Connected! You are now receiving a permanent 10% bonus on all rewards!',
+    followKoalaWalletChallenge: 'Follow @KoalaWallet on Twitter to support us!',
+    twitterAuthSuccessTitle: 'Twitter Connected Successfully!',
+    twitterAuthSuccessMessage:
+        'You have successfully connected your Twitter account. You can now continue using the app.',
+    continueToApp: 'Continue to App',
+    twitter_like: 'Liked a tweet',
+    twitter_retweet: 'Retweeted a tweet',
 };

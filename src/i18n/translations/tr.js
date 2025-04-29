@@ -178,4 +178,15 @@ export const tr = {
     connectTwitter: 'Twitter ile Bağlan',
     twitterSuccess: '🎉 Tebrikler! Artık tüm ödüllerde %10 kalıcı bonus alıyorsunuz!',
     twitterPrompt: 'Twitter hesabınızı bağlayarak tüm ödüllerde %10 kalıcı bonus kazanın!',
+    pleaseAddUserId: "Lütfen URL'ye userId parametresini ekleyin",
+    emailChallengePrompt: 'Tüm ödüllerde kalıcı %10 bonus almak için e-postanızı paylaşın!',
+    emailChallengeSuccess: '🎉 Bağlandı! Artık tüm ödüllerde kalıcı %10 bonus alıyorsunuz!',
+    followKoalaWalletChallenge:
+        "Bizi desteklemek için Twitter'da @KoalaWallet hesabını takip edin!",
+    twitterAuthSuccessTitle: 'Twitter başarıyla bağlandı!',
+    twitterAuthSuccessMessage:
+        'Twitter hesabı başarıyla bağlandı. Artık uygulamayı kullanmaya devam edebilirsiniz.',
+    continueToApp: 'Uygulamaya devam et',
+    twitter_like: 'Tweeti beğendiniz',
+    twitter_retweet: 'Tweeti retweetlediniz',
 };

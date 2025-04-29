@@ -180,4 +180,15 @@ export const is = {
     twitterSuccess: '🎉 Til hamingju! Þú færð nú 10% varanlegan bónus á allar umbunir!',
     twitterPrompt:
         'Tengdu Twitter reikninginn þinn til að fá 10% varanlegan bónus á allar umbunir!',
+    pleaseAddUserId: 'Vinsamlegast bættu við userId breytu í vefslóðina',
+    emailChallengePrompt:
+        'Deildu tölvupóstinum þínum til að fá 10% varanlegan bónus á öll verðlaun!',
+    emailChallengeSuccess: '🎉 Tengdur! Þú færð nú 10% varanlegan bónus á öll verðlaun!',
+    followKoalaWalletChallenge: 'Fylgdu @KoalaWallet á Twitter til að styðja okkur!',
+    twitterAuthSuccessTitle: 'Twitter tengdur með góðum árangri!',
+    twitterAuthSuccessMessage:
+        'Þú hefur tengt Twitter reikninginn þinn með góðum árangri. Þú getur nú haldið áfram að nota appið.',
+    continueToApp: 'Halda áfram í appið',
+    twitter_like: 'Líkaði við tíst',
+    twitter_retweet: 'Endurtísti tísti',
 };

@@ -65,7 +65,7 @@ export const twitterAuthCallback = functions.https.onRequest(async (req, res) =>
             return;
         }
 
-        const { codeVerifier, userId, originalParams } = stateDoc.data()!;
+        const { codeVerifier, userId } = stateDoc.data()!;
 
         // Exchange the code for access token
         const { accessToken, refreshToken } = await twitterClient.loginWithOAuth2({
@@ -118,17 +118,8 @@ export const twitterAuthCallback = functions.https.onRequest(async (req, res) =>
         // Clean up the state document
         await stateDoc.ref.delete();
 
-        // Reconstruct the URL with original parameters
-        const successUrl = new URL(`${process.env.FRONTEND_URL}`);
-        console.log('originalParams', originalParams);
-        if (originalParams) {
-            Object.entries(originalParams).forEach(([key, value]) => {
-                successUrl.searchParams.append(key, value as string);
-            });
-        }
-
-        // Redirect to the frontend with success and original parameters
-        res.redirect(successUrl.toString());
+        // Redirect to the success page
+        res.redirect(`${process.env.FRONTEND_URL}/twitter-auth-success`);
     } catch (error) {
         console.error('Error in Twitter auth callback:', error);
         res.redirect(`${process.env.FRONTEND_URL}/twitter-auth-error`);

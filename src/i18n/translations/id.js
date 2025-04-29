@@ -178,4 +178,16 @@ export const id = {
     twitterSuccess: '🎉 Selamat! Anda sekarang menerima bonus permanen 10% untuk semua hadiah!',
     twitterPrompt:
         'Hubungkan akun Twitter Anda untuk mendapatkan bonus permanen 10% untuk semua hadiah!',
+    pleaseAddUserId: 'Silakan tambahkan parameter userId ke URL',
+    emailChallengePrompt:
+        'Bagikan email Anda untuk mendapatkan bonus permanen 10% untuk semua hadiah!',
+    emailChallengeSuccess:
+        '🎉 Terhubung! Anda sekarang menerima bonus permanen 10% untuk semua hadiah!',
+    followKoalaWalletChallenge: 'Ikuti @KoalaWallet di Twitter untuk mendukung kami!',
+    twitterAuthSuccessTitle: 'Twitter Berhasil Terhubung!',
+    twitterAuthSuccessMessage:
+        'Anda telah berhasil menghubungkan akun Twitter Anda. Anda sekarang dapat melanjutkan menggunakan aplikasi.',
+    continueToApp: 'Lanjutkan ke Aplikasi',
+    twitter_like: 'Menyukai tweet',
+    twitter_retweet: 'Me-retweet tweet',
 };

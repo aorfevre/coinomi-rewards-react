@@ -175,4 +175,14 @@ export const hu = {
     twitterSuccess: '🎉 Gratulálunk! Mostantól 10% állandó bónuszt kapsz minden jutalomra!',
     twitterPrompt:
         'Csatlakoztasd Twitter fiókodat, hogy 10% állandó bónuszt kapj minden jutalomra!',
+    pleaseAddUserId: 'Kérjük, adjon hozzá userId paramétert az URL-hez',
+    emailChallengePrompt: 'Ossza meg e-mailjét, hogy állandó 10% bónuszt kapjon minden jutalomra!',
+    emailChallengeSuccess: '🎉 Csatlakoztatva! Mostantól 10% állandó bónuszt kap minden jutalomra!',
+    followKoalaWalletChallenge: 'Kövesse a @KoalaWallet fiókot Twitteren, hogy támogasson minket!',
+    twitterAuthSuccessTitle: 'Twitter sikeresen csatlakoztatva!',
+    twitterAuthSuccessMessage:
+        'Sikeresen csatlakoztatta Twitter fiókját. Most már folytathatja az alkalmazás használatát.',
+    continueToApp: 'Tovább az alkalmazáshoz',
+    twitter_like: 'Kedvelte a tweetet',
+    twitter_retweet: 'Retweetelte a tweetet',
 };

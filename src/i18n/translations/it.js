@@ -190,4 +190,16 @@ export const it = {
         '🎉 Congratulazioni! Ora ricevi un bonus permanente del 10% su tutte le ricompense!',
     twitterPrompt:
         'Collega il tuo account Twitter per ottenere un bonus permanente del 10% su tutte le ricompense!',
+    pleaseAddUserId: "Aggiungi il parametro userId all'URL",
+    emailChallengePrompt:
+        'Condividi la tua email per ricevere un bonus permanente del 10% su tutte le ricompense!',
+    emailChallengeSuccess:
+        '🎉 Collegato! Ora ricevi un bonus permanente del 10% su tutte le ricompense!',
+    followKoalaWalletChallenge: 'Segui @KoalaWallet su Twitter per supportarci!',
+    twitterAuthSuccessTitle: 'Twitter collegato con successo!',
+    twitterAuthSuccessMessage:
+        "Hai collegato con successo il tuo account Twitter. Ora puoi continuare a usare l'app.",
+    continueToApp: "Continua all'app",
+    twitter_like: 'Ha messo Mi piace a un tweet',
+    twitter_retweet: 'Ha retwittato un tweet',
 };

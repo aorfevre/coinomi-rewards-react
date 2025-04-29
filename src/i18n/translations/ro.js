@@ -173,4 +173,16 @@ export const ro = {
     twitterSuccess: '🎉 Felicitări! Acum primești un bonus permanent de 10% la toate recompensele!',
     twitterPrompt:
         'Conectează-ți contul de Twitter pentru a primi un bonus permanent de 10% la toate recompensele!',
+    pleaseAddUserId: 'Vă rugăm adăugați parametrul userId la URL',
+    emailChallengePrompt:
+        'Partajați emailul pentru a primi un bonus permanent de 10% la toate recompensele!',
+    emailChallengeSuccess:
+        '🎉 Conectat! Acum primiți un bonus permanent de 10% la toate recompensele!',
+    followKoalaWalletChallenge: 'Urmăriți @KoalaWallet pe Twitter pentru a ne susține!',
+    twitterAuthSuccessTitle: 'Twitter conectat cu succes!',
+    twitterAuthSuccessMessage:
+        'Contul dvs. de Twitter a fost conectat cu succes. Acum puteți continua să utilizați aplicația.',
+    continueToApp: 'Continuați către aplicație',
+    twitter_like: 'A apreciat un tweet',
+    twitter_retweet: 'A retweetat un tweet',
 };

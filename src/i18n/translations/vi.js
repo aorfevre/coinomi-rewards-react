@@ -174,4 +174,16 @@ export const vi = {
         '🎉 Chúc mừng! Bạn giờ đây nhận được 10% thưởng vĩnh viễn cho tất cả phần thưởng!',
     twitterPrompt:
         'Liên kết tài khoản Twitter của bạn để nhận 10% thưởng vĩnh viễn cho tất cả phần thưởng!',
+    pleaseAddUserId: 'Vui lòng thêm tham số userId vào URL',
+    emailChallengePrompt:
+        'Chia sẻ email của bạn để nhận thưởng cố định 10% cho tất cả phần thưởng!',
+    emailChallengeSuccess:
+        '🎉 Đã kết nối! Bạn giờ đây nhận được thưởng cố định 10% cho tất cả phần thưởng!',
+    followKoalaWalletChallenge: 'Hãy theo dõi @KoalaWallet trên Twitter để ủng hộ chúng tôi!',
+    twitterAuthSuccessTitle: 'Twitter đã được kết nối thành công!',
+    twitterAuthSuccessMessage:
+        'Tài khoản Twitter đã được kết nối thành công. Bạn có thể tiếp tục sử dụng ứng dụng.',
+    continueToApp: 'Tiếp tục đến ứng dụng',
+    twitter_like: 'Đã thích tweet',
+    twitter_retweet: 'Đã retweet tweet',
 };

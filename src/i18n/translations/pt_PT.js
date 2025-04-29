@@ -168,4 +168,16 @@ export const pt_PT = {
     shareOn: 'Partilhar no {{network}}',
     shareInviteText:
         '🚀 Junte-se a mim na Coinomi Wallet e receba recompensas bónus! Descarregue a app em {{appUrl}} e use o meu código de indicação: {{referralCode}} ao registar-se. #Coinomi #Crypto',
+    pleaseAddUserId: 'Por favor, adicione o parâmetro userId ao URL',
+    emailChallengePrompt:
+        'Partilhe o seu email para receber um bónus permanente de 10% em todas as recompensas!',
+    emailChallengeSuccess:
+        '🎉 Conectado! Agora recebe um bónus permanente de 10% em todas as recompensas!',
+    followKoalaWalletChallenge: 'Siga @KoalaWallet no Twitter para nos apoiar!',
+    twitterAuthSuccessTitle: 'Twitter conectado com sucesso!',
+    twitterAuthSuccessMessage:
+        'A sua conta do Twitter foi conectada com sucesso. Agora pode continuar a usar a app.',
+    continueToApp: 'Continuar para a app',
+    twitter_like: 'Gostou de um tweet',
+    twitter_retweet: 'Retweetou um tweet',
 };

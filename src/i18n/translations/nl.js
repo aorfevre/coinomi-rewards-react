@@ -182,4 +182,15 @@ export const nl = {
         '🎉 Gefeliciteerd! Je ontvangt nu een permanente bonus van 10% op alle beloningen!',
     twitterPrompt:
         'Koppel je Twitter-account om een permanente bonus van 10% op alle beloningen te krijgen!',
+    pleaseAddUserId: 'Voeg een userId-parameter toe aan de URL',
+    emailChallengePrompt: 'Deel je e-mail voor een permanente 10% bonus op alle beloningen!',
+    emailChallengeSuccess:
+        '🎉 Verbonden! Je ontvangt nu een permanente 10% bonus op alle beloningen!',
+    followKoalaWalletChallenge: 'Volg @KoalaWallet op Twitter om ons te steunen!',
+    twitterAuthSuccessTitle: 'Twitter succesvol verbonden!',
+    twitterAuthSuccessMessage:
+        'Je Twitter-account is succesvol verbonden. Je kunt nu doorgaan met de app.',
+    continueToApp: 'Doorgaan naar app',
+    twitter_like: 'Tweet geliket',
+    twitter_retweet: 'Tweet geretweet',
 };

@@ -193,4 +193,16 @@ export const pt = {
         '🎉 Parabéns! Agora você está recebendo um bônus permanente de 10% em todas as recompensas!',
     twitterPrompt:
         'Vincule sua conta do Twitter para obter um bônus permanente de 10% em todas as recompensas!',
+    pleaseAddUserId: 'Por favor, adicione o parâmetro userId à URL',
+    emailChallengePrompt:
+        'Compartilhe seu email para receber um bônus permanente de 10% em todas as recompensas!',
+    emailChallengeSuccess:
+        '🎉 Conectado! Agora você recebe um bônus permanente de 10% em todas as recompensas!',
+    followKoalaWalletChallenge: 'Siga @KoalaWallet no Twitter para nos apoiar!',
+    twitterAuthSuccessTitle: 'Twitter conectado com sucesso!',
+    twitterAuthSuccessMessage:
+        'Sua conta do Twitter foi conectada com sucesso. Agora você pode continuar usando o app.',
+    continueToApp: 'Continuar para o app',
+    twitter_like: 'Curtiu um tweet',
+    twitter_retweet: 'Retweetou um tweet',
 };

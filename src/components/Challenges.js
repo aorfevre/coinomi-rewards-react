@@ -185,12 +185,12 @@ export const Challenges = ({ userId, onTabChange }) => {
                 {/* Follow KoalaWallet Challenge */}
                 <ChallengeCard
                     icon={TwitterIcon}
-                    title="Follow KoalaWallet"
-                    description="Follow @KoalaWallet on Twitter to support us!"
+                    title={t('followKoalaWalletChallenge')}
+                    description={t('followKoalaWalletChallenge')}
                     buttonText={
                         userData.twitterConnected
-                            ? 'Follow KoalaWallet'
-                            : 'Connect Twitter to Follow'
+                            ? t('followKoalaWalletChallenge')
+                            : t('connectTwitter')
                     }
                     onAction={async () => {
                         if (!userData.twitterConnected) {

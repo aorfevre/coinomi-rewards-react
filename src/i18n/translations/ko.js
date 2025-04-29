@@ -182,4 +182,15 @@ export const ko = {
     connectTwitter: '트위터 연결',
     twitterSuccess: '🎉 축하합니다! 이제 모든 보상에 10% 영구 보너스를 받게 됩니다!',
     twitterPrompt: '트위터 계정을 연결하여 모든 보상에 10% 영구 보너스를 받으세요!',
+    pleaseAddUserId: 'URL에 userId 매개변수를 추가해주세요',
+    emailChallengePrompt: '이메일을 공유하여 모든 보상에 대해 영구적인 10% 보너스를 받으세요!',
+    emailChallengeSuccess:
+        '🎉 연결되었습니다! 이제 모든 보상에 대해 영구적인 10% 보너스를 받게 됩니다!',
+    followKoalaWalletChallenge: '@KoalaWallet를 트위터에서 팔로우하여 저희를 응원해주세요!',
+    twitterAuthSuccessTitle: '트위터가 성공적으로 연결되었습니다!',
+    twitterAuthSuccessMessage:
+        '트위터 계정이 성공적으로 연결되었습니다. 이제 앱을 계속 사용할 수 있습니다.',
+    continueToApp: '앱으로 계속하기',
+    twitter_like: '트윗을 좋아요함',
+    twitter_retweet: '트윗을 리트윗함',
 };

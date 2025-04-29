@@ -152,4 +152,13 @@ export const zh_TW = {
     connectTwitter: '連接Twitter',
     twitterSuccess: '🎉 恭喜！您現在獲得所有獎勵的10%永久加成！',
     twitterPrompt: '關聯您的Twitter帳號，獲得所有獎勵的10%永久加成！',
+    pleaseAddUserId: '請在URL中添加userId參數',
+    emailChallengePrompt: '分享您的郵箱獲得所有獎勵的永久10%加成！',
+    emailChallengeSuccess: '🎉 已連接！您現在獲得所有獎勵的永久10%加成！',
+    followKoalaWalletChallenge: '請在Twitter上關注@KoalaWallet支持我們！',
+    twitterAuthSuccessTitle: 'Twitter已成功連接！',
+    twitterAuthSuccessMessage: 'Twitter帳號已成功連接。您現在可以繼續使用應用。',
+    continueToApp: '繼續進入應用',
+    twitter_like: '已按讚推文',
+    twitter_retweet: '已轉發推文',
 };

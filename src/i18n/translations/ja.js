@@ -192,4 +192,16 @@ export const ja = {
     twitterSuccess: '🎉 おめでとうございます！すべての報酬に10%の恒久的なボーナスが付与されます！',
     twitterPrompt:
         'Twitterアカウントを接続して、すべての報酬に10%の恒久的なボーナスを獲得しましょう！',
+    pleaseAddUserId: 'URLにuserIdパラメータを追加してください',
+    emailChallengePrompt:
+        'メールを共有して、すべての報酬に対して永続的な10%ボーナスを受け取りましょう！',
+    emailChallengeSuccess:
+        '🎉 接続されました！すべての報酬に対して永続的な10%ボーナスを受け取れるようになりました！',
+    followKoalaWalletChallenge: 'サポートのためにTwitterで@KoalaWalletをフォローしてください！',
+    twitterAuthSuccessTitle: 'Twitterが正常に接続されました！',
+    twitterAuthSuccessMessage:
+        'Twitterアカウントが正常に接続されました。アプリの利用を続けられます。',
+    continueToApp: 'アプリに進む',
+    twitter_like: 'ツイートをいいねしました',
+    twitter_retweet: 'ツイートをリツイートしました',
 };

@@ -219,4 +219,11 @@ export const en = {
     twitterSuccess:
         '🎉 Congratulations! You are now receiving a permanent 10% bonus on all rewards!',
     twitterPrompt: 'Link your Twitter account to get a permanent 10% bonus on all rewards!',
+    twitterAuthSuccessTitle: 'Twitter Connected Successfully!',
+    twitterAuthSuccessMessage:
+        'You have successfully connected your Twitter account. You can now continue using the app.',
+    continueToApp: 'Continue to App',
+    twitter_like: 'Liked a tweet',
+    twitter_retweet: 'Retweeted a tweet',
+    followKoalaWalletChallenge: 'Follow @KoalaWallet on Twitter to support us!',
 };
