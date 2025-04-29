@@ -103,3 +103,79 @@ export const skipTweet = functions.https.onCall(async (data, context) => {
         throw new functions.https.HttpsError('internal', 'Failed to store tweet skip');
     }
 });
+
+// Follow KoalaWallet on Twitter
+export const followKoalaWallet = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+    try {
+        const accessToken = await getUserTwitterToken(context.auth.uid);
+        const userClient = new TwitterApi(accessToken);
+        // KoalaWallet Twitter user ID (replace with the actual user ID if you have it)
+        const koalaWalletUserId = '1498286334363983876'; // Example: @koalawallet
+        const me = await userClient.v2.me();
+        await userClient.v2.follow(me.data.id, koalaWalletUserId);
+
+        // Update user document to mark Twitter follow as completed
+        await admin
+            .firestore()
+            .collection('users')
+            .doc(context.auth.uid)
+            .set(
+                {
+                    twitter: {
+                        followTwitter: true,
+                    },
+                },
+                { merge: true }
+            );
+
+        return { success: true };
+    } catch (error) {
+        console.error('Error following KoalaWallet:', error);
+        throw new functions.https.HttpsError('internal', 'Failed to follow KoalaWallet');
+    }
+});
+
+export const getUserByHandle = async (handle: string) => {
+    if (!handle) {
+        throw new functions.https.HttpsError('invalid-argument', 'Missing handle');
+    }
+    try {
+        // Create a client with the bearer token (no need for user auth)
+        const client = new TwitterApi(process.env.TWITTER_BEARER_TOKEN!);
+
+        // Get user information
+        const user = await client.v2.userByUsername(handle, {
+            'user.fields': [
+                'id',
+                'name',
+                'username',
+                'profile_image_url',
+                'description',
+                'public_metrics',
+                'created_at',
+                'verified',
+            ],
+        });
+
+        if (!user.data) {
+            throw new functions.https.HttpsError('not-found', `User @${handle} not found`);
+        }
+        console.log(user.data);
+        return {
+            id: user.data.id,
+            name: user.data.name,
+            username: user.data.username,
+            profileImageUrl: user.data.profile_image_url,
+            description: user.data.description,
+            metrics: user.data.public_metrics,
+            createdAt: user.data.created_at,
+            verified: user.data.verified,
+        };
+    } catch (error) {
+        console.error('Error getting user by handle:', error);
+        throw new functions.https.HttpsError('internal', `Failed to get user @${handle}`);
+    }
+};

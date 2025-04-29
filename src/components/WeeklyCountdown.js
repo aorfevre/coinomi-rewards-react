@@ -3,16 +3,40 @@ import { Box, Typography, Paper } from '@mui/material';
 import TimerIcon from '@mui/icons-material/Timer';
 import { useTranslation } from 'react-i18next';
 
+const getNextSundayMidnightUTC = () => {
+    const now = new Date();
+    const dayOfWeek = now.getUTCDay();
+    // If today is Sunday, go to next week
+    const daysUntilNextSunday = 7 - dayOfWeek || 7;
+    const nextSunday = new Date(
+        Date.UTC(
+            now.getUTCFullYear(),
+            now.getUTCMonth(),
+            now.getUTCDate() + daysUntilNextSunday,
+            0,
+            0,
+            0,
+            0
+        )
+    );
+    console.log(
+        '[WeeklyCountdown] now:',
+        now.toISOString(),
+        'dayOfWeek:',
+        dayOfWeek,
+        'daysUntilNextSunday:',
+        daysUntilNextSunday,
+        'nextSunday:',
+        nextSunday.toISOString()
+    );
+    return nextSunday;
+};
+
 const calculateTimeLeft = () => {
     const now = new Date();
-    const endOfWeek = new Date();
-
-    // Set to next Sunday midnight UTC
-    endOfWeek.setUTCDate(now.getUTCDate() + (7 - now.getUTCDay()));
-    endOfWeek.setUTCHours(0, 0, 0, 0);
-
+    const endOfWeek = getNextSundayMidnightUTC();
     const difference = endOfWeek - now;
-
+    console.log('[WeeklyCountdown] difference (ms):', difference);
     return {
         days: Math.floor(difference / (1000 * 60 * 60 * 24)),
         hours: Math.floor((difference / (1000 * 60 * 60)) % 24),

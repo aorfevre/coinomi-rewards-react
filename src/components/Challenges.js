@@ -6,6 +6,8 @@ import {
     DialogContent,
     DialogActions,
     TextField,
+    Avatar,
+    Typography,
 } from '@mui/material';
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
@@ -142,13 +144,70 @@ export const Challenges = ({ userId, onTabChange }) => {
                     icon={TwitterIcon}
                     title={t('twitterChallenge')}
                     description={
-                        userData.twitterConnected ? t('twitterSuccess') : t('twitterPrompt')
+                        userData.twitterConnected ? (
+                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                <Avatar
+                                    src={userData.twitter?.twitterProfileImage}
+                                    sx={{ width: 24, height: 24 }}
+                                />
+                                <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                    @{userData.twitter?.twitterHandle}
+                                </Typography>
+                                <Button
+                                    size="small"
+                                    variant="outlined"
+                                    color="error"
+                                    sx={{ ml: 1, minWidth: 0, px: 1, fontSize: 12 }}
+                                    onClick={async () => {
+                                        const functions = getFunctions();
+                                        const disconnectTwitter = httpsCallable(
+                                            functions,
+                                            'disconnectTwitter'
+                                        );
+                                        await disconnectTwitter();
+                                        window.location.reload();
+                                    }}
+                                >
+                                    Disconnect
+                                </Button>
+                            </Box>
+                        ) : (
+                            t('twitterPrompt')
+                        )
                     }
                     isCompleted={userData.twitterConnected}
                     buttonText={t('connectTwitter')}
                     onAction={handleTwitterAuth}
                     color="#1DA1F2"
                     buttonStartIcon={<TwitterIcon />}
+                />
+
+                {/* Follow KoalaWallet Challenge */}
+                <ChallengeCard
+                    icon={TwitterIcon}
+                    title="Follow KoalaWallet"
+                    description="Follow @KoalaWallet on Twitter to support us!"
+                    buttonText={
+                        userData.twitterConnected
+                            ? 'Follow KoalaWallet'
+                            : 'Connect Twitter to Follow'
+                    }
+                    onAction={async () => {
+                        if (!userData.twitterConnected) {
+                            await handleTwitterAuth();
+                        } else {
+                            const functions = getFunctions();
+                            const followKoalaWallet = httpsCallable(functions, 'followKoalaWallet');
+                            try {
+                                await followKoalaWallet();
+                            } catch (err) {
+                                console.error('Failed to follow KoalaWallet:', err);
+                            }
+                        }
+                    }}
+                    color="#1DA1F2"
+                    buttonStartIcon={<TwitterIcon />}
+                    isCompleted={userData.twitter?.followTwitter}
                 />
 
                 <ChallengeCard

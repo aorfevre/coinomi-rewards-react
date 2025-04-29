@@ -17,8 +17,8 @@ import { createPayout } from './payouts';
 import { generateFakeScores } from './scores';
 import { createBatches, updateBatchStatus } from './batches';
 import { scrapKoalaTweets, scheduledScrapeKoalaTweets } from './twitter_scraper';
-import { generateTwitterAuthUrl, twitterAuthCallback } from './twitter_auth';
-import { likeTweet, retweetTweet, skipTweet } from './twitter_actions';
+import { generateTwitterAuthUrl, twitterAuthCallback, disconnectTwitter } from './twitter_auth';
+import { likeTweet, retweetTweet, skipTweet, followKoalaWallet } from './twitter_actions';
 
 // Export the functions
 export {
@@ -42,6 +42,8 @@ export {
     likeTweet,
     retweetTweet,
     skipTweet,
+    followKoalaWallet,
+    disconnectTwitter,
 };
 
 export const recordPayout = functions.https.onCall(async (data, context) => {

@@ -20,7 +20,7 @@ export const generateTwitterAuthUrl = functions.https.onCall(async (data, contex
 
         const { url, state, codeVerifier } = twitterClient.generateOAuth2AuthLink(
             process.env.TWITTER_CALLBACK_URL!,
-            { scope: ['tweet.read', 'users.read', 'like.write', 'tweet.write'] }
+            { scope: ['tweet.read', 'users.read', 'like.write', 'tweet.write', 'follows.write'] }
         );
 
         // Store the state and code verifier in Firestore, along with original params
@@ -132,5 +132,26 @@ export const twitterAuthCallback = functions.https.onRequest(async (req, res) =>
     } catch (error) {
         console.error('Error in Twitter auth callback:', error);
         res.redirect(`${process.env.FRONTEND_URL}/twitter-auth-error`);
+    }
+});
+
+export const disconnectTwitter = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+    const userId = context.auth.uid;
+    try {
+        // Remove Twitter info from users collection
+        await admin.firestore().collection('users').doc(userId).set(
+            {
+                twitterConnected: false,
+            },
+            { merge: true }
+        );
+        // Remove from twitter_auth collection
+        return { success: true };
+    } catch (error) {
+        console.error('Error disconnecting Twitter:', error);
+        throw new functions.https.HttpsError('internal', 'Failed to disconnect Twitter');
     }
 });
