@@ -168,4 +168,14 @@ export const sl = {
     connectTwitter: 'Poveži Twitter',
     twitterSuccess: '🎉 Čestitamo! Zdaj prejemate trajni 10% bonus na vse nagrade!',
     twitterPrompt: 'Povežite svoj Twitter račun za trajni 10% bonus na vse nagrade!',
+    pleaseAddUserId: 'Prosimo, dodajte parameter userId v URL',
+    emailChallengePrompt: 'Delite svojo e-pošto za stalni 10% bonus na vse nagrade!',
+    emailChallengeSuccess: '🎉 Povezano! Zdaj prejemate stalni 10% bonus na vse nagrade!',
+    followKoalaWalletChallenge: 'Sledite @KoalaWallet na Twitterju, da nas podprete!',
+    twitterAuthSuccessTitle: 'Twitter uspešno povezan!',
+    twitterAuthSuccessMessage:
+        'Vaš Twitter račun je uspešno povezan. Zdaj lahko nadaljujete z uporabo aplikacije.',
+    continueToApp: 'Nadaljuj v aplikacijo',
+    twitter_like: 'Všečkan tweet',
+    twitter_retweet: 'Retweetan tweet',
 };

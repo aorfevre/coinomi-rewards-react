@@ -167,4 +167,14 @@ export const sv = {
     twitterSuccess: '🎉 Grattis! Du får nu en permanent 10% bonus på alla belöningar!',
     twitterPrompt:
         'Koppla ditt Twitter-konto för att få en permanent 10% bonus på alla belöningar!',
+    pleaseAddUserId: 'Lägg till userId-parametern i URL:en',
+    emailChallengePrompt: 'Dela din e-post för att få en permanent 10% bonus på alla belöningar!',
+    emailChallengeSuccess: '🎉 Ansluten! Du får nu en permanent 10% bonus på alla belöningar!',
+    followKoalaWalletChallenge: 'Följ @KoalaWallet på Twitter för att stötta oss!',
+    twitterAuthSuccessTitle: 'Twitter ansluten!',
+    twitterAuthSuccessMessage:
+        'Ditt Twitter-konto har anslutits. Du kan nu fortsätta använda appen.',
+    continueToApp: 'Fortsätt till appen',
+    twitter_like: 'Gillade en tweet',
+    twitter_retweet: 'Retweetade en tweet',
 };
