@@ -185,4 +185,7 @@ export const no = {
     continueToApp: 'Fortsett til appen',
     twitter_like: 'Likte en tweet',
     twitter_retweet: 'Retweetet en tweet',
+    disconnect: 'Koble fra',
+    followCoinomiWallet: 'Følg @coinomiWallet på Twitter for å støtte oss!',
+    connectedBonus: '🎉 Tilkoblet! Du mottar nå en permanent 10% bonus på alle belønninger!',
 };

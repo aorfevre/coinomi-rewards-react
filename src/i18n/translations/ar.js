@@ -197,4 +197,7 @@ export const ar = {
     continueToApp: 'Continue to App',
     twitter_like: 'Liked a tweet',
     twitter_retweet: 'Retweeted a tweet',
+    disconnect: 'قطع الاتصال',
+    followCoinomiWallet: 'تابع @coinomiWallet على تويتر لدعمنا!',
+    connectedBonus: '🎉 تم الاتصال! أنت الآن تتلقى مكافأة دائمة بنسبة 10% على جميع الجوائز!',
 };

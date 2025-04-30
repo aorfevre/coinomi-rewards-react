@@ -186,4 +186,7 @@ export const hu = {
     continueToApp: 'Tovább az alkalmazáshoz',
     twitter_like: 'Kedvelte a tweetet',
     twitter_retweet: 'Retweetelte a tweetet',
+    disconnect: 'Leválasztás',
+    followCoinomiWallet: 'Kövesd a @coinomiWallet fiókot Twitteren, hogy támogass minket!',
+    connectedBonus: '🎉 Csatlakoztatva! Mostantól állandó 10% bónuszt kapsz minden jutalomra!',
 };

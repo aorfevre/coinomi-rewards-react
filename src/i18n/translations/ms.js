@@ -191,4 +191,7 @@ export const ms = {
     continueToApp: 'Teruskan ke Aplikasi',
     twitter_like: 'Suka tweet',
     twitter_retweet: 'Retweet tweet',
+    disconnect: 'Putuskan Sambungan',
+    followCoinomiWallet: 'Ikuti @coinomiWallet di Twitter untuk sokong kami!',
+    connectedBonus: '🎉 Disambung! Anda kini menerima bonus tetap 10% untuk semua ganjaran!',
 };

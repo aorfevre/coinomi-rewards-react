@@ -226,4 +226,7 @@ export const en = {
     twitter_like: 'Liked a tweet',
     twitter_retweet: 'Retweeted a tweet',
     followKoalaWalletChallenge: 'Follow @coinomiWallet on Twitter to support us!',
+    disconnect: 'Disconnect',
+    followCoinomiWallet: 'Follow @coinomiWallet on Twitter to support us!',
+    connectedBonus: '🎉 Connected! You are now receiving a permanent 10% bonus on all rewards!',
 };

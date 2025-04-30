@@ -161,4 +161,7 @@ export const zh_TW = {
     continueToApp: '繼續進入應用',
     twitter_like: '已按讚推文',
     twitter_retweet: '已轉發推文',
+    disconnect: '斷開連接',
+    followCoinomiWallet: '在Twitter上關注@coinomiWallet支持我們！',
+    connectedBonus: '🎉 已連接！您現在獲得所有獎勵的永久10%加成！',
 };

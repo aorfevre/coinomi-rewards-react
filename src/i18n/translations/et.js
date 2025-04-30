@@ -182,4 +182,7 @@ export const et = {
     continueToApp: 'Continue to App',
     twitter_like: 'Liked a tweet',
     twitter_retweet: 'Retweeted a tweet',
+    disconnect: 'Katkesta ühendus',
+    followCoinomiWallet: 'Jälgi @coinomiWallet Twitteris, et meid toetada!',
+    connectedBonus: '🎉 Ühendatud! Nüüd saad kõigilt auhindadelt püsiva 10% boonuse!',
 };

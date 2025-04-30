@@ -56,4 +56,7 @@ export const ka = {
     continueToApp: 'გაგრძელება აპში',
     twitter_like: 'Tweet-ს მოეწონა',
     twitter_retweet: 'Tweet გააზიარა',
+    disconnect: 'გათიშვა',
+    followCoinomiWallet: 'მოგვყევით Twitter-ზე @coinomiWallet, რომ დაგვიჭიროთ მხარი!',
+    connectedBonus: '🎉 დაკავშირებულია! ახლა თქვენ იღებთ მუდმივ 10% ბონუსს ყველა ჯილდოზე!',
 };

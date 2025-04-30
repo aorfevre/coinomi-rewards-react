@@ -204,4 +204,7 @@ export const ja = {
     continueToApp: 'アプリに進む',
     twitter_like: 'ツイートをいいねしました',
     twitter_retweet: 'ツイートをリツイートしました',
+    disconnect: '切断',
+    followCoinomiWallet: 'Twitterで@coinomiWalletをフォローして応援しよう！',
+    connectedBonus: '🎉 接続されました！すべての報酬に対して永久に10%のボーナスを受け取れます！',
 };

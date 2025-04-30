@@ -193,4 +193,7 @@ export const nl = {
     continueToApp: 'Doorgaan naar app',
     twitter_like: 'Tweet geliket',
     twitter_retweet: 'Tweet geretweet',
+    disconnect: 'Verbreek verbinding',
+    followCoinomiWallet: 'Volg @coinomiWallet op Twitter om ons te steunen!',
+    connectedBonus: '🎉 Verbonden! Je ontvangt nu een permanente 10% bonus op alle beloningen!',
 };

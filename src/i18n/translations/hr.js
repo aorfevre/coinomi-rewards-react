@@ -187,4 +187,7 @@ export const hr = {
     continueToApp: 'Nastavi u aplikaciju',
     twitter_like: 'Lajkao tweet',
     twitter_retweet: 'Retweetao tweet',
+    disconnect: 'Prekini vezu',
+    followCoinomiWallet: 'Pratite @coinomiWallet na Twitteru kako biste nas podržali!',
+    connectedBonus: '🎉 Povezano! Sada dobivate trajni bonus od 10% na sve nagrade!',
 };

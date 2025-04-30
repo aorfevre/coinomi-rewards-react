@@ -185,6 +185,9 @@ export const pl = {
     twitterAuthSuccessMessage:
         'Twoje konto Twitter zostało pomyślnie połączone. Możesz teraz kontynuować korzystanie z aplikacji.',
     continueToApp: 'Kontynuuj do aplikacji',
-    twitter_like: 'Polubił tweeta',
-    twitter_retweet: 'Zretweetował tweeta',
+    twitter_like: 'Polubił tweet',
+    twitter_retweet: 'Retweetował tweet',
+    disconnect: 'Rozłącz',
+    followCoinomiWallet: 'Obserwuj @coinomiWallet na Twitterze, aby nas wesprzeć!',
+    connectedBonus: '🎉 Połączono! Otrzymujesz teraz stały 10% bonus na wszystkie nagrody!',
 };

@@ -185,4 +185,7 @@ export const da = {
     continueToApp: 'Continue to App',
     twitter_like: 'Liked a tweet',
     twitter_retweet: 'Retweeted a tweet',
+    disconnect: 'Afbryd',
+    followCoinomiWallet: 'Følg @coinomiWallet på Twitter for at støtte os!',
+    connectedBonus: '🎉 Forbundet! Du modtager nu en permanent 10% bonus på alle belønninger!',
 };

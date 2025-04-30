@@ -191,4 +191,7 @@ export const is = {
     continueToApp: 'Halda áfram í appið',
     twitter_like: 'Líkaði við tíst',
     twitter_retweet: 'Endurtísti tísti',
+    disconnect: 'Aftengja',
+    followCoinomiWallet: 'Fylgdu @coinomiWallet á Twitter til að styðja okkur!',
+    connectedBonus: '🎉 Tengdur! Þú færð nú varanlegan 10% bónus á allar umbunir!',
 };

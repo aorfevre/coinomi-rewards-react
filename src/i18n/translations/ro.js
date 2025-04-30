@@ -185,4 +185,7 @@ export const ro = {
     continueToApp: 'Continuați către aplicație',
     twitter_like: 'A apreciat un tweet',
     twitter_retweet: 'A retweetat un tweet',
+    disconnect: 'Deconectează',
+    followCoinomiWallet: 'Urmărește @coinomiWallet pe Twitter pentru a ne susține!',
+    connectedBonus: '🎉 Conectat! Acum primiți un bonus permanent de 10% la toate recompensele!',
 };

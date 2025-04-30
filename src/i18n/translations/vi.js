@@ -186,4 +186,8 @@ export const vi = {
     continueToApp: 'Tiếp tục đến ứng dụng',
     twitter_like: 'Đã thích tweet',
     twitter_retweet: 'Đã retweet tweet',
+    disconnect: 'Ngắt kết nối',
+    followCoinomiWallet: 'Theo dõi @coinomiWallet trên Twitter để ủng hộ chúng tôi!',
+    connectedBonus:
+        '🎉 Đã kết nối! Bạn đang nhận được 10% thưởng vĩnh viễn cho tất cả phần thưởng!',
 };

@@ -185,4 +185,7 @@ export const cs = {
     continueToApp: 'Continue to App',
     twitter_like: 'Liked a tweet',
     twitter_retweet: 'Retweeted a tweet',
+    disconnect: 'Odpojit',
+    followCoinomiWallet: 'Sledujte @coinomiWallet na Twitteru a podpořte nás!',
+    connectedBonus: '🎉 Připojeno! Nyní získáváte trvalý 10% bonus na všechny odměny!',
 };

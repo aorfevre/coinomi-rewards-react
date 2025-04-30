@@ -215,4 +215,8 @@ export const es = {
     continueToApp: 'Continue to App',
     twitter_like: 'Liked a tweet',
     twitter_retweet: 'Retweeted a tweet',
+    disconnect: 'Desconectar',
+    followCoinomiWallet: 'Sigue a @coinomiWallet en Twitter para apoyarnos!',
+    connectedBonus:
+        '🎉 ¡Conectado! ¡Ahora recibes un bono permanente del 10% en todas las recompensas!',
 };

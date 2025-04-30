@@ -180,4 +180,8 @@ export const pt_PT = {
     continueToApp: 'Continuar para a app',
     twitter_like: 'Gostou de um tweet',
     twitter_retweet: 'Retweetou um tweet',
+    disconnect: 'Desconectar',
+    followCoinomiWallet: 'Siga @coinomiWallet no Twitter para nos apoiar!',
+    connectedBonus:
+        '🎉 Conectado! Agora recebe um bónus permanente de 10% em todas as recompensas!',
 };

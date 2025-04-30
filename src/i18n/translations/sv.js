@@ -175,6 +175,9 @@ export const sv = {
     twitterAuthSuccessMessage:
         'Ditt Twitter-konto har anslutits. Du kan nu fortsätta använda appen.',
     continueToApp: 'Fortsätt till appen',
-    twitter_like: 'Gillade en tweet',
-    twitter_retweet: 'Retweetade en tweet',
+    twitter_like: 'Gillade tweet',
+    twitter_retweet: 'Retweetade tweet',
+    disconnect: 'Koppla från',
+    followCoinomiWallet: 'Följ @coinomiWallet på Twitter för att stödja oss!',
+    connectedBonus: '🎉 Ansluten! Du får nu en permanent 10% bonus på alla belöningar!',
 };

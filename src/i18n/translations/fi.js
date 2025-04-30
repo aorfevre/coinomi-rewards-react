@@ -189,4 +189,7 @@ export const fi = {
     continueToApp: 'Continue to App',
     twitter_like: 'Liked a tweet',
     twitter_retweet: 'Retweeted a tweet',
+    disconnect: 'Katkaise yhteys',
+    followCoinomiWallet: 'Seuraa @coinomiWallet Twitterissä tukeaksesi meitä!',
+    connectedBonus: '🎉 Yhdistetty! Saat nyt pysyvän 10% bonuksen kaikkiin palkintoihin!',
 };

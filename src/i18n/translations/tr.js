@@ -189,4 +189,7 @@ export const tr = {
     continueToApp: 'Uygulamaya devam et',
     twitter_like: 'Tweeti beğendiniz',
     twitter_retweet: 'Tweeti retweetlediniz',
+    disconnect: 'Bağlantıyı Kes',
+    followCoinomiWallet: "Bizi desteklemek için Twitter'da @coinomiWallet hesabını takip edin!",
+    connectedBonus: '🎉 Bağlandı! Artık tüm ödüllerde kalıcı %10 bonus alıyorsunuz!',
 };
