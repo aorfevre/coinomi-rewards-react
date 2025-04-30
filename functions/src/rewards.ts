@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import { db } from './config/firebase';
 import { getWeek, getYear } from 'date-fns';
+import { updateUserCurrentMultiplier } from './auth';
 
 // Add the consistent week options
 const WEEK_OPTIONS = {
@@ -12,6 +13,9 @@ interface UserScore {
     userId: string;
     points: number;
     tasksCompleted: number;
+    tasksCompletedOverall: number;
+    tasksCompletedClaimed: number;
+    tasksCompletedClaimedOverall: number;
     multiplier: number;
     lastTaskTimestamp?: string;
     lastUpdated?: string;
@@ -19,6 +23,18 @@ interface UserScore {
     weekNumber?: number;
     yearNumber?: number;
     walletAddress?: string;
+}
+
+// Utility function for streak bonus calculation
+export function getStreakBonus(scoreDoc: FirebaseFirestore.DocumentSnapshot, now: Date): number {
+    const lastClaimDate = new Date(scoreDoc.data()?.lastTaskTimestamp);
+    const isStreakActive =
+        lastClaimDate &&
+        now.getTime() - lastClaimDate.getTime() <
+            2 * Number(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS) * 1000;
+    const currentStreak = isStreakActive ? scoreDoc.data()?.currentStreak || 0 : 0;
+    if (!currentStreak || currentStreak < 1) return 0;
+    return currentStreak >= 5 ? 0.2 : currentStreak * 0.02;
 }
 
 export const claimDailyReward = functions.https.onCall(async (data, context) => {
@@ -32,6 +48,7 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
     functions.logger.info('Processing daily reward claim for user:', { userId });
 
     try {
+        await updateUserCurrentMultiplier(userId);
         // Run these queries in parallel
         const [lastClaimQuery, userDoc] = await Promise.all([
             db
@@ -64,38 +81,20 @@ export const claimDailyReward = functions.https.onCall(async (data, context) => 
         // Get user data to check for Telegram and email bonuses
         const userData = userDoc.data();
 
-        // Calculate bonus multiplier
-        const telegramBonus = userData?.telegramConnected ? 0.1 : 0; // 10% bonus
-        const twitterBonus = userData?.twitterConnected ? 0.1 : 0; // 10% bonus
-        const emailBonus = userData?.emailConnected ? 0.1 : 0; // 10% bonus
-        const basePoints = 100;
-
-        // check if the user has a streak bonus
-        // get his score doc
+        // get the current multiplier
+        const currentMultiplier = userData?.currentMultiplier || 1;
         const scoreDoc = await db.collection('scores').doc(userId).get();
-        // check if the streak is still valid
-        const lastClaimDate = new Date(scoreDoc.data()?.lastTaskTimestamp);
         const now = new Date();
-        const isStreakActive =
-            lastClaimDate &&
-            now.getTime() - lastClaimDate.getTime() <
-                2 * Number(process.env.REACT_APP_CLAIM_COOLDOWN_SECONDS) * 1000;
-
-        const streakBonusValue = isStreakActive ? scoreDoc.data()?.currentStreak || 0 : 0;
-        const streakBonus = streakBonusValue * 0.02;
-
-        const totalPoints = Math.round(
-            basePoints * (1 + telegramBonus + twitterBonus + emailBonus + streakBonus)
-        );
+        const streakBonus = getStreakBonus(scoreDoc, now);
+        const basePoints = 100;
+        const totalPoints = Math.round(basePoints * (currentMultiplier * (1 + streakBonus)));
 
         // Add reward document with week and year
         const rewardRef = await db.collection('rewards').add({
             userId,
             points: totalPoints,
             basePoints,
-            telegramBonus: userData?.telegramConnected ? 0.1 : 0,
-            twitterBonus: userData?.twitterConnected ? 0.1 : 0,
-            emailBonus: userData?.emailConnected ? 0.1 : 0,
+            multiplier: currentMultiplier,
             streakBonus: streakBonus,
             timestamp: now.toISOString(),
             type: 'daily',
@@ -152,6 +151,8 @@ export const onRewardCreated = functions.firestore
             console.log('🔥 onRewardCreated - rewardData:', rewardData);
             const { userId, type, timestamp, points } = rewardData;
 
+            await updateUserCurrentMultiplier(userId);
+
             if (!userId) {
                 functions.logger.error('No userId found in reward document');
                 return;
@@ -168,6 +169,9 @@ export const onRewardCreated = functions.firestore
                 userId,
                 points: 0,
                 tasksCompleted: 0,
+                tasksCompletedOverall: 0,
+                tasksCompletedClaimed: 0,
+                tasksCompletedClaimedOverall: 0,
                 multiplier: 1,
             };
             const currentData = !scoreSnapshot.empty
@@ -185,15 +189,49 @@ export const onRewardCreated = functions.firestore
 
             // Get current score or create new one
 
+            // count total tasks completed by the user in the current week
+            const tasksCompleted = await db
+                .collection('tasks')
+                .where('userId', '==', userId)
+                .where('weekNumber', '==', getWeek(new Date(), WEEK_OPTIONS))
+                .where('yearNumber', '==', getYear(new Date()))
+                .count()
+                .get();
+
+            // count total tasks completed overall
+            const tasksCompletedOverall = await db
+                .collection('tasks')
+                .where('userId', '==', userId)
+                .count()
+                .get();
+
+            // count only claimed tasks completed (weekly / overall)
+            const tasksCompletedClaimed = await db
+                .collection('tasks')
+                .where('userId', '==', userId)
+                .where('weekNumber', '==', getWeek(new Date(), WEEK_OPTIONS))
+                .where('yearNumber', '==', getYear(new Date()))
+                .count()
+                .get();
+
+            const tasksCompletedClaimedOverall = await db
+                .collection('tasks')
+                .where('userId', '==', userId)
+                .count()
+                .get();
+
             const insertScore: UserScore = {
                 userId,
                 points: 0,
-                tasksCompleted: 0,
+                tasksCompleted: tasksCompleted.data()?.count || 0,
+                tasksCompletedOverall: tasksCompletedOverall.data()?.count || 0,
+                tasksCompletedClaimed: tasksCompletedClaimed.data()?.count || 0,
+                tasksCompletedClaimedOverall: tasksCompletedClaimedOverall.data()?.count || 0,
                 multiplier: 1,
                 lastTaskTimestamp: timestamp || new Date().toISOString(),
                 lastUpdated: new Date().toISOString(),
                 currentStreak:
-                    isStreakActive && currentData.currentStreak ? currentData.currentStreak + 1 : 1,
+                    isStreakActive && currentData.currentStreak ? currentData.currentStreak : 0,
                 weekNumber: getWeek(new Date(), WEEK_OPTIONS),
                 yearNumber: getYear(new Date()),
                 walletAddress: rewardData?.walletAddress,
@@ -204,7 +242,13 @@ export const onRewardCreated = functions.firestore
 
                 insertScore.points = currentData.points + pointsToAdd || 0;
                 insertScore.tasksCompleted = currentData.tasksCompleted + 1 || 0;
+                insertScore.tasksCompletedOverall = currentData.tasksCompletedOverall + 1 || 0;
+                insertScore.tasksCompletedClaimed = currentData.tasksCompletedClaimed + 1 || 0;
+                insertScore.tasksCompletedClaimedOverall =
+                    currentData.tasksCompletedClaimedOverall + 1 || 0;
                 insertScore.multiplier = currentData.multiplier || 1;
+                insertScore.currentStreak =
+                    isStreakActive && currentData.currentStreak ? currentData.currentStreak + 1 : 1;
 
                 const userScoreRef = db.collection('scores').doc(userId);
                 await userScoreRef.set(insertScore, { merge: true });
@@ -221,6 +265,9 @@ export const onRewardCreated = functions.firestore
                 const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
                 const pointsToAdd = points;
                 insertScore.points = currentData.points + pointsToAdd || 0;
+                insertScore.tasksCompletedOverall = currentData.tasksCompletedOverall + 1 || 0;
+                insertScore.tasksCompletedClaimedOverall =
+                    currentData.tasksCompletedClaimedOverall + 1 || 0;
 
                 await userScoreRef.set(insertScore, { merge: true });
             } else if (type === 'twitter_like') {
@@ -229,6 +276,10 @@ export const onRewardCreated = functions.firestore
                 const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
                 const pointsToAdd = points;
                 insertScore.points = currentData.points + pointsToAdd || 0;
+                insertScore.tasksCompletedOverall = currentData.tasksCompletedOverall + 1 || 0;
+                insertScore.tasksCompletedClaimedOverall =
+                    currentData.tasksCompletedClaimedOverall + 1 || 0;
+
                 await userScoreRef.set(insertScore, { merge: true });
             } else if (type === 'twitter_retweet') {
                 const userScoreRef = db.collection('scores').doc(userId);
@@ -236,6 +287,10 @@ export const onRewardCreated = functions.firestore
                 const currentData = scoreDoc.exists ? (scoreDoc.data() as UserScore) : defaultData;
                 const pointsToAdd = points;
                 insertScore.points = currentData.points + pointsToAdd || 0;
+                insertScore.tasksCompletedOverall = currentData.tasksCompletedOverall + 1 || 0;
+                insertScore.tasksCompletedClaimedOverall =
+                    currentData.tasksCompletedClaimedOverall + 1 || 0;
+
                 await userScoreRef.set(insertScore, { merge: true });
             }
         } catch (error) {
@@ -263,10 +318,9 @@ export async function setTwitterReward({
     const userData = userDoc.data();
     const now = new Date();
 
-    // Calculate bonuses
-    const telegramBonus = userData?.telegramConnected ? 0.1 : 0;
-    const twitterBonus = userData?.twitterConnected ? 0.1 : 0;
-    const emailBonus = userData?.emailConnected ? 0.1 : 0;
+    const multiplier = userData?.currentMultiplier || 1;
+    const scoreDoc = await db.collection('scores').doc(userId).get();
+    const streakBonus = getStreakBonus(scoreDoc, now);
 
     // No streak bonus for Twitter actions (unless you want to add it)
     // Get week/year
@@ -274,7 +328,7 @@ export async function setTwitterReward({
     const yearNumber = getYear(now);
 
     // Calculate total points
-    const totalPoints = Math.round(basePoints * (1 + telegramBonus + twitterBonus + emailBonus));
+    const totalPoints = Math.round(basePoints * multiplier * (1 + streakBonus));
 
     // Add reward document
     const rewardRef = await db.collection('rewards').add({
@@ -282,9 +336,7 @@ export async function setTwitterReward({
         tweetId,
         points: totalPoints,
         basePoints,
-        telegramBonus,
-        twitterBonus,
-        emailBonus,
+        multiplier,
         timestamp: now.toISOString(),
         type,
         weekNumber,

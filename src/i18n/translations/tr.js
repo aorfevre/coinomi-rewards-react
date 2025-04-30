@@ -182,7 +182,7 @@ export const tr = {
     emailChallengePrompt: 'Tüm ödüllerde kalıcı %10 bonus almak için e-postanızı paylaşın!',
     emailChallengeSuccess: '🎉 Bağlandı! Artık tüm ödüllerde kalıcı %10 bonus alıyorsunuz!',
     followKoalaWalletChallenge:
-        "Bizi desteklemek için Twitter'da @KoalaWallet hesabını takip edin!",
+        "Bizi desteklemek için Twitter'da @coinomiWallet hesabını takip edin!",
     twitterAuthSuccessTitle: 'Twitter başarıyla bağlandı!',
     twitterAuthSuccessMessage:
         'Twitter hesabı başarıyla bağlandı. Artık uygulamayı kullanmaya devam edebilirsiniz.',

@@ -179,7 +179,7 @@ export const vi = {
         'Chia sẻ email của bạn để nhận thưởng cố định 10% cho tất cả phần thưởng!',
     emailChallengeSuccess:
         '🎉 Đã kết nối! Bạn giờ đây nhận được thưởng cố định 10% cho tất cả phần thưởng!',
-    followKoalaWalletChallenge: 'Hãy theo dõi @KoalaWallet trên Twitter để ủng hộ chúng tôi!',
+    followKoalaWalletChallenge: 'Hãy theo dõi @coinomiWallet trên Twitter để ủng hộ chúng tôi!',
     twitterAuthSuccessTitle: 'Twitter đã được kết nối thành công!',
     twitterAuthSuccessMessage:
         'Tài khoản Twitter đã được kết nối thành công. Bạn có thể tiếp tục sử dụng ứng dụng.',

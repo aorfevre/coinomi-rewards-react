@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { getFirestore, doc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 import PropTypes from 'prop-types';
 import { useUserData } from '../hooks/useUserData';
+import { getStreakBonus } from '../utils/streakBonus';
 
 export const ClaimReward = ({ userId, rewardAmount = 100, multiplier = 1 }) => {
     const { t } = useTranslation();
@@ -31,7 +32,7 @@ export const ClaimReward = ({ userId, rewardAmount = 100, multiplier = 1 }) => {
             const newStreak = isStreakContinued ? (userData?.currentStreak || 0) + 1 : 1;
 
             // Calculate bonus from streak
-            const streakBonus = newStreak >= 5 ? 0.2 : newStreak * 0.02; // 2% per day, 10% extra on day 5
+            const streakBonus = getStreakBonus(newStreak);
             const totalMultiplier = multiplier * (1 + streakBonus);
 
             await updateDoc(doc(db, 'users', userId), {

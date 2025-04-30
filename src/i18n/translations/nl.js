@@ -186,7 +186,7 @@ export const nl = {
     emailChallengePrompt: 'Deel je e-mail voor een permanente 10% bonus op alle beloningen!',
     emailChallengeSuccess:
         '🎉 Verbonden! Je ontvangt nu een permanente 10% bonus op alle beloningen!',
-    followKoalaWalletChallenge: 'Volg @KoalaWallet op Twitter om ons te steunen!',
+    followKoalaWalletChallenge: 'Volg @coinomiWallet op Twitter om ons te steunen!',
     twitterAuthSuccessTitle: 'Twitter succesvol verbonden!',
     twitterAuthSuccessMessage:
         'Je Twitter-account is succesvol verbonden. Je kunt nu doorgaan met de app.',

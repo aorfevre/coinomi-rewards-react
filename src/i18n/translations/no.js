@@ -178,7 +178,7 @@ export const no = {
     pleaseAddUserId: 'Vennligst legg til userId-parameter i URL-en',
     emailChallengePrompt: 'Del din e-post for å motta en permanent 10% bonus på alle belønninger!',
     emailChallengeSuccess: '🎉 Tilkoblet! Du mottar nå en permanent 10% bonus på alle belønninger!',
-    followKoalaWalletChallenge: 'Følg @KoalaWallet på Twitter for å støtte oss!',
+    followKoalaWalletChallenge: 'Følg @coinomiWallet på Twitter for å støtte oss!',
     twitterAuthSuccessTitle: 'Twitter tilkoblet!',
     twitterAuthSuccessMessage:
         'Twitter-kontoen din er tilkoblet. Du kan nå fortsette å bruke appen.',

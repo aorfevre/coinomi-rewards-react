@@ -183,7 +183,7 @@ export const id = {
         'Bagikan email Anda untuk mendapatkan bonus permanen 10% untuk semua hadiah!',
     emailChallengeSuccess:
         '🎉 Terhubung! Anda sekarang menerima bonus permanen 10% untuk semua hadiah!',
-    followKoalaWalletChallenge: 'Ikuti @KoalaWallet di Twitter untuk mendukung kami!',
+    followKoalaWalletChallenge: 'Ikuti @coinomiWallet di Twitter untuk mendukung kami!',
     twitterAuthSuccessTitle: 'Twitter Berhasil Terhubung!',
     twitterAuthSuccessMessage:
         'Anda telah berhasil menghubungkan akun Twitter Anda. Anda sekarang dapat melanjutkan menggunakan aplikasi.',

@@ -113,7 +113,7 @@ export const followKoalaWallet = functions.https.onCall(async (data, context) =>
         const accessToken = await getUserTwitterToken(context.auth.uid);
         const userClient = new TwitterApi(accessToken);
         // KoalaWallet Twitter user ID (replace with the actual user ID if you have it)
-        const koalaWalletUserId = '1498286334363983876'; // Example: @koalawallet
+        const koalaWalletUserId = '3030973751'; // Example: @coinomiWallet
         const me = await userClient.v2.me();
         await userClient.v2.follow(me.data.id, koalaWalletUserId);
 
@@ -179,3 +179,7 @@ export const getUserByHandle = async (handle: string) => {
         throw new functions.https.HttpsError('internal', `Failed to get user @${handle}`);
     }
 };
+
+// setTimeout(() => {
+//     getUserByHandle('coinomiWallet');
+// }, 1000);

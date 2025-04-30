@@ -59,6 +59,7 @@ export const useAuth = () => {
                         walletAddress,
                         lastSignIn: new Date(),
                         coinomiId,
+                        baseMultiplier: 1,
                     },
                     { merge: true }
                 );

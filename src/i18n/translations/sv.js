@@ -170,7 +170,7 @@ export const sv = {
     pleaseAddUserId: 'Lägg till userId-parametern i URL:en',
     emailChallengePrompt: 'Dela din e-post för att få en permanent 10% bonus på alla belöningar!',
     emailChallengeSuccess: '🎉 Ansluten! Du får nu en permanent 10% bonus på alla belöningar!',
-    followKoalaWalletChallenge: 'Följ @KoalaWallet på Twitter för att stötta oss!',
+    followKoalaWalletChallenge: 'Följ @coinomiWallet på Twitter för att stötta oss!',
     twitterAuthSuccessTitle: 'Twitter ansluten!',
     twitterAuthSuccessMessage:
         'Ditt Twitter-konto har anslutits. Du kan nu fortsätta använda appen.',

@@ -204,7 +204,7 @@ export const HomeTab = ({ userId, rank, totalPlayers, loading }) => {
                                 color="text.primary"
                                 sx={{ mb: 0.5, fontWeight: 500 }}
                             >
-                                {scoreDoc?.tasksCompleted || 0}
+                                {scoreDoc?.tasksCompletedClaimed || 0}
                             </Typography>
                             <Typography
                                 variant="body2"

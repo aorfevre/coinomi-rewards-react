@@ -184,7 +184,7 @@ export const is = {
     emailChallengePrompt:
         'Deildu tölvupóstinum þínum til að fá 10% varanlegan bónus á öll verðlaun!',
     emailChallengeSuccess: '🎉 Tengdur! Þú færð nú 10% varanlegan bónus á öll verðlaun!',
-    followKoalaWalletChallenge: 'Fylgdu @KoalaWallet á Twitter til að styðja okkur!',
+    followKoalaWalletChallenge: 'Fylgdu @coinomiWallet á Twitter til að styðja okkur!',
     twitterAuthSuccessTitle: 'Twitter tengdur með góðum árangri!',
     twitterAuthSuccessMessage:
         'Þú hefur tengt Twitter reikninginn þinn með góðum árangri. Þú getur nú haldið áfram að nota appið.',

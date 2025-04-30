@@ -6,9 +6,8 @@
  * @returns {Object} Total multiplier and breakdown
  */
 export const calculateMultiplier = (userData, scoreDoc, t) => {
-    const baseMultiplier = 1;
-    const telegramBonus = userData?.telegramConnected ? 0.1 : 0; // 10% bonus
-    const emailBonus = userData?.emailConnected ? 0.1 : 0; // 10% bonus
+    const baseMultiplier = userData?.currentMultiplier || 1;
+
     const lastClaimDate = scoreDoc?.lastTaskTimestamp;
     // Calculate if streak is still active (within 24 hours of last claim)
     const isStreakActive =
@@ -22,12 +21,11 @@ export const calculateMultiplier = (userData, scoreDoc, t) => {
 
     const streakBonus = Math.min(scoreDoc.currentStreak * 0.02, 0.1); // 2% per day, max 10%
 
-    const totalMultiplier = baseMultiplier + telegramBonus + emailBonus + streakBonus;
+    const totalMultiplier = baseMultiplier + streakBonus;
 
     const breakdown = {
         base: baseMultiplier,
-        telegram: telegramBonus,
-        email: emailBonus,
+
         streak: streakBonus,
     };
 
@@ -36,6 +34,8 @@ export const calculateMultiplier = (userData, scoreDoc, t) => {
         `${t('baseMultiplier')}: ${breakdown.base}x`,
         userData?.telegramConnected && `${t('telegramBonus')}: +${breakdown.telegram * 100}%`,
         userData?.emailConnected && `${t('emailBonus')}: +${breakdown.email * 100}%`,
+        userData?.followTwitter && `${t('followTwitter')}: +${breakdown.twitter * 100}%`,
+        userData?.twitterConnected && `${t('twitterConnected')}: +${breakdown.twitter * 100}%`,
         breakdown.streak > 0 && `${t('streakBonus')}: +${breakdown.streak * 100}%`,
     ]
         .filter(Boolean)

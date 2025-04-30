@@ -180,7 +180,7 @@ export const pl = {
     emailChallengePrompt:
         'Udostępnij swój email, aby otrzymać stały bonus 10% do wszystkich nagród!',
     emailChallengeSuccess: '🎉 Połączono! Otrzymujesz teraz stały bonus 10% do wszystkich nagród!',
-    followKoalaWalletChallenge: 'Śledź @KoalaWallet na Twitterze, aby nas wesprzeć!',
+    followKoalaWalletChallenge: 'Śledź @coinomiWallet na Twitterze, aby nas wesprzeć!',
     twitterAuthSuccessTitle: 'Twitter pomyślnie połączony!',
     twitterAuthSuccessMessage:
         'Twoje konto Twitter zostało pomyślnie połączone. Możesz teraz kontynuować korzystanie z aplikacji.',

@@ -198,7 +198,7 @@ export const pt = {
         'Compartilhe seu email para receber um bônus permanente de 10% em todas as recompensas!',
     emailChallengeSuccess:
         '🎉 Conectado! Agora você recebe um bônus permanente de 10% em todas as recompensas!',
-    followKoalaWalletChallenge: 'Siga @KoalaWallet no Twitter para nos apoiar!',
+    followKoalaWalletChallenge: 'Siga @coinomiWallet no Twitter para nos apoiar!',
     twitterAuthSuccessTitle: 'Twitter conectado com sucesso!',
     twitterAuthSuccessMessage:
         'Sua conta do Twitter foi conectada com sucesso. Agora você pode continuar usando o app.',

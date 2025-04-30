@@ -155,7 +155,7 @@ export const zh_CN = {
     pleaseAddUserId: '请在URL中添加userId参数',
     emailChallengePrompt: '分享您的邮箱获得所有奖励的永久10%加成！',
     emailChallengeSuccess: '🎉 已连接！您现在获得所有奖励的永久10%加成！',
-    followKoalaWalletChallenge: '请在Twitter上关注@KoalaWallet支持我们！',
+    followKoalaWalletChallenge: '请在Twitter上关注@coinomiWallet支持我们！',
     twitterAuthSuccessTitle: 'Twitter已成功连接！',
     twitterAuthSuccessMessage: 'Twitter账号已成功连接。您现在可以继续使用应用。',
     continueToApp: '继续进入应用',

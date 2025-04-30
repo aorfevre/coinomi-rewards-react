@@ -171,7 +171,7 @@ export const sl = {
     pleaseAddUserId: 'Prosimo, dodajte parameter userId v URL',
     emailChallengePrompt: 'Delite svojo e-pošto za stalni 10% bonus na vse nagrade!',
     emailChallengeSuccess: '🎉 Povezano! Zdaj prejemate stalni 10% bonus na vse nagrade!',
-    followKoalaWalletChallenge: 'Sledite @KoalaWallet na Twitterju, da nas podprete!',
+    followKoalaWalletChallenge: 'Sledite @coinomiWallet na Twitterju, da nas podprete!',
     twitterAuthSuccessTitle: 'Twitter uspešno povezan!',
     twitterAuthSuccessMessage:
         'Vaš Twitter račun je uspešno povezan. Zdaj lahko nadaljujete z uporabo aplikacije.',

@@ -28,7 +28,7 @@ interface ScrapMetadata {
 }
 
 export const scrapKoalaTweets = async () => {
-    const username = 'koalawallet';
+    const username = 'coinomiWallet';
     const maxResults = 5;
 
     try {

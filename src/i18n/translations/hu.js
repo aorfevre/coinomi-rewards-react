@@ -178,7 +178,8 @@ export const hu = {
     pleaseAddUserId: 'Kérjük, adjon hozzá userId paramétert az URL-hez',
     emailChallengePrompt: 'Ossza meg e-mailjét, hogy állandó 10% bónuszt kapjon minden jutalomra!',
     emailChallengeSuccess: '🎉 Csatlakoztatva! Mostantól 10% állandó bónuszt kap minden jutalomra!',
-    followKoalaWalletChallenge: 'Kövesse a @KoalaWallet fiókot Twitteren, hogy támogasson minket!',
+    followKoalaWalletChallenge:
+        'Kövesse a @coinomiWallet fiókot Twitteren, hogy támogasson minket!',
     twitterAuthSuccessTitle: 'Twitter sikeresen csatlakoztatva!',
     twitterAuthSuccessMessage:
         'Sikeresen csatlakoztatta Twitter fiókját. Most már folytathatja az alkalmazás használatát.',

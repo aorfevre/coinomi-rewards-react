@@ -184,7 +184,7 @@ export const ms = {
     emailChallengePrompt: 'Kongsi emel anda untuk mendapat bonus tetap 10% untuk semua ganjaran!',
     emailChallengeSuccess:
         '🎉 Berjaya disambung! Anda kini menerima bonus tetap 10% untuk semua ganjaran!',
-    followKoalaWalletChallenge: 'Ikuti @KoalaWallet di Twitter untuk sokong kami!',
+    followKoalaWalletChallenge: 'Ikuti @coinomiWallet di Twitter untuk sokong kami!',
     twitterAuthSuccessTitle: 'Twitter Berjaya Disambung!',
     twitterAuthSuccessMessage:
         'Akaun Twitter anda berjaya disambung. Anda kini boleh terus menggunakan aplikasi.',

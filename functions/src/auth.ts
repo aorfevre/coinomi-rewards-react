@@ -1,5 +1,29 @@
 import * as functions from 'firebase-functions';
-import { auth } from './config/firebase';
+import { auth, db } from './config/firebase';
+
+// Utility function to update the user's current multiplier
+export async function updateUserCurrentMultiplier(uid: string): Promise<void> {
+    const userDoc = await db.collection('users').doc(uid).get();
+    const userData = userDoc.data();
+    if (userData) {
+        let currentMultiplier = userData.baseMultiplier || 1;
+        if (userData.twitterConnected === true) {
+            currentMultiplier += 0.1;
+        }
+        if (userData.telegramConnected === true) {
+            currentMultiplier += 0.1;
+        }
+        if (userData.emailConnected === true) {
+            currentMultiplier += 0.1;
+        }
+        if (userData.twitter && userData.twitter.followTwitter === true) {
+            currentMultiplier += 0.1;
+        }
+        await db.collection('users').doc(uid).update({
+            currentMultiplier: currentMultiplier,
+        });
+    }
+}
 
 export const getCustomToken = functions
     .runWith({
@@ -55,6 +79,8 @@ export const getCustomToken = functions
                 coinomiId,
             });
 
+            // set the current multiplier of the user
+            await updateUserCurrentMultiplier(uid);
             return {
                 customToken,
                 uid: userRecord.uid,

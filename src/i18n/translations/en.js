@@ -225,5 +225,5 @@ export const en = {
     continueToApp: 'Continue to App',
     twitter_like: 'Liked a tweet',
     twitter_retweet: 'Retweeted a tweet',
-    followKoalaWalletChallenge: 'Follow @KoalaWallet on Twitter to support us!',
+    followKoalaWalletChallenge: 'Follow @coinomiWallet on Twitter to support us!',
 };

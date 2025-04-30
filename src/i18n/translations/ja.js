@@ -197,7 +197,7 @@ export const ja = {
         'メールを共有して、すべての報酬に対して永続的な10%ボーナスを受け取りましょう！',
     emailChallengeSuccess:
         '🎉 接続されました！すべての報酬に対して永続的な10%ボーナスを受け取れるようになりました！',
-    followKoalaWalletChallenge: 'サポートのためにTwitterで@KoalaWalletをフォローしてください！',
+    followKoalaWalletChallenge: 'サポートのためにTwitterで@coinomiWalletをフォローしてください！',
     twitterAuthSuccessTitle: 'Twitterが正常に接続されました！',
     twitterAuthSuccessMessage:
         'Twitterアカウントが正常に接続されました。アプリの利用を続けられます。',
