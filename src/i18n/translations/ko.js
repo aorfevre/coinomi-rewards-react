@@ -197,4 +197,6 @@ export const ko = {
     followCoinomiWallet: '트위터에서 @coinomiWallet을 팔로우하여 저희를 응원해주세요!',
     connectedBonus: '🎉 연결됨! 이제 모든 보상에 대해 영구적인 10% 보너스를 받게 됩니다!',
     followPartnerTwitter: '@BravoReadyGames를 Twitter에서 팔로우하여 응원해 주세요!',
+    visitWebsiteChallenge: '우리 웹사이트 방문',
+    visitWebsitePrompt: '우리 웹사이트를 방문하여 우리를 지원하고 포인트를 획득하세요!',
 };

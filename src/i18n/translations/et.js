@@ -186,4 +186,6 @@ export const et = {
     followCoinomiWallet: 'Jälgi @coinomiWallet Twitteris, et meid toetada!',
     connectedBonus: '🎉 Ühendatud! Nüüd saad kõigilt auhindadelt püsiva 10% boonuse!',
     followPartnerTwitter: 'Jälgi @BravoReadyGames Twitteris, et meid toetada!',
+    visitWebsiteChallenge: 'Külasta meie veebilehte',
+    visitWebsitePrompt: 'Külasta meie veebilehte, et meid toetada ja punkte teenida!',
 };

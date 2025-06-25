@@ -230,4 +230,6 @@ export const en = {
     followCoinomiWallet: 'Follow @coinomiWallet on Twitter to support us!',
     connectedBonus: '🎉 Connected! You are now receiving a permanent 10% bonus on all rewards!',
     followPartnerTwitter: 'Follow @BravoReadyGames on Twitter to support us!',
+    visitWebsiteChallenge: 'Visit our website',
+    visitWebsitePrompt: 'Visit our website to support us and earn points!',
 };

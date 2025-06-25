@@ -165,4 +165,6 @@ export const zh_TW = {
     followCoinomiWallet: '在Twitter上關注@coinomiWallet支持我們！',
     connectedBonus: '🎉 已連接！您現在獲得所有獎勵的永久10%加成！',
     followPartnerTwitter: '在 Twitter 上關注 @BravoReadyGames 支持我們！',
+    visitWebsiteChallenge: '訪問我們的網站',
+    visitWebsitePrompt: '訪問我們的網站支持我們並獲得積分！',
 };

@@ -193,4 +193,6 @@ export const fi = {
     followCoinomiWallet: 'Seuraa @coinomiWallet Twitterissä tukeaksesi meitä!',
     connectedBonus: '🎉 Yhdistetty! Saat nyt pysyvän 10% bonuksen kaikkiin palkintoihin!',
     followPartnerTwitter: 'Seuraa @BravoReadyGames Twitterissä tukeaksesi meitä!',
+    visitWebsiteChallenge: 'Vieraile sivustollamme',
+    visitWebsitePrompt: 'Vieraile sivustollamme tukeaksesi meitä ja ansaitaksesi pisteitä!',
 };

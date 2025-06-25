@@ -195,4 +195,6 @@ export const is = {
     followCoinomiWallet: 'Fylgdu @coinomiWallet á Twitter til að styðja okkur!',
     connectedBonus: '🎉 Tengdur! Þú færð nú varanlegan 10% bónus á allar umbunir!',
     followPartnerTwitter: 'Fylgdu @BravoReadyGames á Twitter til að styðja okkur!',
+    visitWebsiteChallenge: 'Heimsæktu vefsíðuna okkar',
+    visitWebsitePrompt: 'Heimsæktu vefsíðuna okkar til að styðja okkur og vinna sér inn stig!',
 };

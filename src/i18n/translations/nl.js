@@ -197,4 +197,6 @@ export const nl = {
     followCoinomiWallet: 'Volg @coinomiWallet op Twitter om ons te steunen!',
     connectedBonus: '🎉 Verbonden! Je ontvangt nu een permanente 10% bonus op alle beloningen!',
     followPartnerTwitter: 'Volg @BravoReadyGames op Twitter om ons te steunen!',
+    visitWebsiteChallenge: 'Bezoek onze website',
+    visitWebsitePrompt: 'Bezoek onze website om ons te steunen en punten te verdienen!',
 };
