@@ -174,7 +174,6 @@ export const TweetCard = ({
         );
     }
     if (!tweet) {
-        console.log('TweetCard no tweet', { userId, twitterConnected });
         return (
             <Box sx={{ p: 2, textAlign: 'center' }}>
                 <Typography variant="body1" color="text.secondary">

@@ -217,7 +217,22 @@ export const RewardsSection = ({ weeklyTimeLeft, sx }) => {
                                 color: 'text.secondary',
                             }}
                         >
-                            {formatTime(weeklyTimeLeft)}
+                            {(() => {
+                                if (!weeklyTimeLeft) return '00:00:00';
+                                const parts = [];
+                                if (
+                                    typeof weeklyTimeLeft.days === 'number' &&
+                                    weeklyTimeLeft.days > 0
+                                ) {
+                                    parts.push(weeklyTimeLeft.days.toString().padStart(2, '0'));
+                                }
+                                parts.push(
+                                    weeklyTimeLeft.hours.toString().padStart(2, '0'),
+                                    weeklyTimeLeft.minutes.toString().padStart(2, '0'),
+                                    weeklyTimeLeft.seconds.toString().padStart(2, '0')
+                                );
+                                return parts.join(':');
+                            })()}
                         </Button>
                     </Box>
                 </Box>
