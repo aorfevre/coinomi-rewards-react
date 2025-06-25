@@ -189,4 +189,6 @@ export const da = {
     followCoinomiWallet: 'Følg @coinomiWallet på Twitter for at støtte os!',
     connectedBonus: '🎉 Forbundet! Du modtager nu en permanent 10% bonus på alle belønninger!',
     followPartnerTwitter: 'Følg @BravoReadyGames på Twitter for at støtte os!',
+    visitWebsiteChallenge: 'Besøg vores hjemmeside',
+    visitWebsitePrompt: 'Besøg vores hjemmeside for at støtte os og tjene point!',
 };

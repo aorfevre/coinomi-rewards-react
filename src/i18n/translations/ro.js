@@ -189,4 +189,6 @@ export const ro = {
     followCoinomiWallet: 'Urmărește @coinomiWallet pe Twitter pentru a ne susține!',
     connectedBonus: '🎉 Conectat! Acum primiți un bonus permanent de 10% la toate recompensele!',
     followPartnerTwitter: 'Urmărește @BravoReadyGames pe Twitter pentru a ne susține!',
+    visitWebsiteChallenge: 'Vizitează site-ul nostru',
+    visitWebsitePrompt: 'Vizitează site-ul nostru pentru a ne susține și a câștiga puncte!',
 };

@@ -24,6 +24,7 @@ import {
     skipTweet,
     followKoalaWallet,
     followPartnerWallet,
+    visitPartnerWebsite,
 } from './twitter_actions';
 
 // Export the functions
@@ -51,6 +52,7 @@ export {
     followKoalaWallet,
     followPartnerWallet,
     disconnectTwitter,
+    visitPartnerWebsite,
 };
 
 export const recordPayout = functions.https.onCall(async (data, context) => {

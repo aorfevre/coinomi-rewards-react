@@ -195,4 +195,6 @@ export const ms = {
     followCoinomiWallet: 'Ikuti @coinomiWallet di Twitter untuk sokong kami!',
     connectedBonus: '🎉 Disambung! Anda kini menerima bonus tetap 10% untuk semua ganjaran!',
     followPartnerTwitter: 'Ikuti @BravoReadyGames di Twitter untuk sokong kami!',
+    visitWebsiteChallenge: 'Lawati laman web kami',
+    visitWebsitePrompt: 'Lawati laman web kami untuk sokong kami dan dapatkan mata!',
 };

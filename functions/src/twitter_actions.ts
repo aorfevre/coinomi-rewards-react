@@ -217,3 +217,24 @@ export const getUserByHandle = async (handle: string) => {
 // setTimeout(() => {
 //     getUserByHandle('coinomiWallet');
 // }, 1000);
+
+// Visit Partner Website (no verification required)
+export const visitPartnerWebsite = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+    try {
+        // Update user document to mark website visit as completed
+        await admin.firestore().collection('users').doc(context.auth.uid).set(
+            {
+                visitPartnerWebsite: true,
+            },
+            { merge: true }
+        );
+
+        return { success: true };
+    } catch (error) {
+        console.error('Error marking website visit:', error);
+        throw new functions.https.HttpsError('internal', 'Failed to mark website visit');
+    }
+});

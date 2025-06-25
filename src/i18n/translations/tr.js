@@ -193,4 +193,6 @@ export const tr = {
     followCoinomiWallet: "Bizi desteklemek için Twitter'da @coinomiWallet hesabını takip edin!",
     connectedBonus: '🎉 Bağlandı! Artık tüm ödüllerde kalıcı %10 bonus alıyorsunuz!',
     followPartnerTwitter: "Bize destek olmak için Twitter'da @BravoReadyGames'i takip edin!",
+    visitWebsiteChallenge: 'Web sitemizi ziyaret edin',
+    visitWebsitePrompt: 'Bizi desteklemek ve puan kazanmak için web sitemizi ziyaret edin!',
 };

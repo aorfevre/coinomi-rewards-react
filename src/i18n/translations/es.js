@@ -220,4 +220,6 @@ export const es = {
     connectedBonus:
         '🎉 ¡Conectado! ¡Ahora recibes un bono permanente del 10% en todas las recompensas!',
     followPartnerTwitter: 'Sigue a @BravoReadyGames en Twitter para apoyarnos!',
+    visitWebsiteChallenge: 'Visita nuestro sitio web',
+    visitWebsitePrompt: '¡Visita nuestro sitio web para apoyarnos y ganar puntos!',
 };

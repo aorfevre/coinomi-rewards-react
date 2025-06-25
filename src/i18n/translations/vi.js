@@ -191,4 +191,6 @@ export const vi = {
     connectedBonus:
         '🎉 Đã kết nối! Bạn đang nhận được 10% thưởng vĩnh viễn cho tất cả phần thưởng!',
     followPartnerTwitter: 'Theo dõi @BravoReadyGames trên Twitter để ủng hộ chúng tôi!',
+    visitWebsiteChallenge: 'Truy cập trang web của chúng tôi',
+    visitWebsitePrompt: 'Truy cập trang web của chúng tôi để ủng hộ và kiếm điểm!',
 };

@@ -12,6 +12,7 @@ import {
 import TelegramIcon from '@mui/icons-material/Telegram';
 import EmailIcon from '@mui/icons-material/Email';
 import TwitterIcon from '@mui/icons-material/Twitter';
+import LanguageIcon from '@mui/icons-material/Language';
 import PropTypes from 'prop-types';
 import { useUserData } from '../hooks/useUserData';
 import { useState } from 'react';
@@ -236,6 +237,27 @@ export const Challenges = ({ userId, onTabChange }) => {
                     color="#1DA1F2"
                     buttonStartIcon={<TwitterIcon />}
                     isCompleted={userData.twitter?.followPartnerTwitter}
+                />
+
+                <ChallengeCard
+                    icon={LanguageIcon}
+                    title={t('visitWebsiteChallenge')}
+                    description={t('visitWebsitePrompt')}
+                    buttonText={t('visitWebsiteChallenge')}
+                    onAction={async () => {
+                        const functions = getFunctions();
+                        const visitPartnerWebsite = httpsCallable(functions, 'visitPartnerWebsite');
+                        try {
+                            await visitPartnerWebsite();
+                            // Open website in new tab
+                            window.open('https://bravoreadygames.com', '_blank');
+                        } catch (err) {
+                            console.error('Failed to mark website visit:', err);
+                        }
+                    }}
+                    color="#4CAF50"
+                    buttonStartIcon={<LanguageIcon />}
+                    isCompleted={userData?.visitPartnerWebsite}
                 />
 
                 <ChallengeCard
