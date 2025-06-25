@@ -193,4 +193,5 @@ export const id = {
     disconnect: 'Putuskan Koneksi',
     followCoinomiWallet: 'Ikuti @coinomiWallet di Twitter untuk mendukung kami!',
     connectedBonus: '🎉 Terhubung! Anda sekarang menerima bonus permanen 10% untuk semua hadiah!',
+    followPartnerTwitter: 'Ikuti @BravoReadyGames di Twitter untuk mendukung kami!',
 };

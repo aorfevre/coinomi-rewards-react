@@ -138,6 +138,40 @@ export const followKoalaWallet = functions.https.onCall(async (data, context) =>
     }
 });
 
+// Follow BravoReadyGames on Twitter
+export const followPartnerWallet = functions.https.onCall(async (data, context) => {
+    if (!context.auth) {
+        throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+    }
+    try {
+        const accessToken = await getUserTwitterToken(context.auth.uid);
+        const userClient = new TwitterApi(accessToken);
+        // BravoReadyGames Twitter user ID
+        const partnerUserId = '1551703533619134464'; // @BravoReadyGames
+        const me = await userClient.v2.me();
+        await userClient.v2.follow(me.data.id, partnerUserId);
+
+        // Update user document to mark Twitter follow as completed
+        await admin
+            .firestore()
+            .collection('users')
+            .doc(context.auth.uid)
+            .set(
+                {
+                    twitter: {
+                        followPartnerTwitter: true,
+                    },
+                },
+                { merge: true }
+            );
+
+        return { success: true };
+    } catch (error) {
+        console.error('Error following BravoReadyGames:', error);
+        throw new functions.https.HttpsError('internal', 'Failed to follow BravoReadyGames');
+    }
+});
+
 export const getUserByHandle = async (handle: string) => {
     if (!handle) {
         throw new functions.https.HttpsError('invalid-argument', 'Missing handle');

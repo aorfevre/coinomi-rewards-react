@@ -190,4 +190,5 @@ export const hr = {
     disconnect: 'Prekini vezu',
     followCoinomiWallet: 'Pratite @coinomiWallet na Twitteru kako biste nas podržali!',
     connectedBonus: '🎉 Povezano! Sada dobivate trajni bonus od 10% na sve nagrade!',
+    followPartnerTwitter: 'Pratite @BravoReadyGames na Twitteru kako biste nas podržali!',
 };

@@ -189,4 +189,5 @@ export const hu = {
     disconnect: 'Leválasztás',
     followCoinomiWallet: 'Kövesd a @coinomiWallet fiókot Twitteren, hogy támogass minket!',
     connectedBonus: '🎉 Csatlakoztatva! Mostantól állandó 10% bónuszt kapsz minden jutalomra!',
+    followPartnerTwitter: 'Kövesse a @BravoReadyGames fiókot Twitteren, hogy támogasson minket!',
 };

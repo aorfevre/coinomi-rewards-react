@@ -211,6 +211,34 @@ export const Challenges = ({ userId, onTabChange }) => {
                 />
 
                 <ChallengeCard
+                    icon={TwitterIcon}
+                    title={t('followPartnerTwitter')}
+                    description={t('followPartnerTwitter')}
+                    buttonText={
+                        userData.twitterConnected ? t('followPartnerTwitter') : t('connectTwitter')
+                    }
+                    onAction={async () => {
+                        if (!userData.twitterConnected) {
+                            await handleTwitterAuth();
+                        } else {
+                            const functions = getFunctions();
+                            const followKoalaWallet = httpsCallable(
+                                functions,
+                                'followPartnerWallet'
+                            );
+                            try {
+                                await followKoalaWallet();
+                            } catch (err) {
+                                console.error('Failed to follow KoalaWallet:', err);
+                            }
+                        }
+                    }}
+                    color="#1DA1F2"
+                    buttonStartIcon={<TwitterIcon />}
+                    isCompleted={userData.twitter?.followPartnerTwitter}
+                />
+
+                <ChallengeCard
                     icon={TelegramIcon}
                     title={t('telegramChallenge')}
                     description={telegramConnected ? t('telegramSuccess') : t('telegramPrompt')}

@@ -19,6 +19,9 @@ export async function updateUserCurrentMultiplier(uid: string): Promise<void> {
         if (userData.twitter && userData.twitter.followTwitter === true) {
             currentMultiplier += 0.1;
         }
+        if (userData.twitter && userData.twitter.followPartnerTwitter === true) {
+            currentMultiplier += 0.1;
+        }
         await db.collection('users').doc(uid).update({
             currentMultiplier: currentMultiplier,
         });

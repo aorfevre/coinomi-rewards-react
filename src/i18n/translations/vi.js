@@ -190,4 +190,5 @@ export const vi = {
     followCoinomiWallet: 'Theo dõi @coinomiWallet trên Twitter để ủng hộ chúng tôi!',
     connectedBonus:
         '🎉 Đã kết nối! Bạn đang nhận được 10% thưởng vĩnh viễn cho tất cả phần thưởng!',
+    followPartnerTwitter: 'Theo dõi @BravoReadyGames trên Twitter để ủng hộ chúng tôi!',
 };

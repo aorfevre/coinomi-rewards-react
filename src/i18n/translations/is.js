@@ -194,4 +194,5 @@ export const is = {
     disconnect: 'Aftengja',
     followCoinomiWallet: 'Fylgdu @coinomiWallet á Twitter til að styðja okkur!',
     connectedBonus: '🎉 Tengdur! Þú færð nú varanlegan 10% bónus á allar umbunir!',
+    followPartnerTwitter: 'Fylgdu @BravoReadyGames á Twitter til að styðja okkur!',
 };

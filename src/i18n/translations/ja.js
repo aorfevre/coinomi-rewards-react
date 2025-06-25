@@ -207,4 +207,5 @@ export const ja = {
     disconnect: '切断',
     followCoinomiWallet: 'Twitterで@coinomiWalletをフォローして応援しよう！',
     connectedBonus: '🎉 接続されました！すべての報酬に対して永久に10%のボーナスを受け取れます！',
+    followPartnerTwitter: 'Twitterで@BravoReadyGamesをフォローして応援してください！',
 };

@@ -200,4 +200,5 @@ export const ar = {
     disconnect: 'قطع الاتصال',
     followCoinomiWallet: 'تابع @coinomiWallet على تويتر لدعمنا!',
     connectedBonus: '🎉 تم الاتصال! أنت الآن تتلقى مكافأة دائمة بنسبة 10% على جميع الجوائز!',
+    followPartnerTwitter: 'تابع @BravoReadyGames على تويتر لدعمنا!',
 };

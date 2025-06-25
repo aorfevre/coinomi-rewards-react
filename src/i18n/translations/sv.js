@@ -180,4 +180,5 @@ export const sv = {
     disconnect: 'Koppla från',
     followCoinomiWallet: 'Följ @coinomiWallet på Twitter för att stödja oss!',
     connectedBonus: '🎉 Ansluten! Du får nu en permanent 10% bonus på alla belöningar!',
+    followPartnerTwitter: 'Följ @BravoReadyGames på Twitter för att stötta oss!',
 };

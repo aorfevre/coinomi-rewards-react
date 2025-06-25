@@ -188,4 +188,5 @@ export const no = {
     disconnect: 'Koble fra',
     followCoinomiWallet: 'Følg @coinomiWallet på Twitter for å støtte oss!',
     connectedBonus: '🎉 Tilkoblet! Du mottar nå en permanent 10% bonus på alle belønninger!',
+    followPartnerTwitter: 'Følg @BravoReadyGames på Twitter for å støtte oss!',
 };
