@@ -192,4 +192,5 @@ export const tr = {
     disconnect: 'Bağlantıyı Kes',
     followCoinomiWallet: "Bizi desteklemek için Twitter'da @coinomiWallet hesabını takip edin!",
     connectedBonus: '🎉 Bağlandı! Artık tüm ödüllerde kalıcı %10 bonus alıyorsunuz!',
+    followPartnerTwitter: "Bize destek olmak için Twitter'da @BravoReadyGames'i takip edin!",
 };

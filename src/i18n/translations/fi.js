@@ -192,4 +192,5 @@ export const fi = {
     disconnect: 'Katkaise yhteys',
     followCoinomiWallet: 'Seuraa @coinomiWallet Twitterissä tukeaksesi meitä!',
     connectedBonus: '🎉 Yhdistetty! Saat nyt pysyvän 10% bonuksen kaikkiin palkintoihin!',
+    followPartnerTwitter: 'Seuraa @BravoReadyGames Twitterissä tukeaksesi meitä!',
 };

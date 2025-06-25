@@ -164,4 +164,5 @@ export const zh_TW = {
     disconnect: '斷開連接',
     followCoinomiWallet: '在Twitter上關注@coinomiWallet支持我們！',
     connectedBonus: '🎉 已連接！您現在獲得所有獎勵的永久10%加成！',
+    followPartnerTwitter: '在 Twitter 上關注 @BravoReadyGames 支持我們！',
 };

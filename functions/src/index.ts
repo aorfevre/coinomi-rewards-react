@@ -18,7 +18,13 @@ import { generateFakeScores } from './scores';
 import { createBatches, updateBatchStatus } from './batches';
 import { scrapKoalaTweets, scheduledScrapeKoalaTweets } from './twitter_scraper';
 import { generateTwitterAuthUrl, twitterAuthCallback, disconnectTwitter } from './twitter_auth';
-import { likeTweet, retweetTweet, skipTweet, followKoalaWallet } from './twitter_actions';
+import {
+    likeTweet,
+    retweetTweet,
+    skipTweet,
+    followKoalaWallet,
+    followPartnerWallet,
+} from './twitter_actions';
 
 // Export the functions
 export {
@@ -43,6 +49,7 @@ export {
     retweetTweet,
     skipTweet,
     followKoalaWallet,
+    followPartnerWallet,
     disconnectTwitter,
 };
 

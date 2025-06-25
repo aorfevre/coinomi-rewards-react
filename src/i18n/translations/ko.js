@@ -196,4 +196,5 @@ export const ko = {
     disconnect: '연결 해제',
     followCoinomiWallet: '트위터에서 @coinomiWallet을 팔로우하여 저희를 응원해주세요!',
     connectedBonus: '🎉 연결됨! 이제 모든 보상에 대해 영구적인 10% 보너스를 받게 됩니다!',
+    followPartnerTwitter: '@BravoReadyGames를 Twitter에서 팔로우하여 응원해 주세요!',
 };

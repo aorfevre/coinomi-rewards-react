@@ -205,4 +205,5 @@ export const it = {
     disconnect: 'Disconnetti',
     followCoinomiWallet: 'Segui @coinomiWallet su Twitter per supportarci!',
     connectedBonus: '🎉 Connesso! Ora ricevi un bonus permanente del 10% su tutte le ricompense!',
+    followPartnerTwitter: 'Segui @BravoReadyGames su Twitter per supportarci!',
 };

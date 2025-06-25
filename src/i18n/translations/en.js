@@ -229,4 +229,5 @@ export const en = {
     disconnect: 'Disconnect',
     followCoinomiWallet: 'Follow @coinomiWallet on Twitter to support us!',
     connectedBonus: '🎉 Connected! You are now receiving a permanent 10% bonus on all rewards!',
+    followPartnerTwitter: 'Follow @BravoReadyGames on Twitter to support us!',
 };

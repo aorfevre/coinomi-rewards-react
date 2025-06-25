@@ -185,4 +185,5 @@ export const et = {
     disconnect: 'Katkesta ühendus',
     followCoinomiWallet: 'Jälgi @coinomiWallet Twitteris, et meid toetada!',
     connectedBonus: '🎉 Ühendatud! Nüüd saad kõigilt auhindadelt püsiva 10% boonuse!',
+    followPartnerTwitter: 'Jälgi @BravoReadyGames Twitteris, et meid toetada!',
 };
