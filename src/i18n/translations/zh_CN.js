@@ -146,7 +146,7 @@ export const zh_CN = {
     shareVia: '分享方式',
     shareOn: '分享到{{network}}',
     shareInviteText:
-        '🚀 和我一起加入Coinomi钱包获得奖励！从{{appUrl}}下载应用，注册时使用我的推荐码：{{referralCode}}。#Coinomi #Crypto',
+        '🚀 我正在用@CoinomiWallet赚取免费加密货币！\n\n在coinomi.com/downloads下载Coinomi，在应用中加入#Coinomi Rewards时输入我的推荐码{{referralCode}}即可获得奖励。',
     // Twitter Challenge
     twitterChallenge: 'Twitter挑战',
     connectTwitter: '连接Twitter',

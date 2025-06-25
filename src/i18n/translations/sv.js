@@ -160,7 +160,7 @@ export const sv = {
     shareVia: 'Dela via',
     shareOn: 'Dela på {{network}}',
     shareInviteText:
-        '🚀 Gå med mig på Coinomi Wallet och få bonusbelöningar! Ladda ner appen från {{appUrl}} och använd min referenskod: {{referralCode}} vid registrering. #Coinomi #Crypto',
+        '🚀 Jag tjänar gratis krypto med @CoinomiWallet!\n\nLadda ner Coinomi på coinomi.com/downloads och ange min referenskod {{referralCode}} för att få en bonus när du ansluter dig till #Coinomi Rewards i appen.',
     // Twitter Challenge
     twitterChallenge: 'Twitter-utmaning',
     connectTwitter: 'Anslut Twitter',

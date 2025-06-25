@@ -165,7 +165,7 @@ export const ms = {
     shareVia: 'Kongsi melalui',
     shareOn: 'Kongsi di {{network}}',
     shareInviteText:
-        '🚀 Sertai saya di Coinomi Wallet dan dapatkan ganjaran bonus! Muat turun aplikasi dari {{appUrl}} dan gunakan kod rujukan saya: {{referralCode}} apabila anda mendaftar. #Coinomi #Crypto',
+        '🚀 Saya menjana crypto percuma dengan @CoinomiWallet!\n\nMuat turun Coinomi di coinomi.com/downloads dan masukkan kod rujukan saya {{referralCode}} untuk dapatkan bonus apabila anda sertai #Coinomi Rewards dalam aplikasi.',
     yourStatsThisWeek: 'Statistik anda minggu ini',
     pointsMultiplier: 'Pengganda mata',
     yourRank: 'Kedudukan anda',

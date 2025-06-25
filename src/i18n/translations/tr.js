@@ -160,10 +160,10 @@ export const tr = {
         '🎉 Tebrikler! Başarıyla kullanıcıları referans ettiniz ve bonus puan kazanıyorsunuz!',
     unranked: 'Sıralanmamış',
     noPlayersYet: 'İlk katılan siz olun!',
-    shareVia: 'Şununla paylaş',
-    shareOn: "{{network}}'da paylaş",
+    shareVia: 'Paylaşım yolu',
+    shareOn: '{{network}} üzerinde paylaş',
     shareInviteText:
-        "🚀 Coinomi Wallet'ta bana katılın ve bonus ödüller alın! Uygulamayı {{appUrl}} adresinden indirin ve kaydolurken referans kodumu kullanın: {{referralCode}}. #Coinomi #Crypto",
+        "🚀 @CoinomiWallet ile ücretsiz kripto para kazanıyorum!\n\ncoinomi.com/downloads adresinden Coinomi'yi indirin ve uygulamada #Coinomi Rewards'a katılırken bonus almak için benim referans kodumu {{referralCode}} girin.",
     player: 'Oyuncu',
     score: 'Puan',
     youHaveReferred_zero: 'Henüz hiç arkadaş davet etmediniz',

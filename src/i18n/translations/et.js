@@ -162,7 +162,7 @@ export const et = {
     shareVia: 'Jaga läbi',
     shareOn: 'Jaga {{network}}-is',
     shareInviteText:
-        '🚀 Liitu minuga Coinomi Walletis ja saa boonusauhindu! Laadi rakendus alla {{appUrl}}-st ja kasuta registreerumisel minu soovituskoodi: {{referralCode}}. #Coinomi #Crypto',
+        '🚀 Ma teenin tasuta krüptot @CoinomiWallet abil!\n\nLaadi Coinomi alla aadressilt coinomi.com/downloads ja sisesta minu soovituskood {{referralCode}}, et saada boonus liitudes rakenduses #Coinomi Rewards.',
     yourStatsThisWeek: 'Sinu statistika sel nädalal',
     pointsMultiplier: 'Punktide kordaja',
     yourRank: 'Sinu koht',

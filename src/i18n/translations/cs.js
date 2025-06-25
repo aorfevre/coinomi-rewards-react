@@ -160,7 +160,7 @@ export const cs = {
     shareVia: 'Sdílet přes',
     shareOn: 'Sdílet na {{network}}',
     shareInviteText:
-        '🚀 Připojte se ke mně na Coinomi Wallet a získejte bonusové odměny! Stáhněte si aplikaci z {{appUrl}} a při registraci použijte můj doporučující kód: {{referralCode}}. #Coinomi #Crypto',
+        '🚀 Vydělávám zdarma krypto s @CoinomiWallet!\n\nStáhněte Coinomi z coinomi.com/downloads a zadejte můj doporučovací kód {{referralCode}}, abyste získali bonus při připojení k #Coinomi Rewards v aplikaci.',
     yourStatsThisWeek: 'Vaše statistiky tento týden',
     pointsMultiplier: 'Násobitel bodů',
     yourRank: 'Vaše pořadí',

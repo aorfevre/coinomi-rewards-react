@@ -166,7 +166,7 @@ export const ro = {
     shareVia: 'Partajează prin',
     shareOn: 'Partajează pe {{network}}',
     shareInviteText:
-        '🚀 Alăturați-vă mie pe Coinomi Wallet și primiți recompense bonus! Descărcați aplicația de la {{appUrl}} și folosiți codul meu de recomandare: {{referralCode}} la înregistrare. #Coinomi #Crypto',
+        '🚀 Câștig crypto gratuit cu @CoinomiWallet!\n\nDescarcă Coinomi de la coinomi.com/downloads și introdu codul meu de recomandare {{referralCode}} pentru a primi un bonus când te alături #Coinomi Rewards în aplicație.',
     // Twitter Challenge
     twitterChallenge: 'Provocarea Twitter',
     connectTwitter: 'Conectează Twitter',

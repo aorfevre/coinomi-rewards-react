@@ -160,7 +160,7 @@ export const da = {
     shareVia: 'Del via',
     shareOn: 'Del på {{network}}',
     shareInviteText:
-        '🚀 Tilslut dig mig på Coinomi Wallet og få bonusbelønninger! Download appen fra {{appUrl}} og brug min henvisningskode: {{referralCode}} når du tilmelder dig. #Coinomi #Crypto',
+        '🚀 Jeg tjener gratis krypto med @CoinomiWallet!\n\nDownload Coinomi på coinomi.com/downloads og indtast min henvisningskode {{referralCode}} for at få en bonus, når du tilslutter dig #Coinomi Rewards i appen.',
     yourStatsThisWeek: 'Dine statistikker denne uge',
     pointsMultiplier: 'Pointmultiplikator',
     yourRank: 'Din rang',

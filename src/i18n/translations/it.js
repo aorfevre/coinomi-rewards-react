@@ -163,10 +163,10 @@ export const it = {
         '🎉 Congratulazioni! Hai fatto referral con successo e stai guadagnando punti bonus!',
     unranked: 'Non classificato',
     noPlayersYet: 'Sii il primo a unirti!',
-    shareVia: 'Condividi via',
+    shareVia: 'Condividi tramite',
     shareOn: 'Condividi su {{network}}',
     shareInviteText:
-        "🚀 Unisciti a me su Coinomi Wallet e ricevi premi bonus! Scarica l'app da {{appUrl}} e usa il mio codice referral: {{referralCode}} durante la registrazione. #Coinomi #Crypto",
+        "🚀 Sto guadagnando crypto gratis con @CoinomiWallet!\n\nScarica Coinomi su coinomi.com/downloads e inserisci il mio codice referral {{referralCode}} per ottenere un bonus quando ti unisci a #Coinomi Rewards nell'app.",
     yourStatsThisWeek: 'Le tue statistiche questa settimana',
     pointsMultiplier: 'Moltiplicatore punti',
     yourRank: 'La tua posizione',

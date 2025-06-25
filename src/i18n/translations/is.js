@@ -165,7 +165,7 @@ export const is = {
     shareVia: 'Deila í gegnum',
     shareOn: 'Deila á {{network}}',
     shareInviteText:
-        '🚀 Vertu með mér í Coinomi Wallet og fáðu bónusverðlaun! Sæktu appið frá {{appUrl}} og notaðu tilvísunarkóðann minn: {{referralCode}} þegar þú skráir þig. #Coinomi #Crypto',
+        '🚀 Ég er að vinna mér inn ókeypis dulritun með @CoinomiWallet!\n\nSæktu Coinomi á coinomi.com/downloads og sláðu inn tilvísunarkóðann minn {{referralCode}} til að fá bónus þegar þú gengur í #Coinomi Rewards í appinu.',
     yourStatsThisWeek: 'Tölfræði þín þessa viku',
     pointsMultiplier: 'Stigamargfaldari',
     yourRank: 'Þín staða',

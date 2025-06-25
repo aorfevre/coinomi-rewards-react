@@ -162,7 +162,7 @@ export const pl = {
     shareVia: 'Udostępnij przez',
     shareOn: 'Udostępnij na {{network}}',
     shareInviteText:
-        '🚀 Dołącz do mnie w Coinomi Wallet i otrzymaj nagrody bonusowe! Pobierz aplikację z {{appUrl}} i użyj mojego kodu polecającego: {{referralCode}} podczas rejestracji. #Coinomi #Crypto',
+        '🚀 Zarabiam darmowe krypto z @CoinomiWallet!\n\nPobierz Coinomi z coinomi.com/downloads i wprowadź mój kod polecający {{referralCode}}, aby otrzymać bonus po dołączeniu do #Coinomi Rewards w aplikacji.',
     yourStatsThisWeek: 'Twoje statystyki w tym tygodniu',
     pointsMultiplier: 'Mnożnik punktów',
     yourRank: 'Twoja pozycja',

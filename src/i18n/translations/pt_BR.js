@@ -168,7 +168,7 @@ export const pt_BR = {
     shareVia: 'Compartilhar via',
     shareOn: 'Compartilhar no {{network}}',
     shareInviteText:
-        '🚀 Junte-se a mim no Coinomi Wallet e receba recompensas bônus! Baixe o app em {{appUrl}} e use meu código de indicação: {{referralCode}} ao se registrar. #Coinomi #Crypto',
+        '🚀 Estou ganhando crypto grátis com @CoinomiWallet!\n\nBaixe o Coinomi em coinomi.com/downloads e digite meu código de indicação {{referralCode}} para ganhar um bônus quando você entrar no #Coinomi Rewards no app.',
     pleaseAddUserId: 'Por favor, adicione o parâmetro userId à URL',
     emailChallengePrompt:
         'Compartilhe seu email para receber um bônus permanente de 10% em todas as recompensas!',

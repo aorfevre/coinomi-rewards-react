@@ -166,7 +166,7 @@ export const nl = {
     shareVia: 'Delen via',
     shareOn: 'Delen op {{network}}',
     shareInviteText:
-        '🚀 Doe met mij mee op Coinomi Wallet en ontvang bonusbeloningen! Download de app van {{appUrl}} en gebruik mijn verwijzingscode: {{referralCode}} bij het registreren. #Coinomi #Crypto',
+        '🚀 Ik verdien gratis crypto met @CoinomiWallet!\n\nDownload Coinomi op coinomi.com/downloads en voer mijn verwijzingscode {{referralCode}} in om een bonus te krijgen wanneer je je aansluit bij #Coinomi Rewards in de app.',
     yourStatsThisWeek: 'Jouw statistieken deze week',
     pointsMultiplier: 'Puntenvermenigvuldiger',
     yourRank: 'Jouw rang',

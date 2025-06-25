@@ -166,7 +166,7 @@ export const ja = {
     shareVia: '共有方法',
     shareOn: '{{network}}で共有',
     shareInviteText:
-        '🚀 Coinomi Walletで一緒にボーナス報酬を獲得しましょう！{{appUrl}}からアプリをダウンロードし、登録時に私の紹介コード：{{referralCode}}を使用してください。#Coinomi #Crypto',
+        '🚀 @CoinomiWalletで無料の暗号通貨を稼いでいます！\n\ncoinomi.com/downloadsからCoinomiをダウンロードして、アプリで#Coinomi Rewardsに参加する際に私の紹介コード{{referralCode}}を入力してボーナスを獲得してください。',
     yourStatsThisWeek: '今週のあなたの統計',
     pointsMultiplier: 'ポイント倍率',
     yourRank: 'あなたのランク',

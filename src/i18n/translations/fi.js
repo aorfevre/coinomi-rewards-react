@@ -162,9 +162,9 @@ export const fi = {
     unranked: 'Ei sijoitusta',
     noPlayersYet: 'Ole ensimmäinen joka liittyy!',
     shareVia: 'Jaa kautta',
-    shareOn: 'Jaa {{network}}issä',
+    shareOn: 'Jaa {{network}}ssa',
     shareInviteText:
-        '🚀 Liity minun kanssani Coinomi Walletissa ja saa bonuspalkintoja! Lataa sovellus osoitteesta {{appUrl}} ja käytä suosittelukoodiani: {{referralCode}} rekisteröityessäsi. #Coinomi #Crypto',
+        '🚀 Ansaan ilmaista kryptovaluuttaa @CoinomiWalletilla!\n\nLataa Coinomi osoitteesta coinomi.com/downloads ja syötä suosittelukoodini {{referralCode}} saadaksesi bonuksen liityttyäsi #Coinomi Rewards -sovellukseen.',
     yourStatsThisWeek: 'Tilastosi tällä viikolla',
     pointsMultiplier: 'Pistekerroin',
     yourRank: 'Sijoituksesi',

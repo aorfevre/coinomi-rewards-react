@@ -157,10 +157,10 @@ export const hu = {
     referralSuccess: '🎉 Gratulálunk! Sikeresen ajánlott felhasználókat és bónuszpontokat szerez!',
     unranked: 'Rangsorolatlan',
     noPlayersYet: 'Legyen Ön az első, aki csatlakozik!',
-    shareVia: 'Megosztás itt:',
-    shareOn: 'Megosztás {{network}}-on',
+    shareVia: 'Megosztás',
+    shareOn: 'Megosztás {{network}}en',
     shareInviteText:
-        '🚀 Csatlakozz hozzám a Coinomi Wallet-ben és szerezz bónusz jutalmakat! Töltsd le az alkalmazást innen: {{appUrl}} és használd az ajánlási kódomat: {{referralCode}} regisztrációkor. #Coinomi #Crypto',
+        '🚀 Ingyenes kriptovalutát keresek a @CoinomiWallet-tel!\n\nTöltse le a Coinomi-t a coinomi.com/downloads oldalról és adja meg a hivatkozási kódomat {{referralCode}} a bónusz megszerzéséhez, amikor csatlakozik a #Coinomi Rewards alkalmazáshoz.',
     yourStatsThisWeek: 'Statisztikáid ezen a héten',
     pointsMultiplier: 'Pontszorzó',
     yourRank: 'Helyezésed',

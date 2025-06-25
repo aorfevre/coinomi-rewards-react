@@ -166,7 +166,7 @@ export const vi = {
     shareVia: 'Chia sẻ qua',
     shareOn: 'Chia sẻ trên {{network}}',
     shareInviteText:
-        '🚀 Tham gia cùng tôi trên Coinomi Wallet và nhận phần thưởng bonus! Tải ứng dụng từ {{appUrl}} và sử dụng mã giới thiệu của tôi: {{referralCode}} khi đăng ký. #Coinomi #Crypto',
+        '🚀 Tôi đang kiếm tiền crypto miễn phí với @CoinomiWallet!\n\nTải Coinomi tại coinomi.com/downloads và nhập mã giới thiệu của tôi {{referralCode}} để nhận thưởng khi bạn tham gia #Coinomi Rewards trong ứng dụng.',
     // Twitter Challenge
     twitterChallenge: 'Thử Thách Twitter',
     connectTwitter: 'Kết Nối Twitter',
