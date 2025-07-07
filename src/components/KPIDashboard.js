@@ -64,6 +64,22 @@ const TYPE_COLORS = {
     twitter_retweet: '#8e24aa',
 };
 
+function shortenAddress(addr) {
+    if (typeof addr === 'string') {
+        // If it's a Twitter handle, just return
+        if (addr.startsWith('@')) return addr;
+        // 0x-prefixed Ethereum address
+        if (addr.startsWith('0x') && addr.length === 42) {
+            return addr.slice(0, 6) + '...' + addr.slice(-4);
+        }
+        // 40-char hex string (userId or wallet)
+        if (/^[0-9a-fA-F]{40}$/.test(addr)) {
+            return addr.slice(0, 4) + '...' + addr.slice(-4);
+        }
+    }
+    return addr;
+}
+
 export default function KPIDashboard() {
     const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
@@ -156,10 +172,10 @@ export default function KPIDashboard() {
                         value={stats.totalPoints}
                     />
                 </Grid>
-                <Grid item xs={6} sm={4}>
+                <Grid item xs={12} sm={6}>
                     <KPICard
                         title={t('topUser', 'Top utilisateur (7j)')}
-                        value={stats.topUser || '-'}
+                        value={shortenAddress(stats.topUser)}
                     />
                 </Grid>
             </Grid>
