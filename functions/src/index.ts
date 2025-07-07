@@ -19,6 +19,7 @@ import { createBatches, updateBatchStatus } from './batches';
 import { scrapKoalaTweets, scheduledScrapeKoalaTweets } from './twitter_scraper';
 import { generateTwitterAuthUrl, twitterAuthCallback, disconnectTwitter } from './twitter_auth';
 import { likeTweet, retweetTweet, skipTweet, followKoalaWallet } from './twitter_actions';
+import { getKPIStats } from './getKPIStats';
 
 // Export the functions
 export {
@@ -44,6 +45,7 @@ export {
     skipTweet,
     followKoalaWallet,
     disconnectTwitter,
+    getKPIStats,
 };
 
 export const recordPayout = functions.https.onCall(async (data, context) => {

@@ -21,6 +21,7 @@ import { createTheme } from '@mui/material/styles';
 import { Navbar } from './components/Navbar';
 import { PayoutDashboard } from './components/PayoutDashboard';
 import { TwitterAuthSuccess } from './components/TwitterAuthSuccess';
+import KPIDashboard from './components/KPIDashboard';
 
 function App() {
     const { t, i18n } = useTranslation();
@@ -101,6 +102,16 @@ function App() {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <TwitterAuthSuccess />
+            </ThemeProvider>
+        );
+    }
+
+    // If it's the KPI dashboard route, render it without auth
+    if (pathname === '/kpi') {
+        return (
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <KPIDashboard />
             </ThemeProvider>
         );
     }
