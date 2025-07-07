@@ -26,6 +26,7 @@ import {
     followPartnerWallet,
     visitPartnerWebsite,
 } from './twitter_actions';
+import { getKPIStats } from './getKPIStats';
 
 // Export the functions
 export {
@@ -53,6 +54,7 @@ export {
     followPartnerWallet,
     disconnectTwitter,
     visitPartnerWebsite,
+    getKPIStats,
 };
 
 export const recordPayout = functions.https.onCall(async (data, context) => {
