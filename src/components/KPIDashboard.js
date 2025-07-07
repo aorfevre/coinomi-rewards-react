@@ -146,12 +146,6 @@ export default function KPIDashboard() {
                 </Grid>
                 <Grid item xs={6} sm={4}>
                     <KPICard
-                        title={t('avgTasks', 'Tâches moy./utilisateur')}
-                        value={stats.avgTasks}
-                    />
-                </Grid>
-                <Grid item xs={6} sm={4}>
-                    <KPICard
                         title={t('totalRewards', 'Récompenses totales')}
                         value={stats.totalRewards}
                     />

@@ -10,34 +10,69 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
     const usersSnap = await admin.firestore().collection('users').get();
     const users = usersSnap.docs.map(doc => doc.data());
 
-    const totalUsers = users.length;
-    const twitterConnected = users.filter(u => u.twitterConnected).length;
+    // Fetch rewards
+    const rewardsSnap = await admin.firestore().collection('rewards').get();
+    const rewards = rewardsSnap.docs.map(doc => doc.data());
+
+    // Fetch Firebase Auth users for creationTime
+    let authUsers: admin.auth.UserRecord[] = [];
+    try {
+        let nextPageToken;
+        do {
+            const listUsersResult = await admin.auth().listUsers(1000, nextPageToken);
+            authUsers = authUsers.concat(listUsersResult.users);
+            nextPageToken = listUsersResult.pageToken;
+        } while (nextPageToken);
+    } catch (e) {
+        // fallback to Firestore only
+    }
+
     const now = new Date();
     const last7 = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-    // Recent registrations: users created in last 7 days (if creation date available)
-    const recentRegistrations = users.filter(u => {
-        if (!u.lastSignIn) return false;
-        const date = new Date(u.lastSignIn);
-        return !isNaN(date.getTime()) && date >= last7;
-    }).length;
+    // Registrations in last 7 days
+    const recentRegistrations =
+        authUsers.length > 0
+            ? authUsers.filter(
+                  u => u.metadata.creationTime && new Date(u.metadata.creationTime) > last7
+              ).length
+            : users.filter(u => u.createdAt && u.createdAt.toDate && u.createdAt.toDate() > last7)
+                  .length;
 
-    // Active users: users with updatedAt in last 7 days
-    const activeUsers = users.filter(u => {
-        if (!u.updatedAt) return false;
-        const date = new Date(u.updatedAt);
-        return !isNaN(date.getTime()) && date >= last7;
-    }).length;
+    // Telegram connected
+    const telegramConnected = users.filter(u => u.telegramId).length;
 
-    // Tasks: count bool fields per user
-    const taskFields = ['followTwitter', 'visitPartnerWebsite'];
-    let totalTasks = 0;
-    users.forEach(u => {
-        taskFields.forEach(f => {
-            if (u[f]) totalTasks += 1;
-        });
+    // Twitter connected
+    const twitterConnected = users.filter(u => u.twitterConnected).length;
+
+    // Total users
+    const totalUsers = users.length;
+
+    // Total tasks = total rewards
+    const totalTasks = rewards.length;
+
+    // Total rewards (for compatibility)
+    const totalRewards = rewards.length;
+
+    // Points distributed
+    const totalPoints = rewards.reduce((sum, r) => sum + (r.points || 0), 0);
+
+    // Top user (by points in last 7 days)
+    const pointsByUser: Record<string, number> = {};
+    rewards.forEach(r => {
+        const ts = r.timestamp ? new Date(r.timestamp) : null;
+        if (ts && ts > last7 && r.userId) {
+            pointsByUser[r.userId] = (pointsByUser[r.userId] || 0) + (r.points || 0);
+        }
     });
-    const avgTasks = totalUsers ? totalTasks / totalUsers : 0;
+    const topUserId = Object.keys(pointsByUser).sort(
+        (a, b) => pointsByUser[b] - pointsByUser[a]
+    )[0];
+    let topUser = topUserId;
+    if (topUserId) {
+        const userDoc = users.find(u => u.uid === topUserId || u.userId === topUserId);
+        topUser = userDoc?.twitterHandle || userDoc?.walletAddress || topUserId;
+    }
 
     // --- Engagement based on scores collection ---
     const scoresSnap = await admin.firestore().collection('scores').get();
@@ -78,31 +113,6 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
         }
     });
 
-    // --- Rewards KPIs and engagement by type ---
-    const rewardsSnap = await admin.firestore().collection('rewards').get();
-    const rewards = rewardsSnap.docs.map(doc => doc.data());
-    const totalRewards = rewards.length;
-    const totalPoints = rewards.reduce((sum, r) => sum + (r.points || 0), 0);
-
-    // Top user by points in last 7 days
-    const pointsByUser: Record<string, number> = {};
-    rewards.forEach(r => {
-        if (!r.userId || !r.timestamp) return;
-        const ts = new Date(r.timestamp._seconds ? r.timestamp._seconds * 1000 : r.timestamp);
-        if (!isNaN(ts.getTime()) && ts >= last7) {
-            pointsByUser[r.userId] = (pointsByUser[r.userId] || 0) + (r.points || 0);
-        }
-    });
-    let topUser: string | null = null;
-    let topPoints = 0;
-    Object.entries(pointsByUser).forEach(([userId, pts]) => {
-        const ptsNum = typeof pts === 'number' ? pts : Number(pts);
-        if (ptsNum > topPoints) {
-            topUser = userId;
-            topPoints = ptsNum;
-        }
-    });
-
     // Engagement by type (stacked bar data)
     const types = ['twitter_like', 'daily', 'referral-bonus', 'new-referral', 'twitter_retweet'];
     const engagementByType: Array<Record<string, any>> = [];
@@ -129,15 +139,15 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
     return {
         totalUsers,
         twitterConnected,
+        telegramConnected,
         recentRegistrations,
-        activeUsers, // user doc based
-        activeUsersByScore: activeUsersByScore.size, // score-based
+        activeUsers: 0, // keep for compatibility
+        activeUsersByScore: 0, // keep for compatibility
         totalTasks,
-        avgTasks,
-        engagement,
         totalRewards,
         totalPoints,
         topUser,
+        engagement,
         engagementByType,
     };
 });
