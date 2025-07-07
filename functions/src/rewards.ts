@@ -344,3 +344,87 @@ export async function setTwitterReward({
     });
     return rewardRef;
 }
+
+/**
+ * Check how many rewards are missing weekNumber field
+ * This is a regular function that can be called manually from the functions directory
+ */
+export async function checkRewardsMissingWeekNumber() {
+    try {
+        console.log('🔍 Checking rewards missing weekNumber...');
+
+        // Get all rewards
+        const allRewards = await db.collection('rewards').get();
+
+        // Filter rewards missing weekNumber
+        const missingWeekNumber = allRewards.docs.filter(doc => {
+            const data = doc.data();
+            return !data.weekNumber && data.weekNumber !== 0; // 0 is a valid week number
+        });
+
+        // Get total count
+        const totalRewards = allRewards.size;
+
+        const result = {
+            rewardsMissingWeekNumber: missingWeekNumber.length,
+            totalRewards: totalRewards,
+            percentageMissing:
+                totalRewards > 0
+                    ? ((missingWeekNumber.length / totalRewards) * 100).toFixed(2)
+                    : '0',
+            sampleRewards: missingWeekNumber.slice(0, 10).map(doc => ({
+                id: doc.id,
+                type: doc.data().type,
+                userId: doc.data().userId,
+                timestamp: doc.data().timestamp,
+                hasYearNumber: !!doc.data().yearNumber,
+                hasWalletAddress: !!doc.data().walletAddress,
+            })),
+        };
+
+        console.log('📊 Results:', JSON.stringify(result, null, 2));
+
+        // Log sample rewards in detail
+        if (result.sampleRewards.length > 0) {
+            console.log('🔍 Sample rewards missing weekNumber:');
+            result.sampleRewards.forEach((reward, index) => {
+                console.log(`${index + 1}. ID: ${reward.id}`);
+                console.log(`   Type: ${reward.type}`);
+                console.log(`   User: ${reward.userId}`);
+                console.log(`   Timestamp: ${reward.timestamp}`);
+                console.log(`   Has yearNumber: ${reward.hasYearNumber}`);
+                console.log(`   Has walletAddress: ${reward.hasWalletAddress}`);
+                console.log('---');
+            });
+        }
+
+        return result;
+    } catch (error) {
+        console.error('❌ Error checking rewards missing weekNumber:', error);
+        throw error;
+    }
+}
+
+/**
+ * Callable function to check how many rewards are missing weekNumber field
+ * This can be called from the frontend
+ */
+export const checkRewardsMissingWeekNumberCallable = functions.https.onCall(
+    async (data, context) => {
+        // Check authentication
+        if (!context.auth) {
+            throw new functions.https.HttpsError('unauthenticated', 'User must be authenticated');
+        }
+
+        try {
+            const result = await checkRewardsMissingWeekNumber();
+            return result;
+        } catch (error) {
+            functions.logger.error('Error in checkRewardsMissingWeekNumberCallable:', error);
+            throw new functions.https.HttpsError(
+                'internal',
+                error instanceof Error ? error.message : 'Failed to check rewards'
+            );
+        }
+    }
+);
