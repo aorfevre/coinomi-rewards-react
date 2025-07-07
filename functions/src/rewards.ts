@@ -148,7 +148,6 @@ export const onRewardCreated = functions.firestore
     .onCreate(async snapshot => {
         try {
             const rewardData = snapshot.data();
-            console.log('🔥 onRewardCreated - rewardData:', rewardData);
             const { userId, type, timestamp, points } = rewardData;
 
             await updateUserCurrentMultiplier(userId);

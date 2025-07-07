@@ -1,5 +1,12 @@
 import * as functions from 'firebase-functions';
 import { db } from './config/firebase';
+import { getWeek, getYear } from 'date-fns';
+
+// Add the consistent week options
+const WEEK_OPTIONS = {
+    weekStartsOn: 1 as 0 | 1 | 2 | 3 | 4 | 5 | 6,
+    firstWeekContainsDate: 4 as 1 | 4,
+};
 
 // Generate a random 7-character code
 const generateReferralCode = (): string => {
@@ -200,6 +207,7 @@ export const updateReferralCode = functions.https.onCall(async (data, context) =
 
 interface UserData {
     referredBy?: string;
+    walletAddress?: string;
 }
 
 export const onReferralUpdate = functions.firestore
@@ -217,6 +225,10 @@ export const onReferralUpdate = functions.firestore
             newData.referredBy !== userId // Prevent self-referrals
         ) {
             try {
+                // get wallet address of the referrer
+                const referrerDoc = await db.collection('users').doc(newData.referredBy).get();
+                const referrerData = referrerDoc.data() as UserData;
+                const walletAddress = referrerData.walletAddress;
                 // Create reward document for the referrer
                 await db.collection('rewards').add({
                     userId: newData.referredBy,
@@ -227,6 +239,9 @@ export const onReferralUpdate = functions.firestore
                     referredUser: userId,
                     timestamp: new Date().toISOString(),
                     processed: false,
+                    weekNumber: getWeek(new Date(), WEEK_OPTIONS),
+                    yearNumber: getYear(new Date()),
+                    walletAddress: walletAddress,
                 });
 
                 functions.logger.info('Referral reward created', {
