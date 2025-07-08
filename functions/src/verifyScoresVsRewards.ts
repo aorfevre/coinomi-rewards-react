@@ -346,3 +346,44 @@ export async function displayVerificationResults(): Promise<void> {
     console.log('\n' + '='.repeat(80));
     console.log('✅ Verification completed!');
 }
+
+/**
+ * Get all scores where walletAddress is undefined
+ */
+export async function getScoresWithoutWalletAddress(): Promise<any[]> {
+    const snapshot = await db.collection('scores').get();
+    const scores = snapshot.docs
+        .filter(doc => !doc.data().walletAddress)
+        .map(doc => ({ id: doc.id, ...doc.data() }));
+    let count = 0;
+    // if length is greater than 0, we shall check if there is another score that exists for that userId and weekNumber
+    // if there is, we shall update the score with the walletAddress
+    // if there is not, we shall delete the score
+    scores.forEach(async (score: any) => {
+        const userId = score.userId;
+        const weekNumber = score.weekNumber;
+        const yearNumber = score.yearNumber;
+        const scores = await db
+            .collection('scores')
+            .where('userId', '==', userId)
+            .where('weekNumber', '==', weekNumber)
+            .where('yearNumber', '==', yearNumber)
+            .get();
+        if (scores.docs.length === 2) {
+            count++;
+            console.log('count', count);
+
+            // delete the score with the walletAddress
+            // await db.collection('scores').doc(score.id).delete();
+        }
+        // if (scores.empty) {
+        //     await db.collection('scores').doc(score.id).delete();
+        // } else {
+        //     // update the score with the walletAddress
+        //     await db.collection('scores').doc(score.id).update({
+        //         walletAddress: scores.docs[0].data().walletAddress,
+        //     });
+        // }
+    });
+    return scores;
+}

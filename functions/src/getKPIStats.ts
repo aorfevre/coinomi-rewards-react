@@ -1,25 +1,21 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
+import { db, auth } from './config/firebase';
 
 export const getKPIStats = functions.https.onCall(async (data, context) => {
-    if (!admin.apps.length) {
-        admin.initializeApp();
-    }
-
     // Fetch users
-    const usersSnap = await admin.firestore().collection('users').get();
-    const users = usersSnap.docs.map(doc => doc.data());
+    const usersSnap = await db.collection('users').get();
+    const users = usersSnap.docs.map((doc: any) => doc.data());
 
     // Fetch rewards
-    const rewardsSnap = await admin.firestore().collection('rewards').get();
-    const rewards = rewardsSnap.docs.map(doc => doc.data());
+    const rewardsSnap = await db.collection('rewards').get();
+    const rewards = rewardsSnap.docs.map((doc: any) => doc.data());
 
     // Fetch Firebase Auth users for creationTime
-    let authUsers: admin.auth.UserRecord[] = [];
+    let authUsers: any[] = [];
     try {
         let nextPageToken;
         do {
-            const listUsersResult = await admin.auth().listUsers(1000, nextPageToken);
+            const listUsersResult = await auth.listUsers(1000, nextPageToken);
             authUsers = authUsers.concat(listUsersResult.users);
             nextPageToken = listUsersResult.pageToken;
         } while (nextPageToken);
@@ -34,16 +30,17 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
     const recentRegistrations =
         authUsers.length > 0
             ? authUsers.filter(
-                  u => u.metadata.creationTime && new Date(u.metadata.creationTime) > last7
+                  (u: any) => u.metadata.creationTime && new Date(u.metadata.creationTime) > last7
               ).length
-            : users.filter(u => u.createdAt && u.createdAt.toDate && u.createdAt.toDate() > last7)
-                  .length;
+            : users.filter(
+                  (u: any) => u.createdAt && u.createdAt.toDate && u.createdAt.toDate() > last7
+              ).length;
 
     // Telegram connected
-    const telegramConnected = users.filter(u => u.telegramId).length;
+    const telegramConnected = users.filter((u: any) => u.telegramId).length;
 
     // Twitter connected
-    const twitterConnected = users.filter(u => u.twitterConnected).length;
+    const twitterConnected = users.filter((u: any) => u.twitterConnected).length;
 
     // Total users
     const totalUsers = users.length;
@@ -59,7 +56,7 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
 
     // Top user (by points in last 7 days)
     const pointsByUser: Record<string, number> = {};
-    rewards.forEach(r => {
+    rewards.forEach((r: any) => {
         const ts = r.timestamp ? new Date(r.timestamp) : null;
         if (ts && ts > last7 && r.userId) {
             pointsByUser[r.userId] = (pointsByUser[r.userId] || 0) + (r.points || 0);
@@ -70,13 +67,13 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
     )[0];
     let topUser = topUserId;
     if (topUserId) {
-        const userDoc = users.find(u => u.uid === topUserId || u.userId === topUserId);
+        const userDoc = users.find((u: any) => u.uid === topUserId || u.userId === topUserId);
         topUser = userDoc?.twitterHandle || userDoc?.walletAddress || topUserId;
     }
 
     // --- Engagement based on scores collection ---
-    const scoresSnap = await admin.firestore().collection('scores').get();
-    const scores = scoresSnap.docs.map(doc => doc.data());
+    const scoresSnap = await db.collection('scores').get();
+    const scores = scoresSnap.docs.map((doc: any) => doc.data());
 
     // For each of the last 7 days, count unique users with a score on that day
     const engagement = [];
@@ -87,7 +84,7 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
         const nextDay = new Date(day);
         nextDay.setDate(day.getDate() + 1);
         const usersSet = new Set();
-        scores.forEach(s => {
+        scores.forEach((s: any) => {
             // Use s.timestamp, or fallback to s.lastTaskTimestamp or s.lastUpdated
             const rawTs = s.timestamp || s.lastTaskTimestamp || s.lastUpdated;
             if (!rawTs || !s.userId) return;
@@ -104,7 +101,7 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
 
     // Optionally, recalculate activeUsers based on scores activity in last 7 days
     const activeUsersByScore = new Set();
-    scores.forEach(s => {
+    scores.forEach((s: any) => {
         const rawTs = s.timestamp || s.lastTaskTimestamp || s.lastUpdated;
         if (!rawTs || !s.userId) return;
         const ts = new Date(rawTs._seconds ? rawTs._seconds * 1000 : rawTs);
@@ -126,7 +123,7 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
             day: day.toLocaleDateString('fr-FR', { weekday: 'short', day: 'numeric' }),
         };
         types.forEach(type => (entry[type] = 0));
-        rewards.forEach(r => {
+        rewards.forEach((r: any) => {
             if (!r.type || !r.timestamp) return;
             const ts = new Date(r.timestamp._seconds ? r.timestamp._seconds * 1000 : r.timestamp);
             if (!isNaN(ts.getTime()) && ts >= day && ts < nextDay && types.includes(r.type)) {

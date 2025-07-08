@@ -15,7 +15,11 @@ import {
     updateReferralCode,
     onReferralUpdate,
 } from './referrals';
-import { verifyScoresVsRewards, displayVerificationResults } from './verifyScoresVsRewards';
+import {
+    verifyScoresVsRewards,
+    displayVerificationResults,
+    getScoresWithoutWalletAddress,
+} from './verifyScoresVsRewards';
 import { updateScoresFromRewards, displayUpdateResults } from './updateScoresFromRewards';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
@@ -67,6 +71,13 @@ setTimeout(() => {
     // executeMigrationUpdates();
     // verifyScoresVsRewards();
     // updateScoresFromRewards();
+    getScoresWithoutWalletAddress()
+        .then(scores => {
+            console.log('Scores without walletAddress:', scores.length);
+        })
+        .catch(err => {
+            console.error('Error fetching scores without walletAddress:', err);
+        });
 }, 5000);
 
 export const recordPayout = functions.https.onCall(async (data, context) => {
