@@ -46,7 +46,7 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
     const emailConnected = users.filter(u => u.emailConnected && u.emailConnected === true).length;
 
     // Twitter connected
-    const twitterConnected = users.filter(u => u.twitter !== undefined).length;
+    const twitterConnected = users.filter(u => u.twitterConnected === true).length;
 
     // Total users
     const totalUsers = users.length;
