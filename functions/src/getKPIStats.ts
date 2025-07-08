@@ -40,10 +40,13 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
                   .length;
 
     // Telegram connected
-    const telegramConnected = users.filter(u => u.telegramId).length;
+    const telegramConnected = users.filter(u => u.telegramConnected === true).length;
+
+    // Email connected (users with email but no telegram/twitter)
+    const emailConnected = users.filter(u => u.emailConnected && u.emailConnected === true).length;
 
     // Twitter connected
-    const twitterConnected = users.filter(u => u.twitterConnected).length;
+    const twitterConnected = users.filter(u => u.twitter !== undefined).length;
 
     // Total users
     const totalUsers = users.length;
@@ -140,6 +143,7 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
         totalUsers,
         twitterConnected,
         telegramConnected,
+        emailConnected,
         recentRegistrations,
         activeUsers: 0, // keep for compatibility
         activeUsersByScore: 0, // keep for compatibility

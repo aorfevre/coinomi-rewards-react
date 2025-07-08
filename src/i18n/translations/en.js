@@ -229,4 +229,18 @@ export const en = {
     disconnect: 'Disconnect',
     followCoinomiWallet: 'Follow @coinomiWallet on Twitter to support us!',
     connectedBonus: '🎉 Connected! You are now receiving a permanent 10% bonus on all rewards!',
+    // KPI Dashboard
+    kpiDashboard: 'KPI Dashboard',
+    totalUsers: 'Users',
+    twitterConnected: 'Twitter Connected',
+    telegramConnected: 'Telegram Connected',
+    emailConnected: 'Email Connected',
+    recentRegistrations: 'Registrations 7d',
+    activeUsers: 'Active 7d (profile)',
+    activeUsersByScore: 'Active 7d (activity)',
+    totalTasks: 'Total Tasks',
+    totalRewards: 'Total Rewards',
+    totalPoints: 'Points Distributed',
+    topUser: 'Top User (7d)',
+    engagementByType: 'Engagement by Reward Type (7d)',
 };

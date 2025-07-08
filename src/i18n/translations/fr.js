@@ -219,4 +219,18 @@ export const fr = {
     followCoinomiWallet: 'Suivez @coinomiWallet sur Twitter pour nous soutenir !',
     connectedBonus:
         '🎉 Connecté ! Vous recevez désormais un bonus permanent de 10% sur toutes les récompenses !',
+    // KPI Dashboard
+    kpiDashboard: 'Tableau de bord KPI',
+    totalUsers: 'Utilisateurs',
+    twitterConnected: 'Twitter connecté',
+    telegramConnected: 'Telegram connecté',
+    emailConnected: 'Email connecté',
+    recentRegistrations: 'Inscriptions 7j',
+    activeUsers: 'Actifs 7j (profil)',
+    activeUsersByScore: 'Actifs 7j (activité)',
+    totalTasks: 'Tâches totales',
+    totalRewards: 'Récompenses totales',
+    totalPoints: 'Points distribués',
+    topUser: 'Top utilisateur (7j)',
+    engagementByType: 'Engagement par type de récompense (7j)',
 };
