@@ -139,17 +139,42 @@ export const getKPIStats = functions.https.onCall(async (data, context) => {
         engagementByType.push(entry);
     }
 
+    // Total points distributed in the last 7 days
+    const totalPoints7d = rewards
+        .filter((r: any) => {
+            const ts = r.timestamp
+                ? new Date(r.timestamp._seconds ? r.timestamp._seconds * 1000 : r.timestamp)
+                : null;
+            return ts && ts >= last7;
+        })
+        .reduce((sum, r) => sum + (r.points || 0), 0);
+
+    // Referral counts
+    const referrals7d = users.filter((u: any) => {
+        const createdAt = u.createdAt && u.createdAt.toDate ? u.createdAt.toDate() : null;
+        return createdAt && createdAt >= last7 && u.referredBy !== undefined;
+    }).length;
+    const referralsLifetime = users.filter((u: any) => u.referredBy !== undefined).length;
+
     return {
         totalUsers,
         twitterConnected,
         telegramConnected,
         emailConnected,
         recentRegistrations,
-        activeUsers: 0, // keep for compatibility
-        activeUsersByScore: 0, // keep for compatibility
+        activeUsers: activeUsersByScore.size, // unique users active in last 7 days
+        activeUsersByScore: rewards.filter((r: any) => {
+            const ts = r.timestamp
+                ? new Date(r.timestamp._seconds ? r.timestamp._seconds * 1000 : r.timestamp)
+                : null;
+            return ts && ts >= last7;
+        }).length, // number of tasks (rewards) in last 7 days
         totalTasks,
         totalRewards,
         totalPoints,
+        totalPoints7d,
+        referrals7d,
+        referralsLifetime,
         topUser,
         engagement,
         engagementByType,

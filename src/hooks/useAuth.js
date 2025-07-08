@@ -60,6 +60,7 @@ export const useAuth = () => {
                         lastSignIn: new Date(),
                         coinomiId,
                         baseMultiplier: 1,
+                        createdAt: new Date().toISOString(),
                     },
                     { merge: true }
                 );
