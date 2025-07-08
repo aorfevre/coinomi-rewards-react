@@ -87,6 +87,8 @@ export default function KPIDashboard() {
     const [stats, setStats] = useState({
         totalUsers: 0,
         twitterConnected: 0,
+        telegramConnected: 0,
+        emailConnected: 0,
         recentRegistrations: 0,
         activeUsers: 0,
         activeUsersByScore: 0,
@@ -137,6 +139,18 @@ export default function KPIDashboard() {
                     <KPICard
                         title={t('twitterConnected', 'Twitter connecté')}
                         value={stats.twitterConnected}
+                    />
+                </Grid>
+                <Grid item xs={6} sm={4}>
+                    <KPICard
+                        title={t('telegramConnected', 'Telegram connecté')}
+                        value={stats.telegramConnected}
+                    />
+                </Grid>
+                <Grid item xs={6} sm={4}>
+                    <KPICard
+                        title={t('emailConnected', 'Email connecté')}
+                        value={stats.emailConnected}
                     />
                 </Grid>
                 <Grid item xs={6} sm={4}>
